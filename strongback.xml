@@ -28,24 +28,18 @@
     </target>
 
     <target name="clean" description="Performs clean in each nested robot project">
-        <subant failonerror="false">
-            <fileset dir="." includes="**/build.xml" excludes="build.xml"/>
-            <target name="clean"/>
-        </subant>
+    	<antcall target="Strongback Deployment.clean" />
     </target>
 
     <target name="compile" description="Compiles the source code in each nested robot projects">
         <subant failonerror="false">
-            <fileset dir="." includes="**/build.xml" excludes="build.xml"/>
+        	<fileset dir="." includes="**/build.xml" excludes="strongback.xml"/>
             <target name="compile"/>
         </subant>
     </target>
 
     <target name="test" description="Compiles and runs the unit tests in each nested robot projects">
-        <subant failonerror="false">
-            <fileset dir="." includes="**/build.xml" excludes="build.xml"/>
-            <target name="test"/>
-        </subant>
+    	<antcall target="Strongback Deployment.test" />
     </target>
 
     <!-- Install Dependencies -->
