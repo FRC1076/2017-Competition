@@ -71,48 +71,34 @@
         </condition>
     </target>
 
+    <!-- Install the WPI directory -->
     <target name="download-wpilib" depends="check-for-wpilib" if="wpilib-missing" >
         <echo>Downloading the WPILib library and installing into '${wpilib.dir}'.</echo>
-        <mkdir dir="${download.dir}"/>
-        <!-- Download the 'site.xml' file that contains the URL to the feature we want, and get that URL -->
-        <get src="${wpilib.updatesite.url}/site.xml" dest="${download.dir}/site.xml"/>
-        <xmlproperty file="${download.dir}/site.xml" collapseAttributes="true" semanticAttributes="true" keepRoot="true"/>
-        <select-java-version input="${site.feature.url}" output="wpilib.version" />
-        <select-java-feature-url input="${site.feature.url}" output="javaFeatureUrl" />
-        <echo>Installing WPILib version ${wpilib.version}</echo>
-        <!-- The feature URL can be converted to the plugin URL -->
-        <loadresource property="javaPluginUrl">
-          <propertyresource name="javaFeatureUrl"/>
-          <filterchain>
-            <tokenfilter>
-              <filetokenizer/>
-              <replacestring from="features" to="plugins"/>
-            </tokenfilter>
-            <tokenfilter>
-              <filetokenizer/>
-              <replacestring from="java.feature" to="java"/>
-            </tokenfilter>
-          </filterchain>
-        </loadresource>
-        <!-- Get the plugin JAR file, and extract it's 'java.zip' file -->
-        <get src="${wpilib.updatesite.url}/${javaPluginUrl}" dest="${download.dir}/wpi-java-plugin.jar"/>
-        <unzip src="${download.dir}/wpi-java-plugin.jar" dest="${download.dir}">
-            <patternset>
-                <include name="**/java.zip"/>
-            </patternset>
-        </unzip>
-        <!-- Extract the 'java.zip' file into a new `wpilib` directory -->
-        <mkdir dir="${wpilib.dir}/java/current"/>
-        <unzip src="${download.dir}/resources/java.zip" dest="${wpilib.dir}/java/current">
-            <patternset>
-                <include name="**/*"/>
-            </patternset>
-        </unzip>
+        <mkdir dir="downloads"/>
+		<!-- Download and unzip the correct WPILib jar-->
+    	<get src="${wpilib.updatesite.url}/${wpilib.version.url}" dest="downloads/wpi-java-plugin.jar"/>
+    	        <unzip src="downloads/wpi-java-plugin.jar" dest="downloads">
+    	            <patternset>
+    	                <include name="**/java.zip"/>
+    	            </patternset>
+    	        </unzip>
+    	<!-- Extract the 'java.zip' file into a new `wpilib` directory -->
+    	        <mkdir dir="${wpilib.dir}/java/current"/>
+    	        <unzip src="downloads/resources/java.zip" dest="${wpilib.dir}/java/current">
+    	            <patternset>
+    	                <include name="**/*"/>
+    	            </patternset>
+    	        </unzip>
         <!-- Write out a property file in the directory -->
         <propertyfile file="${wpilib.dir}/wpilib.properties" comment="Downloaded and installed by Strongback build system">
             <entry  key="version" value="current"/>
             <entry  key="wpilib.version" value="${wpilib.version}"/>
         </propertyfile>
+    	
+    	<!-- Ensure user libs folder exists -->
+    	<mkdir dir="${wpilib.dir}/user"/>
+    	<mkdir dir="${wpilib.dir}/user/java"/>
+    	<mkdir dir="${wpilib.dir}/user/java/lib"/>
     </target>
 
     <!-- ===================================================== -->
