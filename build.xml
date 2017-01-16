@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="FRC Deployment" default="deploy">
+<project name="FRC Deployment" default="test">
 
   <!--
   The following properties can be defined to override system level
@@ -24,7 +24,8 @@
   <property file="${user.home}/wpilib/wpilib.properties"/>
   <property file="build.properties"/>
   <property file="${user.home}/wpilib/java/${version}/ant/build.properties"/>
-
-  <import file="${wpilib.ant.dir}/build.xml"/>
+  <import file="strongback.xml" />
+  <import file="${user.home}/strongback/java/ant/build.xml" optional="true"/>
+  <import file="${wpilib.ant.dir}/build.xml" optional="true"/>
 
 </project>
