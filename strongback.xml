@@ -32,10 +32,7 @@
     </target>
 
     <target name="compile" description="Compiles the source code in each nested robot projects">
-        <subant failonerror="false">
-        	<fileset dir="." includes="**/build.xml" excludes="strongback.xml"/>
-            <target name="compile"/>
-        </subant>
+        <antcall target="athena-project-build.compile" />
     </target>
 
     <target name="test" description="Compiles and runs the unit tests in each nested robot projects">
