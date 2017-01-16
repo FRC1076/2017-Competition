@@ -5,8 +5,7 @@
 	<classpathentry exported="true" kind="var" path="networktables" sourcepath="networktables.sources"/>
 	<classpathentry exported="true" kind="var" path="wpilib" sourcepath="wpilib.sources"/>
 	<classpathentry kind="lib" path="json.jar" sourcepath="json-sources.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Strongback"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/WPILIB"/>
-	<classpathentry kind="var" path="USERLIBS_DIR/TalonSRXLibJava.jar"/>
+	<classpathentry kind="var" path="USERLIBS_DIR/CTRLib.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pi Hi Samurai/strongback/java/lib/strongback.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
