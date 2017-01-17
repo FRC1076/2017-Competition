@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="multi-robot-build" default="compile">
+<project name="multi-robot-build">
 
     <property file="build.properties"/>
     <property name="wpilib.dir" value="${user.home}/wpilib"/>
@@ -26,19 +26,7 @@
         <echo>   test          Compiles and runs the tests in all nested robot projects</echo>
         <echo></echo>
     </target>
-
-    <target name="clean" description="Performs clean in each nested robot project">
-    	<antcall target="Strongback Deployment.clean" />
-    </target>
-
-    <target name="compile" description="Compiles the source code in each nested robot projects">
-        <antcall target="athena-project-build.compile" />
-    </target>
-
-    <target name="test" description="Compiles and runs the unit tests in each nested robot projects">
-    	<antcall target="Strongback Deployment.test" />
-    </target>
-
+		
     <!-- Install Dependencies -->
     <target name="deps" 
             depends="download-strongback,download-wpilib,clean-downloads" 
