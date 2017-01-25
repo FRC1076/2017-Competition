@@ -27,6 +27,21 @@
         <echo></echo>
     </target>
 		
+	<!-- 
+	     Override Strongback's incorrect buildpath for test compilation. Why?
+	     Strongback assumes that the correct class path is ${classpath}, which
+	     does have WPILib.jar and NetworkTables.jar. However, this doesn't include
+	     any user libraries (like Strongback itself!)  
+	     (the ${classpath} property is defined in ${wpilib.dir}/java/current/ant/build.properties)
+	 -->
+		 	
+    <path id="junit.classpath">
+        <fileset dir="${strongback.home}/java/lib-tests" includes="**/*.jar" excludes="**/*-sources.jar" />
+        <pathelement location="${build.dir}" />
+    	<pathelement path="${classpath}" />
+    	<path refid="classpath.path" />
+    </path>
+	
     <!-- Install Dependencies -->
     <target name="deps" 
             depends="download-strongback,download-wpilib,clean-downloads" 

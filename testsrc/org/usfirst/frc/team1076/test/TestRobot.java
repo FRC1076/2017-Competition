@@ -1,8 +1,10 @@
-package org.usfirst.frc.team1076.robot;
+package org.usfirst.frc.team1076.test;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.strongback.components.Motor;
+import org.strongback.mock.Mock;
 
 public class TestRobot {
 
@@ -14,6 +16,7 @@ public class TestRobot {
     @Test(expected = AssertionError.class)
     public void testFail() {
         assertTrue(false);
+    	Motor motor = Mock.stoppedMotor();
     }
 
 }
