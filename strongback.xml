@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="multi-robot-build">
 
-    <property file="build.properties"/>
     <property name="wpilib.dir" value="${user.home}/wpilib"/>
     <property name="wpilib.ant.dir" value="${wpilib.dir}/java/current/ant"/>
     <property name="strongback.dir" value="${user.home}/strongback"/>

@@ -21,11 +21,10 @@
 
   <!-- Any other property in build.properties can also be overridden. -->
 
-  <property file="${user.home}/wpilib/wpilib.properties"/>
   <property file="build.properties"/>
-  <property file="${user.home}/wpilib/java/${version}/ant/build.properties"/>
-  <import file="strongback.xml" />
-  <import file="${user.home}/strongback/java/ant/build.xml" optional="true"/>
+
   <import file="${wpilib.ant.dir}/build.xml" optional="true"/>
+  <import file="${user.home}/strongback/java/ant/build.xml" optional="true"/>
+  <import file="strongback.xml" />
 
 </project>
