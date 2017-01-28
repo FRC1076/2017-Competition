@@ -10,8 +10,6 @@ import java.net.SocketException;
 
 import org.strongback.Strongback;
 
-import com.ctre.CANTalon;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -47,7 +45,8 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
-		
+        SmartDashboard.putNumber("Show Vision", 1);
+
         try {
             receiver = new VisionReceiver(IP, VISION_PORT);
         } catch (SocketException e) {
@@ -65,8 +64,16 @@ public class Robot extends IterativeRobot {
 
     }
 	
+    int debugCount = 0;
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
+		if (debugCount++ % 100 == 0 && SmartDashboard.getNumber("Show Vision", 0) == 1) {
+		    receiver.receive();
+		    if (receiver == null) {
+		        Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
+		    }
+		    Strongback.logger().info(receiver.getData().toString());
+		}
 	}
 
 	/**

@@ -16,7 +16,7 @@ public class VisionData {
     double range = 0.0;
     VisionStatus status = VisionStatus.ERROR;
     int errorCount = 0;
-    
+    String json;
     public VisionData() { }
     
     /**
@@ -38,6 +38,7 @@ public class VisionData {
     }
     
     public void update(JSONObject json) {
+        this.json = json.toString();
         try {
             // We didn't get a vision packet, so we can't really do anything with it
             if (!json.getString("sender").equals("vision")) {
@@ -107,5 +108,9 @@ public class VisionData {
      */
     public int getErrorCount() {
         return errorCount;
+    }
+    
+    public String toString() {
+        return json;
     }
 }
