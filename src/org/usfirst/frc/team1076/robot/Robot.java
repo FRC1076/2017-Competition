@@ -9,10 +9,14 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import java.net.SocketException;
 
 import org.strongback.Strongback;
+import org.strongback.components.Motor;
+import org.strongback.hardware.Hardware;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team1076.robot.commands.ExampleCommand;
+import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
+import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
@@ -25,10 +29,14 @@ import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
  */
 public class Robot extends IterativeRobot {
 
-	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
+    public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
 	public static OI oi;
 	Gamepad gamepad = new Gamepad(0);
 	Command autonomousCommand;
+	Motor left = Hardware.Motors.talonSRX(0).invert(); // This motor is placed backwards on the robot
+	Motor right = Hardware.Motors.talonSRX(1);
+	Drivetrain drivetrain = new Drivetrain(left, right);
+	TeleopCommand teleopCommand = new TeleopCommand(gamepad, drivetrain);
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
 	VisionReceiver receiver;
@@ -41,7 +49,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-	    Strongback.start();
+	  Strongback.start();
+    SmarterDashboard.putDefaultNumber("Left Factor", 1);
+    SmarterDashboard.putDefaultNumber("Right Factor", 1);
 		oi = new OI();
 		gamepad = new Gamepad(0);
 		chooser.addDefault("Default Auto", new ExampleCommand());
@@ -62,11 +72,13 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
-    }
-	
-    int debugCount = 0;
-	public void disabledPeriodic() {
+        drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
+        drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
+	}
+ 
+int debugCount = 0;
+@Override
+public void disabledPeriodic() {
 		Scheduler.getInstance().run();
 		if (debugCount++ % 100 == 0 && SmarterDashboard.getNumber("Show Vision", 0) == 1) {
 		    if (receiver == null) {
@@ -121,6 +133,7 @@ public class Robot extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
     	Strongback.logger().info("I LIVE!");
+    	Strongback.submit(teleopCommand);
         if (autonomousCommand != null) autonomousCommand.cancel();
     }
 
