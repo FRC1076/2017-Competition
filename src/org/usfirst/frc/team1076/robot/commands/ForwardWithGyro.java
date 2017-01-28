@@ -5,6 +5,11 @@ import org.strongback.command.Command;
 import org.strongback.components.Gyroscope;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 
+/**
+ * ForwardWithGyro attempts to go straight at the specified speed.
+ * It uses the gyroscope's angle as a correction mechanism, slowing
+ * one of the motors in order to keep straight.
+ */
 public class ForwardWithGyro extends Command {
 
     Gyroscope gyro;
@@ -12,9 +17,9 @@ public class ForwardWithGyro extends Command {
     double speed;
     
     /**
-     * 
-     * @param gyro
-     * @param drivetrain
+     * Create a new ForwardWithGyro
+     * @param gyro        a Strongback Gyroscope
+     * @param drivetrain  a drivetrain
      * @param speed       speed from -1 to 1 (inclusive) to drive at
      * @param targetTime  time, in seconds, to drive forward
      */
@@ -32,7 +37,7 @@ public class ForwardWithGyro extends Command {
     
     @Override
     public boolean execute() {
-        // This corrects linearly
+        // We correct linearly
         double gyroNorm = gyro.getAngle() / 360;
         // The left and right speeds should always be the altered speed or the original speed
         double leftSpeed = Math.min(speed - gyroNorm, speed);
