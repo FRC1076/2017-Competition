@@ -77,6 +77,8 @@ public class VisionData {
     	try {
     		update(new JSONObject(new JSONTokener(json)));
     	} catch (JSONException e) {
+            errorCount += 1;
+            status = VisionStatus.ERROR;
     	}
     }
     
