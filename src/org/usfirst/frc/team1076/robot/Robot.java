@@ -42,12 +42,11 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 	    Strongback.start();
-	    
 		oi = new OI();
 		gamepad = new Gamepad(0);
 		chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
-    SmarterDashboard.putNumber("Show Vision", 1);
+		SmarterDashboard.putDefaultNumber("Show Vision", 1);
         try {
             receiver = new VisionReceiver(IP, VISION_PORT);
         } catch (SocketException e) {
@@ -69,7 +68,7 @@ public class Robot extends IterativeRobot {
     int debugCount = 0;
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
-		if (debugCount++ % 100 == 0 && SmartDashboard.getNumber("Show Vision", 0) == 1) {
+		if (debugCount++ % 100 == 0 && SmarterDashboard.getNumber("Show Vision", 0) == 1) {
 		    if (receiver == null) {
 		        Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
 		    } else {
