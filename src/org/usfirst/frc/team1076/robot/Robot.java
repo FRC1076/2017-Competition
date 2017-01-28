@@ -9,14 +9,16 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import java.net.SocketException;
 
 import org.strongback.Strongback;
-
-import com.ctre.CANTalon;
+import org.strongback.components.Motor;
+import org.strongback.hardware.Hardware;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team1076.robot.commands.ExampleCommand;
+import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
+import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.ExampleSubsystem;
+import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,22 +29,40 @@ import org.usfirst.frc.team1076.robot.subsystems.ExampleSubsystem;
  */
 public class Robot extends IterativeRobot {
 
-	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
+    public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
 	public static OI oi;
-
+	Gamepad gamepad = new Gamepad(0);
 	Command autonomousCommand;
+	Motor left = Hardware.Motors.talonSRX(0).invert(); // This motor is placed backwards on the robot
+	Motor right = Hardware.Motors.talonSRX(1);
+	Drivetrain drivetrain = new Drivetrain(left, right);
+	TeleopCommand teleopCommand = new TeleopCommand(gamepad, drivetrain);
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
+	VisionReceiver receiver;
+    public static final String IP = "0.0.0.0"; //"10.10.76.2"; 
+    public static final int VISION_PORT = 5880;
+    
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
+	  Strongback.start();
+    SmarterDashboard.putDefaultNumber("Left Factor", 1);
+    SmarterDashboard.putDefaultNumber("Right Factor", 1);
 		oi = new OI();
+		gamepad = new Gamepad(0);
 		chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
-		SmartDashboard.putData("Auto mode", chooser);
+		SmarterDashboard.putDefaultNumber("Show Vision", 1);
+        try {
+            receiver = new VisionReceiver(IP, VISION_PORT);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+		SmarterDashboard.putData("Auto mode", chooser);
 	}
 
 	/**
@@ -52,18 +72,29 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
+        drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
+        drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
 	}
-
-	@Override
-	public void disabledPeriodic() {
+ 
+int debugCount = 0;
+@Override
+public void disabledPeriodic() {
 		Scheduler.getInstance().run();
+		if (debugCount++ % 100 == 0 && SmarterDashboard.getNumber("Show Vision", 0) == 1) {
+		    if (receiver == null) {
+		        Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
+		    } else {
+	            receiver.receive();
+		        Strongback.logger().info(receiver.getData().toString());
+		    }
+		    
+		}
 	}
 
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select
 	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
+	 * chooser code works with the Java SmarterDashboard. If you prefer the
 	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
 	 * getString code to get the auto name from the text box below the Gyro
 	 *
@@ -76,7 +107,7 @@ public class Robot extends IterativeRobot {
 		autonomousCommand = chooser.getSelected();
 
 		/*
-		 * String autoSelected = SmartDashboard.getString("Auto Selector",
+		 * String autoSelected = SmarterDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
 		 * = new MyAutoCommand(); break; case "Default Auto": default:
 		 * autonomousCommand = new ExampleCommand(); break; }
@@ -102,7 +133,7 @@ public class Robot extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
     	Strongback.logger().info("I LIVE!");
-
+    	Strongback.submit(teleopCommand);
         if (autonomousCommand != null) autonomousCommand.cancel();
     }
 
