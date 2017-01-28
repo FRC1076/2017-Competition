@@ -12,5 +12,8 @@
 	<classpathentry kind="var" path="USERLIBS_DIR/CTRLib.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/strongback-testing.jar" sourcepath="/USERLIBS_DIR/strongback-testing-sources.jar"/>
+	<classpathentry kind="var" path="USERLIBS_DIR/json-sources.jar"/>
+	<classpathentry kind="var" path="USERLIBS_DIR/strongback-sources.jar"/>
+	<classpathentry kind="var" path="USERLIBS_DIR/strongback-testing-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
