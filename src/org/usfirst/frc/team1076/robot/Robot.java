@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import java.net.SocketException;
 
 import org.strongback.Strongback;
+import org.strongback.components.Motor;
+import org.strongback.hardware.Hardware;
 
 import com.ctre.CANTalon;
 
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team1076.robot.commands.ExampleCommand;
+import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.ExampleSubsystem;
 
 /**
@@ -27,10 +30,13 @@ import org.usfirst.frc.team1076.robot.subsystems.ExampleSubsystem;
  */
 public class Robot extends IterativeRobot {
 
-	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
+    public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
 	public static OI oi;
 	Gamepad gamepad = new Gamepad(0);
 	Command autonomousCommand;
+	Motor left = Hardware.Motors.talonSRX(0).invert(); // This motor is placed backwards on the robot
+	Motor right = Hardware.Motors.talonSRX(1);
+	Drivetrain drivetrain = new Drivetrain(left, right);
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
 	/**
@@ -40,12 +46,10 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 	    Strongback.start();
-	    
 		oi = new OI();
 		gamepad = new Gamepad(0);
-		chooser.addDefault("Default Auto", new ExampleCommand());
-		// chooser.addObject("My Auto", new MyAutoCommand());
-		SmartDashboard.putData("Auto mode", chooser);
+        SmartDashboard.putNumber("Left Factor", 1);
+        SmartDashboard.putNumber("Right Factor", 1);
 	}
 
 	/**
@@ -55,7 +59,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
+        drivetrain.leftFactor = SmartDashboard.getNumber("Left Factor", 1);
+        drivetrain.rightFactor = SmartDashboard.getNumber("Right Factor", 1);
 	}
 
 	@Override
