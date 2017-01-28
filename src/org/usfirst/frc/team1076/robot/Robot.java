@@ -10,12 +10,11 @@ import java.net.SocketException;
 
 import org.strongback.Strongback;
 
-import com.ctre.CANTalon;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team1076.robot.commands.ExampleCommand;
 import org.usfirst.frc.team1076.robot.subsystems.ExampleSubsystem;
+import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -32,6 +31,10 @@ public class Robot extends IterativeRobot {
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
+	VisionReceiver receiver;
+    public static final String IP = "0.0.0.0"; //"10.10.76.2"; 
+    public static final int VISION_PORT = 5880;
+    
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -39,11 +42,16 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 	    Strongback.start();
-	    
 		oi = new OI();
 		gamepad = new Gamepad(0);
 		chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
+		SmarterDashboard.putDefaultNumber("Show Vision", 1);
+        try {
+            receiver = new VisionReceiver(IP, VISION_PORT);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
 		SmarterDashboard.putData("Auto mode", chooser);
 	}
 
@@ -55,11 +63,20 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledInit() {
 
-	}
-
-	@Override
+    }
+	
+    int debugCount = 0;
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
+		if (debugCount++ % 100 == 0 && SmarterDashboard.getNumber("Show Vision", 0) == 1) {
+		    if (receiver == null) {
+		        Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
+		    } else {
+	            receiver.receive();
+		        Strongback.logger().info(receiver.getData().toString());
+		    }
+		    
+		}
 	}
 
 	/**
