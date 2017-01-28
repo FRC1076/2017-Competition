@@ -47,8 +47,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 	    Strongback.start();
-    SmartDashboard.putNumber("Left Factor", 1);
-    SmartDashboard.putNumber("Right Factor", 1);
+    SmarterDashboard.putDefaultNumber("Left Factor", 1);
+    SmarterDashboard.putDefaultNumber("Right Factor", 1);
 		oi = new OI();
 		gamepad = new Gamepad(0);
 		chooser.addDefault("Default Auto", new ExampleCommand());
@@ -63,8 +63,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-        drivetrain.leftFactor = SmartDashboard.getNumber("Left Factor", 1);
-        drivetrain.rightFactor = SmartDashboard.getNumber("Right Factor", 1);
+        drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
+        drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
 	}
 
 	@Override
