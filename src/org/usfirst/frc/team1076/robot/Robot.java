@@ -28,6 +28,7 @@ public class Robot extends IterativeRobot {
 
 	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
 	public static OI oi;
+	Gamepad gamepad = new Gamepad(0);
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
@@ -41,7 +42,10 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+	    Strongback.start();
+	    
 		oi = new OI();
+		gamepad = new Gamepad(0);
 		chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
@@ -120,7 +124,6 @@ public class Robot extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
     	Strongback.logger().info("I LIVE!");
-
         if (autonomousCommand != null) autonomousCommand.cancel();
     }
 
