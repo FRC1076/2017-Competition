@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team1076.robot.commands.ExampleCommand;
+import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.ExampleSubsystem;
 
@@ -37,6 +38,7 @@ public class Robot extends IterativeRobot {
 	Motor left = Hardware.Motors.talonSRX(0).invert(); // This motor is placed backwards on the robot
 	Motor right = Hardware.Motors.talonSRX(1);
 	Drivetrain drivetrain = new Drivetrain(left, right);
+	TeleopCommand teleopCommand = new TeleopCommand(gamepad, drivetrain);
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
 	/**
@@ -110,6 +112,7 @@ public class Robot extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
     	Strongback.logger().info("I LIVE!");
+    	Strongback.submit(teleopCommand);
         if (autonomousCommand != null) autonomousCommand.cancel();
     }
 
