@@ -1,6 +1,5 @@
 package org.usfirst.frc.team1076.test.mock;
 
-import org.usfirst.frc.team1076.robot.Gamepad;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadAxis;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
 import org.usfirst.frc.team1076.robot.IGamepad;
