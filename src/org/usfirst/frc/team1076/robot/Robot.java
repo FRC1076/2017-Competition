@@ -15,7 +15,6 @@ import org.strongback.hardware.Hardware;
 import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team1076.robot.commands.ExampleCommand;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
@@ -48,10 +47,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 	    Strongback.start();
-  		oi = new OI();
-	  	gamepad = new Gamepad(0);
-      SmartDashboard.putNumber("Left Factor", 1);
-      SmartDashboard.putNumber("Right Factor", 1);
+    SmartDashboard.putNumber("Left Factor", 1);
+    SmartDashboard.putNumber("Right Factor", 1);
+		oi = new OI();
+		gamepad = new Gamepad(0);
+		chooser.addDefault("Default Auto", new ExampleCommand());
+		// chooser.addObject("My Auto", new MyAutoCommand());
+		SmarterDashboard.putData("Auto mode", chooser);
 	}
 
 	/**
@@ -73,7 +75,7 @@ public class Robot extends IterativeRobot {
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select
 	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
+	 * chooser code works with the Java SmarterDashboard. If you prefer the
 	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
 	 * getString code to get the auto name from the text box below the Gyro
 	 *
@@ -86,7 +88,7 @@ public class Robot extends IterativeRobot {
 		autonomousCommand = chooser.getSelected();
 
 		/*
-		 * String autoSelected = SmartDashboard.getString("Auto Selector",
+		 * String autoSelected = SmarterDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
 		 * = new MyAutoCommand(); break; case "Default Auto": default:
 		 * autonomousCommand = new ExampleCommand(); break; }
