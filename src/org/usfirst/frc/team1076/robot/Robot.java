@@ -68,11 +68,13 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
 		if (debugCount++ % 100 == 0 && SmartDashboard.getNumber("Show Vision", 0) == 1) {
-		    receiver.receive();
 		    if (receiver == null) {
 		        Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
+		    } else {
+	            receiver.receive();
+		        Strongback.logger().info(receiver.getData().toString());
 		    }
-		    Strongback.logger().info(receiver.getData().toString());
+		    
 		}
 	}
 
