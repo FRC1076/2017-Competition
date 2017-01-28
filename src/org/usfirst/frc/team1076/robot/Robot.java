@@ -48,10 +48,10 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 	    Strongback.start();
-		oi = new OI();
-		gamepad = new Gamepad(0);
-        SmartDashboard.putNumber("Left Factor", 1);
-        SmartDashboard.putNumber("Right Factor", 1);
+  		oi = new OI();
+	  	gamepad = new Gamepad(0);
+      SmartDashboard.putNumber("Left Factor", 1);
+      SmartDashboard.putNumber("Right Factor", 1);
 	}
 
 	/**
