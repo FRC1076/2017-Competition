@@ -38,14 +38,24 @@ public class TestTeleopCommand {
 	}
 	
 	@Test
-	public void testRotate() {
+	public void testRotateLeft() {
 		gamepad.lx = 1;
 		teleop.execute();
-		assertEquals("Left motor should be negative when turning left",
+		assertEquals("Left motor should be moving forwards when the robot turns left",
 				1.0, left.getSpeed(), EPSILON);
-		assertEquals("Right motor should be negative when turning right",
+		assertEquals("Right motor should be moving backwards when the robot turns left",
 				-1.0, right.getSpeed(), EPSILON);
 	}
+
+    @Test
+    public void testRotateRight() {
+        gamepad.lx = -1;
+        teleop.execute();
+        assertEquals("Left motor should be moving backwards when the robot turns right",
+                -1.0, left.getSpeed(), EPSILON);
+        assertEquals("Right motor should be moving forwards when the robot turns right",
+                1.0, right.getSpeed(), EPSILON);
+    }
 	
 	@Test
 	public void testRotateAndForwards() {
