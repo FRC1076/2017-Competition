@@ -22,6 +22,7 @@ public class TeleopCommand extends Command {
     }
 
     // Called repeatedly when this Command is scheduled to run
+    @Override
     public boolean execute() {    	
     	final double forward = gamepad.getAxis(GamepadAxis.RightY);
     	final double rotate = gamepad.getAxis(GamepadAxis.LeftX);
@@ -36,7 +37,7 @@ public class TeleopCommand extends Command {
     	// is larger than the max speed we'll scale them down.
     	// We use the reciprocal of the max speed so that if for example maxSpeed
     	// is 0.5, then we'll get 2.0 and divide by 2.0.
-    	final double norm = selectMaxAbs(new double[] {1/maxSpeed, left, right});
+    	final double norm = selectMaxAbs(1/maxSpeed, left, right);
     	
     	leftRight.setLeftSpeed(left / norm);
     	leftRight.setRightSpeed(right / norm);
@@ -44,7 +45,7 @@ public class TeleopCommand extends Command {
     	return isFinished();
     }
     
-    private double selectMaxAbs(double[] items) {
+    private double selectMaxAbs(double... items) {
     	assert items.length > 0;
     	double result = Math.abs(items[0]);
     	for (double item : items) {

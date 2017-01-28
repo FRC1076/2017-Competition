@@ -57,10 +57,5 @@ public class Drivetrain implements Requirable {
 	public void stop() {
 		setSpeed(0);
 	}
-
-    public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
-    }
 }
 
