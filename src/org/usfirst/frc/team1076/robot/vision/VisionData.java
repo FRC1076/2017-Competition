@@ -39,7 +39,8 @@ public class VisionData {
     
     public void update(JSONObject json) {
         this.json = json.toString();
-        try {
+        // The json packet must have these fields, otherwise this is a malformed packet
+        if (json.has("sender") && json.has("status") && json.has("heading") && json.has("range")) {
             // We didn't get a vision packet, so we can't really do anything with it
             if (!json.getString("sender").equals("vision")) {
                 return;
@@ -65,8 +66,10 @@ public class VisionData {
             }
             heading = json.getInt("heading");
             range = json.getDouble("range");
-        } catch (JSONException e) { 
-            // Malformed JSON packet, assume no useful data
+        } else { 
+            // Malformed or incomplete JSON packet. This is likely an error.
+            errorCount += 1;
+            status = VisionStatus.ERROR;
         }
     }
     
