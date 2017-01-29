@@ -2,19 +2,23 @@
 package org.usfirst.frc.team1076.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 import java.net.SocketException;
 
 import org.strongback.Strongback;
+import org.strongback.command.Command;
+import org.strongback.command.CommandGroup;
+import org.strongback.components.Gyroscope;
 import org.strongback.components.Motor;
 import org.strongback.hardware.Hardware;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
+import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
@@ -35,7 +39,9 @@ public class Robot extends IterativeRobot {
 	Drivetrain drivetrain = new Drivetrain(left, right);
 	TeleopCommand teleopCommand = new TeleopCommand(gamepad, drivetrain);
 	SendableChooser<Command> chooser = new SendableChooser<>();
-
+	
+	Gyroscope gyro = Hardware.AngleSensors.gyroscope(0);
+	
 	VisionReceiver receiver;
 	public static final String IP = "0.0.0.0"; // "10.10.76.2";
 	public static final int VISION_PORT = 5880;
@@ -101,8 +107,10 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = chooser.getSelected();
-
+		autonomousCommand = CommandGroup.runSequentially(
+		        new ForwardWithGyro(gyro, drivetrain, 1.0, 5.0),
+		        new TurnWithGyro(gyro, drivetrain, 1.0, 60.0));
+		
 		/*
 		 * String autoSelected = SmarterDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -112,7 +120,7 @@ public class Robot extends IterativeRobot {
 
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null)
-			autonomousCommand.start();
+			Strongback.submit(autonomousCommand);
 	}
 
 	/**
