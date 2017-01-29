@@ -56,7 +56,7 @@ public class Robot extends IterativeRobot {
 		gamepad = new Gamepad(0);
 		SmarterDashboard.putDefaultNumber("Left Factor", 1);
 		SmarterDashboard.putDefaultNumber("Right Factor", 1);
-
+		SmarterDashboard.putDefaultNumber("ForwardWithGyro Sensitivity", 1);
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmarterDashboard.putDefaultNumber("Show Vision", 1);
 		try {
@@ -76,6 +76,7 @@ public class Robot extends IterativeRobot {
 	public void disabledInit() {
 		drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
 		drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
+		ForwardWithGyro.SENSITIVITY = SmarterDashboard.getNumber("ForwardWithGyro Sensitivity", 1);
 	}
 
 	int debugCount = 0;
@@ -108,8 +109,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		autonomousCommand = CommandGroup.runSequentially(
-		        new ForwardWithGyro(gyro, drivetrain, 1.0, 5.0),
-		        new TurnWithGyro(gyro, drivetrain, 1.0, 60.0));
+		        new ForwardWithGyro(gyro, drivetrain, 1.0, 1.0),
+		        new TurnWithGyro(gyro, drivetrain, 1.0, 360.0));
 		
 		/*
 		 * String autoSelected = SmarterDashboard.getString("Auto Selector",

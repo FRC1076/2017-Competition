@@ -11,6 +11,7 @@ import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
  */
 public class ForwardWithGyro extends Command {
 
+    public static double SENSITIVITY = 1.0;
     Gyroscope gyro;
     Drivetrain drivetrain;
     double speed;
@@ -43,7 +44,7 @@ public class ForwardWithGyro extends Command {
     @Override
     public boolean execute() {
         // We correct linearly
-        double gyroNorm = gyro.getAngle() / 360;
+        double gyroNorm = SENSITIVITY * gyro.getAngle() / 360;
         // The left and right speeds should always be the altered speed or the original speed
         double leftSpeed = speed;
         double rightSpeed = speed;
