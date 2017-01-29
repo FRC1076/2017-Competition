@@ -24,7 +24,7 @@ public class ForwardWithGyro extends Command {
      * @param targetTime  time, in seconds, to drive forward
      */
     public ForwardWithGyro(Gyroscope gyro, Drivetrain drivetrain, double speed, double targetTime) {
-        super(targetTime); // This command automatically times out after the specified time. 
+        super(targetTime, drivetrain); // This command automatically times out after the specified time. 
         this.gyro = gyro;
         this.drivetrain = drivetrain;
         this.speed = speed;
