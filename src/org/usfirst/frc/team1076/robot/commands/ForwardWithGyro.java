@@ -1,6 +1,5 @@
 package org.usfirst.frc.team1076.robot.commands;
 
-import org.strongback.Strongback;
 import org.strongback.command.Command;
 import org.strongback.components.Gyroscope;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
@@ -35,13 +34,24 @@ public class ForwardWithGyro extends Command {
         gyro.zero();
     }
     
+    /**
+     * Edge case note: If the speed is less than the normed gyro value,
+     * then the speed reduction for one of the motors will actually be a speed increase.
+     * This is due to the fact that Math.abs(speed) - Math.abs(gyroNorm) > Math.abs(gyroNorm) - Math.abs(speed)
+     * Fortunately, this should not happen when passing reasonably large values.
+     */
     @Override
     public boolean execute() {
         // We correct linearly
         double gyroNorm = gyro.getAngle() / 360;
         // The left and right speeds should always be the altered speed or the original speed
-        double leftSpeed = Math.min(speed - gyroNorm, speed);
-        double rightSpeed = Math.min(speed + gyroNorm, speed);
+        double leftSpeed = speed;
+        double rightSpeed = speed;
+        if (gyroNorm < 0) { // Drifting left
+            rightSpeed = Math.signum(speed) * (Math.abs(speed) - Math.abs(gyroNorm));
+        } else if (gyroNorm > 0) { // Drifting right
+            leftSpeed = Math.signum(speed) * (Math.abs(speed) - Math.abs(gyroNorm));
+        }
         drivetrain.setLeftSpeed(leftSpeed);
         drivetrain.setRightSpeed(rightSpeed);
         

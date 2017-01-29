@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.strongback.command.CommandTester;
 import org.strongback.mock.Mock;
 import org.strongback.mock.MockGyroscope;
 import org.strongback.mock.MockMotor;
