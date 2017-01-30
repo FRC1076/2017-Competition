@@ -44,13 +44,13 @@ public class TurnWithGyro extends Command {
             drivetrain.setRightSpeed(-speed);
         } else { // Else if turning left
             drivetrain.setLeftSpeed(-speed);
-            drivetrain.setRightSpeed(speed);        
+            drivetrain.setRightSpeed(speed);
         }
         return isFinished();
     }
-    
+
     public boolean isFinished() {
-        return targetAngle - gyro.getAngle() <= 0;        
+        return Math.abs(targetAngle) <= Math.abs(gyro.getAngle());
     }
 
     @Override

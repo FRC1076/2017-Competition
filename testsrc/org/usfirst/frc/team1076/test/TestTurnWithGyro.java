@@ -51,6 +51,11 @@ public class TestTurnWithGyro {
         gyro.setAngle(60.0);
         assertTrue("The command should finish after rotating to the correct angle",
                 turn.isFinished());
+        
+        turn = new TurnWithGyro(gyro, drivetrain, 0.0, -60.0);
+        gyro.setAngle(-70.0);
+        assertTrue("The command should finish after rotating to the correct angle",
+                turn.isFinished());
     }
     
     @Test
