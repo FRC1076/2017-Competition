@@ -28,10 +28,8 @@ import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 public class Robot extends IterativeRobot {
 	Gamepad gamepad = new Gamepad(0);
 	Command autonomousCommand;
-	Motor left = Hardware.Motors.talonSRX(0).invert(); // This motor is placed
-														// backwards on the
-														// robot
-	Motor right = Hardware.Motors.talonSRX(1);
+	Motor left = Hardware.Motors.talonSRX(0);
+	Motor right = Hardware.Motors.talonSRX(1).invert();  // This motor is placed backwards on the robot
 	Drivetrain drivetrain = new Drivetrain(left, right);
 	TeleopCommand teleopCommand = new TeleopCommand(gamepad, drivetrain);
 	SendableChooser<Command> chooser = new SendableChooser<>();
