@@ -56,9 +56,11 @@ public class Robot extends IterativeRobot {
 		gamepad = new Gamepad(0);
 		SmarterDashboard.putDefaultNumber("Left Factor", 1);
 		SmarterDashboard.putDefaultNumber("Right Factor", 1);
-		SmarterDashboard.putDefaultNumber("ForwardWithGyro Sensitivity", 1);
+		SmarterDashboard.putDefaultNumber("ForwardWithGyro Sensitivity", 10.0);
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmarterDashboard.putDefaultNumber("Show Vision", 1);
+		SmarterDashboard.putDefaultNumber("Turn Amount", -90.0);
+		SmarterDashboard.putDefaultNumber("Drive Time", 20.0);
 		try {
 			receiver = new VisionReceiver(IP, VISION_PORT);
 		} catch (SocketException e) {
@@ -77,6 +79,7 @@ public class Robot extends IterativeRobot {
 		drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
 		drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
 		ForwardWithGyro.SENSITIVITY = SmarterDashboard.getNumber("ForwardWithGyro Sensitivity", 1);
+		gyro.zero();
 	}
 
 	int debugCount = 0;
@@ -108,10 +111,13 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = CommandGroup.runSequentially(
-		        new ForwardWithGyro(gyro, drivetrain, 1.0, 1.0),
-		        new TurnWithGyro(gyro, drivetrain, 1.0, 360.0));
-		
+        double driveTime = SmarterDashboard.getNumber("Drive Time", 20.0);
+        double turnAmount = SmarterDashboard.getNumber("Turn Amount", -90.0);
+	    ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, 0.25, driveTime);
+	    TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, 0.25, turnAmount);
+	    autonomousCommand = CommandGroup.runSequentially(forward, turn, forward);
+//		autonomousCommand = new ForwardWithGyro(gyro, drivetrain, 0.25, driveTime);
+//		autonomousCommand = new TurnWithGyro(gyro, drivetrain, 0.25, turnAmount)); 
 		/*
 		 * String autoSelected = SmarterDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
