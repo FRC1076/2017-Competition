@@ -53,4 +53,8 @@ public class TurnWithGyro extends Command {
         return targetAngle - gyro.getAngle() <= 0;        
     }
 
+    @Override
+    public void end() {
+        drivetrain.stop();
+    }
 }

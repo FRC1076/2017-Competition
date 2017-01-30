@@ -58,4 +58,9 @@ public class ForwardWithGyro extends Command {
         
         return false; // This command only stops after timing out
     }
+    
+    @Override
+    public void end() {
+        drivetrain.stop();
+    }
 }

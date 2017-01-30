@@ -74,4 +74,13 @@ public class TestTurnWithGyro {
         assertEquals("The right motor should be negative when turning right",
                 -speed, right.getSpeed(), EPSILON);        
     }
+    
+    @Test
+    public void testEndStopsMotors() {
+        TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, 1.0, 0.0);
+        turn.execute();
+        turn.end();
+        assertEquals("The left motor should stop when end is called.", 0.0, left.getSpeed(), EPSILON);
+        assertEquals("The right motor should stop when end is called.", 0.0, right.getSpeed(), EPSILON);
+    }
 }

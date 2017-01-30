@@ -149,4 +149,13 @@ public class TestForwardWithGyro {
                 speed, right.getSpeed(), EPSILON);
         }
     }
+    
+    @Test
+    public void testEndStopsMotors() {
+        ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, 1.0, 0.0);
+        forward.execute();
+        forward.end();
+        assertEquals("The left motor should stop when end is called.", 0.0, left.getSpeed(), EPSILON);
+        assertEquals("The right motor should stop when end is called.", 0.0, right.getSpeed(), EPSILON);
+    }
 }
