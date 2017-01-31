@@ -42,9 +42,9 @@ public class TestTeleopWithGyroCommand {
     
     @Test
     public void testShouldForwardAssist() {
-        for (double i = 0.0; i < 1.0; i += 0.01) {
+        for (double i = -1.0; i < 1.0; i += 0.01) {
             gamepad.lx = i;
-            if (gamepad.lx < TeleopWithGyroCommand.FORWARD_ASSIST_MAX_TURN_SPEED) {
+            if (Math.abs(gamepad.lx) < Math.abs(TeleopWithGyroCommand.FORWARD_ASSIST_MAX_TURN_SPEED)) {
                 assertTrue("Teleop should assist with forward movement when turning with " + gamepad.lx,
                          teleop.shouldForwardAssist());
             } else {

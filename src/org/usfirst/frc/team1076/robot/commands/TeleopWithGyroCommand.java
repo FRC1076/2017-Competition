@@ -54,7 +54,7 @@ public class TeleopWithGyroCommand extends Command {
     }
     
     public boolean shouldForwardAssist() {
-        return gamepad.getAxis(GamepadAxis.LeftX) < FORWARD_ASSIST_MAX_TURN_SPEED;
+        return Math.abs(gamepad.getAxis(GamepadAxis.LeftX)) < Math.abs(FORWARD_ASSIST_MAX_TURN_SPEED);
     }
 
 }
