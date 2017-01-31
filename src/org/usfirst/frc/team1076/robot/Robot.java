@@ -4,12 +4,14 @@ package org.usfirst.frc.team1076.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.internal.HardwareHLUsageReporting;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 import java.net.SocketException;
 
 import org.strongback.Strongback;
 import org.strongback.components.Motor;
+import org.strongback.components.Switch;
 import org.strongback.hardware.Hardware;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -29,14 +31,15 @@ import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 public class Robot extends IterativeRobot {
 	Gamepad gamepad = new Gamepad(0);
 	Command autonomousCommand;
-	Motor left = Hardware.Motors.talonSRX(0).invert(); // This motor is placed
-														// backwards on the
-														// robot
-	Motor right = Hardware.Motors.talonSRX(1);
+	Motor left = Hardware.Motors.talonSRX(0);
+	Motor right = Hardware.Motors.talonSRX(1).invert();  // This motor is placed backwards on the robot
 	Drivetrain drivetrain = new Drivetrain(left, right);
 	TeleopCommand teleopCommand = new TeleopCommand(gamepad, drivetrain);
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
+	Switch switchLeft = Hardware.Switches.normallyClosed(0);
+	Switch switchRight = Hardware.Switches.normallyClosed(1);
+	
 	VisionReceiver receiver;
 	public static final String IP = "0.0.0.0"; // "10.10.76.2";
 	public static final int VISION_PORT = 5880;
@@ -86,6 +89,9 @@ public class Robot extends IterativeRobot {
 				receiver.receive();
 				Strongback.logger().info(receiver.getData().toString());
 			}
+			
+			System.out.println("Left Switch: " + switchLeft.isTriggered());
+			System.out.println("Right Switch: " + switchRight.isTriggered());
 
 		}
 	}
