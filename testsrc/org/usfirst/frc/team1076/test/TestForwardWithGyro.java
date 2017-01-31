@@ -90,63 +90,41 @@ public class TestForwardWithGyro {
         }
     }
 
-    // Get a random speed from -1 to -0.1 or 0.1 to 1
-    double randomSpeed() {
-        return Math.copySign(Math.random() * 0.9 + 0.1, Math.random() - 0.5);
-    }
-
     @Test
     public void testLeftMotorIsSameWhenDriftingTowardsLeft() {
-        gyro.setAngle(-10.0);
-        for (int i = 0; i < NUM_TEST_ITERS; i++) {
-            double speed = randomSpeed();
-            ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, 0);
-            forward.execute();
-            assertEquals("The left motor should drive without being reduced when there is a leftward drift",
-                speed, left.getSpeed(), EPSILON);
-        }
+        testDriftCorrection((double speed)->assertEquals("The left motor should drive without being reduced when there is a leftward drift",
+                    speed, left.getSpeed(), EPSILON), randomSpeed(), -10);;
     }
 
     @Test
     public void testRightMotorIsSlowerWhenDriftingTowardsLeft() {
-        gyro.setAngle(-10.0);
-        for (int i = 0; i < NUM_TEST_ITERS; i++) {
-            // Get random speed from -1 to 1
-            double speed = randomSpeed();
-            ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, 0);
-            forward.execute();
-            // A reduction in speed does not mean "less than", it means "closer to zero"
-            // Thus, the absolute speed of the right motor should be lower when drifting left
-            assertTrue("The right motor should be slower when there is a leftward drift (" + right.getSpeed() + " should be less than " + speed + ")",
-                Math.abs(right.getSpeed()) < Math.abs(speed));
-        }
+        testDriftCorrection((double speed)->assertTrue("The right motor should be slower when there is a leftward drift (" + right.getSpeed() + " should be less than " + speed + ")",
+                    Math.abs(right.getSpeed()) < Math.abs(speed)), randomSpeed(), -10);
     }
     
     @Test
     public void testLeftMotorIsSlowerWhenDriftingTowardsRight() {
-        gyro.setAngle(10.0);
-        for (int i = 0; i < NUM_TEST_ITERS; i++) {
-            // Get random speed from -1 to 1
-            double speed = randomSpeed();
-            ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, 0);
-            forward.execute();
-            // A reduction in speed does not mean "less than", it means "closer to zero"
-            // Thus, the absolute speed of the left motor should be lower when drifting right
-            assertTrue("The left motor should be slower when there is a rightward drift (" + left.getSpeed() + " should be less than " + speed + ")",
-                Math.abs(left.getSpeed()) < Math.abs(speed));
-        }
+        testDriftCorrection((double speed)->assertTrue("The left motor should be slower when there is a rightward drift (" + left.getSpeed() + " should be less than " + speed + ")",
+                Math.abs(left.getSpeed()) < Math.abs(speed)), randomSpeed(), 10);
     }
     
     @Test
     public void testRightMotorIsSameWhenDriftingTowardsRight() {
-        gyro.setAngle(10.0);
+        testDriftCorrection((double speed) -> assertEquals("The right motor should drive without being reduced when there is a rightward drift",
+                speed, right.getSpeed(), EPSILON), randomSpeed(), 10);
+    }
+    
+    interface DriftCorrectionAssertion {
+        void doAssertion(double speed);
+    }
+    
+    
+    public void testDriftCorrection(DriftCorrectionAssertion assertion, double speed, double angle) {
+        gyro.setAngle(angle);
         for (int i = 0; i < NUM_TEST_ITERS; i++) {
-            // Get random speed from -1 to 1
-            double speed = randomSpeed();
             ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, 0);
             forward.execute();
-            assertEquals("The right motor should drive without being reduced when there is a rightward drift",
-                speed, right.getSpeed(), EPSILON);
+            assertion.doAssertion(speed);
         }
     }
     
@@ -157,5 +135,10 @@ public class TestForwardWithGyro {
         forward.end();
         assertEquals("The left motor should stop when end is called.", 0.0, left.getSpeed(), EPSILON);
         assertEquals("The right motor should stop when end is called.", 0.0, right.getSpeed(), EPSILON);
+    }
+    
+    // Get a random speed from -1 to -0.1 or 0.1 to 1
+    double randomSpeed() {
+        return Math.copySign(Math.random() * 0.9 + 0.1, Math.random() - 0.5);
     }
 }
