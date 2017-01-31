@@ -55,7 +55,7 @@ public class TestTeleopWithGyroCommand {
     }
     
     @Test
-    public void testNoForwardAssist() {
+    public void testNoForwardAssistGyroZero() {
         for (double i = TeleopWithGyroCommand.FORWARD_ASSIST_MAX_TURN_SPEED; i < 1.0; i += 0.01) {
             gamepad.ry = 2*Math.random() - 1;
             gamepad.lx = i;
@@ -65,6 +65,21 @@ public class TestTeleopWithGyroCommand {
             assertEquals("Teleop should not assist forward movement (right motor)",
                     gamepad.ry - gamepad.lx, right.getSpeed(), EPSILON);
         }
+    }
+    
+    @Test
+    public void testNoForwardAssistGyroNonZero() {
+        for (double i = TeleopWithGyroCommand.FORWARD_ASSIST_MAX_TURN_SPEED; i < 1.0; i += 0.01) {
+            gamepad.ry = 2*Math.random() - 1;
+            gamepad.lx = i;
+            // Get a random angle between 10 and 70 or -70 and -10
+            gyro.setAngle(Math.copySign(Math.random()*60+10, Math.random()-0.5));
+            teleop.execute();
+            assertEquals("Teleop should not assist forward movement (left motor)",
+                    gamepad.ry + gamepad.lx, left.getSpeed(), EPSILON);
+            assertEquals("Teleop should not assist forward movement (right motor)",
+                    gamepad.ry - gamepad.lx, right.getSpeed(), EPSILON);
+        }        
     }
     
     interface ForwardAssistAssertion {

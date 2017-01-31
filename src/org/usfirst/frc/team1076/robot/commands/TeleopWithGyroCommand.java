@@ -35,13 +35,16 @@ public class TeleopWithGyroCommand extends Command {
         // The normGyroRate should be equal to rotate under ideal conditions
         final double normGyroAngle = gyro.getAngle() / 360; 
         // TODO: Finish this left/right calculation
-        double left = (forward + rotate);
-        double right = (forward - rotate);
+        double left = forward + rotate;
+        double right = forward - rotate;
+        
+        if (shouldForwardAssist()) {
             if (normGyroAngle > 0) { // Drifting right
                 left = Math.signum(left) * (Math.abs(left) - Math.abs(normGyroAngle));
             } else {
                 right = Math.signum(right) * (Math.abs(right) - Math.abs(normGyroAngle));
             } 
+        }
         
         drivetrain.setLeftSpeed(left);
         drivetrain.setRightSpeed(right);
