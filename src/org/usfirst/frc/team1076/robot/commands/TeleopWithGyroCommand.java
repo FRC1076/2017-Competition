@@ -41,15 +41,18 @@ public class TeleopWithGyroCommand extends Command {
         
         if (shouldForwardAssist()) {
             if (normGyroAngle > 0) { // Drifting right
-                left = Math.signum(left) * (Math.abs(left) - Math.abs(normGyroAngle));
+                left = left * (1 - Math.abs(normGyroAngle));
+                System.out.println("Left Corrected: " + left);
             } else {
-                right = Math.signum(right) * (Math.abs(right) - Math.abs(normGyroAngle));
-            } 
+                // left = (Math.abs(left) * (1 + Math.abs(normGyroAngle)));
+                right = right * (1 - Math.abs(normGyroAngle));
+                System.out.println("Right Corrected: " + right);
+            }
         }
-        
+        System.out.println("Correction Factor: " + (1 - Math.abs(normGyroAngle)));
         drivetrain.setLeftSpeed(left);
         drivetrain.setRightSpeed(right);
-        
+        gyro.zero();
         return false;
     }
     
