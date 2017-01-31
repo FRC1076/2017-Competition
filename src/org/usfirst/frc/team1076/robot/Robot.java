@@ -15,6 +15,7 @@ import org.strongback.hardware.Hardware;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
+import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
@@ -53,6 +54,7 @@ public class Robot extends IterativeRobot {
 
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmarterDashboard.putDefaultNumber("Show Vision", 1);
+		SmarterDashboard.putDefaultNumber("Teleop Sensitivity", 1);
 		try {
 			receiver = new VisionReceiver(IP, VISION_PORT);
 		} catch (SocketException e) {
@@ -129,6 +131,8 @@ public class Robot extends IterativeRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
+	    TeleopWithGyroCommand.FORWARD_ASSIST_SENSITIVITY = SmarterDashboard.getNumber("Teleop Sensitivity", 1);
+	    
 		Strongback.logger().info("I LIVE!");
 		Strongback.submit(teleopCommand);
 		if (autonomousCommand != null)
