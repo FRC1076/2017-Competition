@@ -52,10 +52,12 @@ public class Gamepad implements IGamepad {
 	}
 	
 	public double getAxis(GamepadAxis axis) {
-	    // The XBox controller reads values backwards to what it really is
-	    // (left = positive, right = negative)
-	    // (backwrad = positive, forward = negative)
-		return -driverStation.getStickAxis(port, axis.value());
+		double value = driverStation.getStickAxis(port, axis.value());
+		// inverts y-axis because it is backwards (unaltered, the gamepad treats down as positive)
+		if (axis == GamepadAxis.LeftY || axis == GamepadAxis.RightY) {
+			return -value;
+		}
+		return value;
 	}
 
 	public boolean getButton(GamepadButton button) {
