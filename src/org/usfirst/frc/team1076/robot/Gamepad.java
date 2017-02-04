@@ -45,6 +45,11 @@ public class Gamepad implements IGamepad {
 		}
 	}
 	
+	public enum GamepadStick {
+		Left,
+		Right;
+	}
+	
 	private int port;
 	private DriverStation driverStation;
 	
@@ -53,17 +58,47 @@ public class Gamepad implements IGamepad {
 		driverStation = DriverStation.getInstance();
 	}
 	
-	public double getAxis(GamepadAxis axis) {
+	public double getRawAxis(GamepadAxis axis) {
 		double value = driverStation.getStickAxis(port, axis.value());
-		if (Math.abs(value) < deadzone) { value = 0; }
 		// inverts y-axis because it is backwards (unaltered, the gamepad treats down as positive)
 		if (axis == GamepadAxis.LeftY || axis == GamepadAxis.RightY) {
 			return -value;
 		}
 		return value;
 	}
+	
+	public double getAxis(GamepadAxis axis) {
+		double value = getRawAxis(axis);
+		if (Math.abs(value) < deadzone) { value = 0; }
+		return value;
+	}
 
 	public boolean getButton(GamepadButton button) {
 		return driverStation.getStickButton(port,  button.value());
+	}
+	
+	public Coords getStick(GamepadStick stick) {
+		double x = 0, y = 0;
+		switch (stick) {
+		case Left:
+			x = getRawAxis(GamepadAxis.LeftX);
+			y = getRawAxis(GamepadAxis.LeftY);
+			break;
+		case Right:
+			x = getRawAxis(GamepadAxis.RightX);
+			y = getRawAxis(GamepadAxis.RightY);
+			break;
+		}
+		
+		final double mag = x*x + y*y;
+		if (mag < deadzone*deadzone) {
+			x = 0;
+			y = 0;
+		} else {
+			x = (x - deadzone) / (1 - deadzone);
+			y = (y - deadzone) / (1 - deadzone);
+		}
+		
+		return new Coords(x, y);
 	}
 }
