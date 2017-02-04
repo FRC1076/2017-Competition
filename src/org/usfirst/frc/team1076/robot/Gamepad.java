@@ -3,6 +3,8 @@ package org.usfirst.frc.team1076.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class Gamepad implements IGamepad {
+	public double deadzone = 0;
+	
 	public enum GamepadButton {
 		A(1),
 		B(2),
@@ -53,6 +55,7 @@ public class Gamepad implements IGamepad {
 	
 	public double getAxis(GamepadAxis axis) {
 		double value = driverStation.getStickAxis(port, axis.value());
+		if (Math.abs(value) < deadzone) { value = 0; }
 		// inverts y-axis because it is backwards (unaltered, the gamepad treats down as positive)
 		if (axis == GamepadAxis.LeftY || axis == GamepadAxis.RightY) {
 			return -value;
