@@ -55,7 +55,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		Strongback.start();
-		gamepad = new Gamepad(0);
+		gamepad.deadzone = 0.2;
 		SmarterDashboard.putDefaultNumber("Left Factor", 1);
 		SmarterDashboard.putDefaultNumber("Right Factor", 1);
 
