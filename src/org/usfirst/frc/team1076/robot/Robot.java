@@ -156,7 +156,7 @@ public class Robot extends IterativeRobot {
 	 */
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		System.out.println(gyro.getAngle());
+//		System.out.println(gyro.getAngle());
 	}
 
 	/**

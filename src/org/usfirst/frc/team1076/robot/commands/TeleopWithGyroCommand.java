@@ -29,12 +29,20 @@ public class TeleopWithGyroCommand extends Command {
         gyro.zero();
     }
     
+    int previousSign = 0;
     @Override
     public boolean execute() {
         final double forward = gamepad.getAxis(GamepadAxis.RightY);
         final double rotate = gamepad.getAxis(GamepadAxis.LeftX);
+        
+        final int sign = (int) Math.signum(forward);
+        if (sign != previousSign) {
+        	gyro.zero();
+        	previousSign = sign;
+        }
+        
         // The normGyroRate should be equal to rotate under ideal conditions
-        final double normGyroAngle = FORWARD_ASSIST_SENSITIVITY * gyro.getAngle() / 360; 
+        final double normGyroAngle = Math.signum(forward) * FORWARD_ASSIST_SENSITIVITY * gyro.getAngle() / 360; 
         // TODO: Finish this left/right calculation
         double left = forward + rotate;
         double right = forward - rotate;
@@ -42,22 +50,25 @@ public class TeleopWithGyroCommand extends Command {
         if (shouldForwardAssist()) {
             if (normGyroAngle > 0) { // Drifting right
                 left = left * (1 - Math.abs(normGyroAngle));
-                System.out.println("Left Corrected: " + left);
+//                System.out.println("Left Corrected: " + left);
             } else {
                 // left = (Math.abs(left) * (1 + Math.abs(normGyroAngle)));
                 right = right * (1 - Math.abs(normGyroAngle));
-                System.out.println("Right Corrected: " + right);
+//                System.out.println("Right Corrected: " + right);
             }
+        } else {
+        	// turning
+        	gyro.zero();
         }
-        System.out.println("Correction Factor: " + (1 - Math.abs(normGyroAngle)));
+        
+//        System.out.println("Correction Factor: " + (1 - Math.abs(normGyroAngle)));
         drivetrain.setLeftSpeed(left);
         drivetrain.setRightSpeed(right);
-        gyro.zero();
         return false;
     }
     
     public boolean shouldForwardAssist() {
-        return Math.abs(gamepad.getAxis(GamepadAxis.LeftX)) < Math.abs(FORWARD_ASSIST_MAX_TURN_SPEED);
+        return Math.abs(gamepad.getAxis(GamepadAxis.LeftX)) < FORWARD_ASSIST_MAX_TURN_SPEED;
     }
 
 }
