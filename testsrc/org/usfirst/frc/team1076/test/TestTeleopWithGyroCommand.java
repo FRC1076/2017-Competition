@@ -86,6 +86,21 @@ public class TestTeleopWithGyroCommand {
         public void doAssertion(MockGamepad gamepad);
     }
     
+    /* Explanation of forward tests
+     * Get up and walk very slowly. Now, start to turn left. You'll notice that your RIGHT foot
+     * travels a longer distance and that your LEFT foot does not. In fact, you can turn on the spot
+     * purely by swinging your right foot while keeping your left foot still. The opposite is true for
+     * turning right.
+     * 
+     * This suggests that preventing this turn is accomplished by either speeding up the slow foot 
+     * (left foot for left turn, right foot for right turn), or by slowing the fast foot (right foot for 
+     * left turn, left foot for right turn). We choose to slow the fast foot as this is always achievable 
+     * (if you turn at your maximum foot speed, you can't speed up any faster!). We also decide NOT to change
+     * the slow foot, as this reduces speed needlessly.
+     * 
+     * TLDR: Slow the motor opposite to your drift direction
+     */
+    
     @Test
     public void testForwardAssistDoesNotReduceLeftMotorWhenDriftingLeft() {
         testForwardAssist((MockGamepad gamepad)->assertEquals("The left motor should not reduce when drifting left", 
@@ -94,34 +109,89 @@ public class TestTeleopWithGyroCommand {
     
     @Test
     public void testForwardAssistReducesRightMotorWhenDriftingLeft() {
-        testForwardAssist((MockGamepad gamepad)->assertTrue("The right motor should reduce when drifting left", 
+        testForwardAssist((MockGamepad gamepad)->assertTrue("The right motor should reduce when drifting left and driving forwards", 
                 Math.abs(gamepad.ry - gamepad.lx) > Math.abs(right.getSpeed())), -10);
     }
     
     @Test
     public void testForwardAssistReducesLeftMotorWhenDriftingRight() {
-        testForwardAssist((MockGamepad gamepad)->assertTrue("The left motor should reduce when drifting left", 
+        testForwardAssist((MockGamepad gamepad)->assertTrue("The left motor should reduce when drifting right and driving forwards", 
                 Math.abs(gamepad.ry + gamepad.lx) > Math.abs(left.getSpeed())), 10);
     }
     
     @Test
     public void testForwardAssistDoesNotReduceRightMotorWhenDriftingRight() {
-        testForwardAssist((MockGamepad gamepad)->assertEquals("The right motor should not reduce when drifting left", 
+        testForwardAssist((MockGamepad gamepad)->assertEquals("The right motor should not reduce when drifting left and driving forwards", 
                 gamepad.ry - gamepad.lx, right.getSpeed(), EPSILON), 10);
     }
     
     public void testForwardAssist(ForwardAssistAssertion assertion, double angle) {
+        // Sets the initial "edge" for the RightY axis as positive
+        gamepad.ry = 1;
+        teleop.execute();
         for (double i = 0; i < TeleopWithGyroCommand.FORWARD_ASSIST_MAX_TURN_SPEED; i += 0.01) {
             gyro.setAngle(angle);
-            gamepad.ry = randomSpeed();
+            gamepad.ry = randomForwardSpeed();
             gamepad.lx = i;
             teleop.execute();
             assertion.doAssertion(gamepad);
         }
     }
     
-    // Get a random speed from -1 to -0.1 or 0.1 to 1 
-    double randomSpeed() { 
-        return Math.copySign(Math.random() * 0.9 + 0.1, Math.random() - 0.5); 
-    } 
+    /* Explanation of backward tests
+     * Walk backwards slowly and turn to your left. This time, you'll notice that your
+     * left foot is the fast foot. This is because turning left while facing backwards means you
+     * drift RIGHT. Your nose should point to the right of wherever you were pointed at before.
+     * In other words, turning left backwards actually produces a drift towards the right!
+     * 
+     * (Another way to thing about this is that when you turn 180 degrees, everything that was
+     * on your left is now on your right and vice versa)
+     * 
+     * Thus, to prevent drift, you must reduce the speed of the motor on the SAME side as the drift
+     */
+    @Test
+    public void testBackwardAssistReducesLeftMotorWhenDriftingLeft() {
+        testBackwardAssist((MockGamepad gamepad)->assertTrue("The left motor should reduce when drifting left and driving backwards", 
+                Math.abs(gamepad.ry + gamepad.lx) > Math.abs(left.getSpeed())), -10);
+    }
+    
+    @Test
+    public void testBackwardAssistDoesNotReduceRightMotorWhenDriftingLeft() {
+        testBackwardAssist((MockGamepad gamepad)->assertEquals("The right motor should not reduce when drifting left and driving backwards", 
+                gamepad.ry - gamepad.lx, right.getSpeed(), EPSILON), -10);
+    }
+    
+    @Test
+    public void testBackwardAssistDoesNotReduceLeftMotorWhenDriftingRight() {
+        testBackwardAssist((MockGamepad gamepad)->assertEquals("The left motor should not reduce when drifting right and driving backwards", 
+                gamepad.ry + gamepad.lx, left.getSpeed(), EPSILON), 10);
+    }
+    
+    @Test
+    public void testBackwardAssistReducesRightMotorWhenDriftingRight() {
+        testBackwardAssist((MockGamepad gamepad)->assertTrue("The right motor should reduce when drifting right and driving backwards", 
+                Math.abs(gamepad.ry - gamepad.lx) > Math.abs(right.getSpeed())), 10);
+    }
+    // Yes, this is code duplication, but it's probably a livable amount of duplication.
+    public void testBackwardAssist(ForwardAssistAssertion assertion, double angle) {
+        // Sets the initial "edge" for the RightY axis as negative
+        gamepad.ry = -1;
+        teleop.execute();
+        for (double i = 0; i < TeleopWithGyroCommand.FORWARD_ASSIST_MAX_TURN_SPEED; i += 0.01) {
+            gyro.setAngle(angle);
+            gamepad.ry = randomBackwardSpeed();
+            gamepad.lx = i;
+            teleop.execute();
+            assertion.doAssertion(gamepad);
+        }
+    }
+    
+    // Get a random speed from 0.1 to 1 
+    double randomForwardSpeed() { 
+        return Math.random() * 0.9 + 0.1; 
+    }
+    // Get a random speed from -1 to -0.1
+    double randomBackwardSpeed() {
+        return -(Math.random() * 0.9 + 0.1);
+    }
 }
