@@ -6,6 +6,7 @@ import org.strongback.components.Motor;
 public class DrivetrainWithGyro extends Drivetrain {
     public static double FORWARD_ASSIST_SENSITIVITY = 1.0;
     public static final double FORWARD_ASSIST_MAX_TURN_SPEED = 0.1;
+    int previousSign = 0;
     Gyroscope gyro;
 
     public DrivetrainWithGyro(Motor left, Motor right, Gyroscope gyro) {
@@ -13,8 +14,7 @@ public class DrivetrainWithGyro extends Drivetrain {
         this.gyro = gyro;
     }
     
-    int previousSign = 0;
-    
+    @Override
     public void arcade(double forward, double rotate) {
         final int sign = (int) Math.signum(forward);
         if (sign != previousSign) {
