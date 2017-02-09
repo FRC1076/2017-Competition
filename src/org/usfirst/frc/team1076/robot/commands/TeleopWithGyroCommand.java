@@ -4,7 +4,6 @@ import org.strongback.command.Command;
 import org.strongback.components.Gyroscope;
 import org.usfirst.frc.team1076.robot.IGamepad;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadAxis;
-import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
 
 public class TeleopWithGyroCommand extends Command {
