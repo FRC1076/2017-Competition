@@ -25,6 +25,6 @@
 
   <import file="${wpilib.ant.dir}/build.xml" optional="true"/>
   <import file="${user.home}/strongback/java/ant/build.xml" optional="true"/>
-  <import file="strongback.xml" />
+  <import file="strongback.xml" optional="true"/>
 
 </project>

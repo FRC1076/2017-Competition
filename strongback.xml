@@ -43,7 +43,7 @@
 	
     <!-- Install Dependencies -->
     <target name="deps" 
-            depends="download-strongback,download-wpilib,clean-downloads" 
+            depends="download-wpilib,download-strongback,clean-downloads" 
             description="Checks for WPILib and Strongback, and if missing downloads and installs them">
     </target>
 
