@@ -8,8 +8,6 @@ import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
 
 public class TeleopWithGyroCommand extends Command {
-
-    public static final double MAX_DEGREES_PER_SECOND = 90;
     Gyroscope gyro;
     DrivetrainWithGyro drivetrain;
     IGamepad gamepad;
