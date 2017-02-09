@@ -10,8 +10,6 @@ import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
  * one of the motors in order to keep straight.
  */
 public class ForwardWithGyro extends Command {
-
-    public static double SENSITIVITY = 1.0;
     Gyroscope gyro;
     Drivetrain drivetrain;
     double speed;
@@ -43,18 +41,7 @@ public class ForwardWithGyro extends Command {
      */
     @Override
     public boolean execute() {
-        // We correct linearly
-        double gyroNorm = SENSITIVITY * gyro.getAngle() / 360;
-        // The left and right speeds should always be the altered speed or the original speed
-        double leftSpeed = speed;
-        double rightSpeed = speed;
-        if (gyroNorm < 0) { // Drifting left
-            rightSpeed = Math.signum(speed) * (Math.abs(speed) - Math.abs(gyroNorm));
-        } else if (gyroNorm > 0) { // Drifting right
-            leftSpeed = Math.signum(speed) * (Math.abs(speed) - Math.abs(gyroNorm));
-        }
-        drivetrain.setLeftSpeed(leftSpeed);
-        drivetrain.setRightSpeed(rightSpeed);
+        drivetrain.arcade(speed, 0);
         
         return false; // This command only stops after timing out
     }

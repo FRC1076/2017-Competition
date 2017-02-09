@@ -61,7 +61,6 @@ public class Robot extends IterativeRobot {
 		gamepad.deadzone = 0.2;
 		SmarterDashboard.putDefaultNumber("Left Factor", 1);
 		SmarterDashboard.putDefaultNumber("Right Factor", 1);
-		SmarterDashboard.putDefaultNumber("ForwardWithGyro Sensitivity", 10.0);
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmarterDashboard.putDefaultNumber("Show Vision", 1);
 		SmarterDashboard.putDefaultNumber("Teleop Sensitivity", 1.0);
@@ -83,7 +82,6 @@ public class Robot extends IterativeRobot {
 	    Strongback.killAllCommands();
 		drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
 		drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
-		ForwardWithGyro.SENSITIVITY = SmarterDashboard.getNumber("ForwardWithGyro Sensitivity", 1);
 		gyro.zero();
 	}
 	
