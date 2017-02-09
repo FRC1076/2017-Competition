@@ -9,6 +9,7 @@ import org.strongback.mock.MockGyroscope;
 import org.strongback.mock.MockMotor;
 import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
 import org.usfirst.frc.team1076.test.mock.MockGamepad;
 
 public class TestTeleopWithGyroCommand {
@@ -20,9 +21,9 @@ public class TestTeleopWithGyroCommand {
     MockMotor left = Mock.stoppedMotor();
     MockMotor right = Mock.stoppedMotor();
     MockGamepad gamepad = new MockGamepad();
-    Drivetrain drivetrain = new Drivetrain(left, right);
     MockGyroscope gyro = Mock.gyroscope();
-    TeleopWithGyroCommand teleop = new TeleopWithGyroCommand(gyro, drivetrain, gamepad);
+    DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
+    TeleopWithGyroCommand teleop = new TeleopWithGyroCommand(drivetrain, gamepad);
     
     @Before
     public void reset() {
@@ -30,6 +31,7 @@ public class TestTeleopWithGyroCommand {
         right.setSpeed(0);
         gamepad.reset();
         gyro.zero();
+        drivetrain = new DrivetrainWithGyro(left, right, gyro);
     }
     
     @Test 
@@ -44,19 +46,19 @@ public class TestTeleopWithGyroCommand {
     public void testShouldForwardAssist() {
         for (double i = -1.0; i < 1.0; i += 0.01) {
             gamepad.lx = i;
-            if (Math.abs(gamepad.lx) < Math.abs(TeleopWithGyroCommand.FORWARD_ASSIST_MAX_TURN_SPEED)) {
+            if (Math.abs(gamepad.lx) < Math.abs(DrivetrainWithGyro.FORWARD_ASSIST_MAX_TURN_SPEED)) {
                 assertTrue("Teleop should assist with forward movement when turning with " + gamepad.lx,
-                         teleop.shouldForwardAssist());
+                         drivetrain.shouldForwardAssist(gamepad.lx));
             } else {
                 assertFalse("Teleop should not assist with forward movement when turning with " + gamepad.lx,
-                        teleop.shouldForwardAssist());
+                        drivetrain.shouldForwardAssist(gamepad.lx));
             }
         }
     }
     
     @Test
     public void testNoForwardAssistGyroZero() {
-        for (double i = TeleopWithGyroCommand.FORWARD_ASSIST_MAX_TURN_SPEED; i < 1.0; i += 0.01) {
+        for (double i = DrivetrainWithGyro.FORWARD_ASSIST_MAX_TURN_SPEED; i < 1.0; i += 0.01) {
             gamepad.ry = 2*Math.random() - 1;
             gamepad.lx = i;
             teleop.execute();
@@ -69,7 +71,7 @@ public class TestTeleopWithGyroCommand {
     
     @Test
     public void testNoForwardAssistGyroNonZero() {
-        for (double i = TeleopWithGyroCommand.FORWARD_ASSIST_MAX_TURN_SPEED; i < 1.0; i += 0.01) {
+        for (double i = DrivetrainWithGyro.FORWARD_ASSIST_MAX_TURN_SPEED; i < 1.0; i += 0.01) {
             gamepad.ry = 2*Math.random() - 1;
             gamepad.lx = i;
             // Get a random angle between 10 and 70 or -70 and -10
@@ -129,7 +131,7 @@ public class TestTeleopWithGyroCommand {
         // Sets the initial "edge" for the RightY axis as positive
         gamepad.ry = 1;
         teleop.execute();
-        for (double i = 0; i < TeleopWithGyroCommand.FORWARD_ASSIST_MAX_TURN_SPEED; i += 0.01) {
+        for (double i = 0; i < DrivetrainWithGyro.FORWARD_ASSIST_MAX_TURN_SPEED; i += 0.01) {
             gyro.setAngle(angle);
             gamepad.ry = randomForwardSpeed();
             gamepad.lx = i;
@@ -177,7 +179,7 @@ public class TestTeleopWithGyroCommand {
         // Sets the initial "edge" for the RightY axis as negative
         gamepad.ry = -1;
         teleop.execute();
-        for (double i = 0; i < TeleopWithGyroCommand.FORWARD_ASSIST_MAX_TURN_SPEED; i += 0.01) {
+        for (double i = 0; i < DrivetrainWithGyro.FORWARD_ASSIST_MAX_TURN_SPEED; i += 0.01) {
             gyro.setAngle(angle);
             gamepad.ry = randomBackwardSpeed();
             gamepad.lx = i;

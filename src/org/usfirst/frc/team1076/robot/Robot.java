@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
 /**
@@ -34,11 +35,12 @@ public class Robot extends IterativeRobot {
 	Command autonomousCommand;
 	Motor left = Hardware.Motors.talonSRX(0);
 	Motor right = Hardware.Motors.talonSRX(1).invert();  // This motor is placed backwards on the robot
-	Drivetrain drivetrain = new Drivetrain(left, right);
 	
 	Gyroscope gyro = Hardware.AngleSensors.gyroscope(0);
 	
-	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(gyro, drivetrain, gamepad);
+	DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
+	
+	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, gamepad);
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
 	Switch switchLeft = Hardware.Switches.normallyClosed(0);
@@ -143,7 +145,7 @@ public class Robot extends IterativeRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
-	    TeleopWithGyroCommand.FORWARD_ASSIST_SENSITIVITY = SmarterDashboard.getNumber("Teleop Sensitivity", 1.0);
+	    DrivetrainWithGyro.FORWARD_ASSIST_SENSITIVITY = SmarterDashboard.getNumber("Teleop Sensitivity", 1.0);
 	    
 		Strongback.logger().info("I LIVE!");
 		Strongback.submit(teleopCommand);
