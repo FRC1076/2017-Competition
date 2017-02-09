@@ -2,7 +2,6 @@
 package org.usfirst.frc.team1076.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.internal.HardwareHLUsageReporting;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -10,6 +9,8 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import java.net.SocketException;
 
 import org.strongback.Strongback;
+import org.strongback.command.Command;
+import org.strongback.command.CommandGroup;
 import org.strongback.components.Gyroscope;
 import org.strongback.components.Motor;
 import org.strongback.components.Switch;
@@ -17,7 +18,9 @@ import org.strongback.hardware.Hardware;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
+import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
 import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
@@ -42,10 +45,8 @@ public class Robot extends IterativeRobot {
 	
 	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, gamepad);
 	SendableChooser<Command> chooser = new SendableChooser<>();
-
-	Switch switchLeft = Hardware.Switches.normallyClosed(0);
 	Switch switchRight = Hardware.Switches.normallyClosed(1);
-	
+	Switch switchLeft = Hardware.Switches.normallyClosed(0);
 	VisionReceiver receiver;
 	public static final String IP = "0.0.0.0"; // "10.10.76.2";
 	public static final int VISION_PORT = 5880;
@@ -60,7 +61,7 @@ public class Robot extends IterativeRobot {
 		gamepad.deadzone = 0.2;
 		SmarterDashboard.putDefaultNumber("Left Factor", 1);
 		SmarterDashboard.putDefaultNumber("Right Factor", 1);
-
+		SmarterDashboard.putDefaultNumber("ForwardWithGyro Sensitivity", 10.0);
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmarterDashboard.putDefaultNumber("Show Vision", 1);
 		SmarterDashboard.putDefaultNumber("Teleop Sensitivity", 1.0);
@@ -82,6 +83,7 @@ public class Robot extends IterativeRobot {
 	    Strongback.killAllCommands();
 		drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
 		drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
+		ForwardWithGyro.SENSITIVITY = SmarterDashboard.getNumber("ForwardWithGyro Sensitivity", 1);
 		gyro.zero();
 	}
 	
@@ -117,8 +119,13 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = chooser.getSelected();
-
+        double driveTime = SmarterDashboard.getNumber("Drive Time", 20.0);
+        double turnAmount = SmarterDashboard.getNumber("Turn Amount", -90.0);
+	    ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, 0.25, driveTime);
+	    TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, 0.25, turnAmount);
+	    autonomousCommand = CommandGroup.runSequentially(forward, turn, forward);
+//		autonomousCommand = new ForwardWithGyro(gyro, drivetrain, 0.25, driveTime);
+//		autonomousCommand = new TurnWithGyro(gyro, drivetrain, 0.25, turnAmount)); 
 		/*
 		 * String autoSelected = SmarterDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -128,7 +135,7 @@ public class Robot extends IterativeRobot {
 
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null)
-			autonomousCommand.start();
+			Strongback.submit(autonomousCommand);
 	}
 
 	/**
