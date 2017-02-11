@@ -43,7 +43,7 @@
 	
     <!-- Install Dependencies -->
     <target name="deps" 
-            depends="download-strongback,download-wpilib,clean-downloads" 
+            depends="download-wpilib,download-strongback,clean-downloads" 
             description="Checks for WPILib and Strongback, and if missing downloads and installs them">
     </target>
 
@@ -97,11 +97,11 @@
         <echo>Downloading the Strongback library version ${strongback.version} and installing into '${strongback.dir}'.</echo>
         <mkdir dir="${download.dir}"/>
         <!-- Download the Strongback distribution file -->
-        <get src="${strongback.url}/v${strongback.version}/strongback-${strongback.version}.zip" 
-             dest="${download.dir}/strongback-${strongback.version}.zip"/>
+        <get src="${strongback.repo.url}" 
+             dest="${download.dir}/${strongback.zip.name}"/>
         <!-- Extract the 'java.zip' file into a new `wpilib` directory -->
         <mkdir dir="${strongback.dir}"/>
-        <unzip src="${download.dir}/strongback-${strongback.version}.zip" 
+        <unzip src="${download.dir}/${strongback.zip.name}" 
                dest="${strongback.dir}/.."
                overwrite="false">
             <patternset>
