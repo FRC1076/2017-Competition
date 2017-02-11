@@ -64,6 +64,11 @@ public class Robot extends IterativeRobot {
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmarterDashboard.putDefaultNumber("Show Vision", 1);
 		SmarterDashboard.putDefaultNumber("Teleop Sensitivity", 1.0);
+		
+		SmarterDashboard.putDefaultNumber("P", 0.0);
+		SmarterDashboard.putDefaultNumber("I", 0.0);
+		SmarterDashboard.putDefaultNumber("D", 0.0);
+		
 		try {
 			receiver = new VisionReceiver(IP, VISION_PORT);
 		} catch (SocketException e) {
@@ -83,6 +88,9 @@ public class Robot extends IterativeRobot {
 		drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
 		drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
 		gyro.zero();
+		drivetrain.P = SmarterDashboard.getNumber("P", 0);
+		drivetrain.I = SmarterDashboard.getNumber("I", 0);
+		drivetrain.D = SmarterDashboard.getNumber("D", 0);
 	}
 	
 	int debugCount = 0;
