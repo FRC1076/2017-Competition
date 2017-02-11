@@ -106,7 +106,10 @@ public class Robot extends IterativeRobot {
 //				receiver.receive();
 //				Strongback.logger().info(receiver.getData().toString());
 //			}
-			System.out.println(gyro.getAngle());
+			System.out.println("Gyro: " + gyro.getAngle());
+//			System.out.println("P: " + drivetrain.P);
+//			System.out.println("I: " + drivetrain.I);
+//			System.out.println("D: " + drivetrain.D);
 //			System.out.println("Left Switch: " + switchLeft.isTriggered());
 //			System.out.println("Right Switch: " + switchRight.isTriggered());
 
@@ -174,6 +177,10 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 //		System.out.println(gyro.getAngle());
+		if (debugCount++ % 100 == 0) {
+		    Strongback.logger().info("PID Change: " + drivetrain.computedValue);
+		};
+//		drivetrain.debugPID();
 	}
 
 	/**

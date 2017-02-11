@@ -3,6 +3,7 @@ package org.usfirst.frc.team1076.robot.subsystems;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
+import org.strongback.Strongback;
 import org.strongback.components.Gyroscope;
 import org.strongback.components.Motor;
 import org.strongback.control.PIDController;
@@ -31,6 +32,7 @@ public class DrivetrainWithGyro extends Drivetrain {
                                         this::getPIDOutputValue);
         PID.enable();
         updateProfile();
+//        debugPID();
     }
     
     @Override
@@ -58,6 +60,12 @@ public class DrivetrainWithGyro extends Drivetrain {
     
     public void updateProfile() {
         PID.withProfile(0, P, I, D);
+    }
+    
+    public void debugPID() {
+        Strongback.logger().info("P" + PID.getGainsForCurrentProfile().getP());
+        Strongback.logger().info("I" + PID.getGainsForCurrentProfile().getI());
+        Strongback.logger().info("D" + PID.getGainsForCurrentProfile().getD());
     }
     
     public boolean shouldForwardAssist(double rotate) {
