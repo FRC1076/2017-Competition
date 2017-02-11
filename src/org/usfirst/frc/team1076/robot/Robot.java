@@ -91,6 +91,7 @@ public class Robot extends IterativeRobot {
 		drivetrain.P = SmarterDashboard.getNumber("P", 0);
 		drivetrain.I = SmarterDashboard.getNumber("I", 0);
 		drivetrain.D = SmarterDashboard.getNumber("D", 0);
+		drivetrain.updateProfile();
 	}
 	
 	int debugCount = 0;
@@ -164,6 +165,7 @@ public class Robot extends IterativeRobot {
 		Strongback.submit(teleopCommand);
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
+		drivetrain.updateProfile();
 	}
 
 	/**

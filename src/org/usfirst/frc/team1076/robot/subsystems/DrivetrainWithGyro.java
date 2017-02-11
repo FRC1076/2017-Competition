@@ -30,11 +30,7 @@ public class DrivetrainWithGyro extends Drivetrain {
                                         ()->gyro.getAngle() / 45,
                                         this::getPIDOutputValue);
         PID.enable();
-        PID.withProfile(0, P, I, D);
-    }
-    
-    public void updateProfile() {
-        PID.withProfile(0, P, I, D);
+        updateProfile();
     }
     
     @Override
@@ -58,6 +54,10 @@ public class DrivetrainWithGyro extends Drivetrain {
     
     public void getPIDOutputValue(double value) {
         this.computedValue = value;
+    }
+    
+    public void updateProfile() {
+        PID.withProfile(0, P, I, D);
     }
     
     public boolean shouldForwardAssist(double rotate) {
