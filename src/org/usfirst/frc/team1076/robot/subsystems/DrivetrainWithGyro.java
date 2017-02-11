@@ -17,25 +17,18 @@ public class DrivetrainWithGyro extends Drivetrain {
     public double I = 0;
     public double D = 0;
     
+    
+    public double computedValue;
     int previousSign = 0;
     Gyroscope gyro;
     SoftwarePIDController PID;
-    
-    public void adjustParameters(double value) {
-        if (value > 0) { // Drifting right 
-            leftMotor.setSpeed(leftMotor.getSpeed() * (1 - Math.abs(value)));  
-        } else {  
-            rightMotor.setSpeed(rightMotor.getSpeed() * (1 - Math.abs(value)));  
-        } 
-
-    }
     
     public DrivetrainWithGyro(Motor left, Motor right, Gyroscope gyro) {
         super(left, right);
         this.gyro = gyro;
         PID = new SoftwarePIDController(SourceType.DISTANCE,
                                         ()->gyro.getAngle() / 45,
-                                        this::adjustParameters);
+                                        this::getPIDOutputValue);
         PID.enable();
         PID.withProfile(0, P, I, D);
     }
@@ -48,14 +41,23 @@ public class DrivetrainWithGyro extends Drivetrain {
     public void arcade(double forward, double rotate) {
         double left = forward + rotate;
         double right = forward - rotate;
-        leftMotor.setSpeed(left);
-        rightMotor.setSpeed(right);
         if (shouldForwardAssist(rotate)) {
             PID.computeOutput();
+            if (computedValue > 0) { // Drifting right 
+                left = left * (1 - Math.abs(computedValue));
+            } else {
+                right = right * (1 - Math.abs(computedValue));
+            }
         } else {
-            //  turning
             gyro.zero();
         }
+        
+        leftMotor.setSpeed(left);
+        rightMotor.setSpeed(right);
+    }
+    
+    public void getPIDOutputValue(double value) {
+        this.computedValue = value;
     }
     
     public boolean shouldForwardAssist(double rotate) {
