@@ -14,9 +14,9 @@ public class DrivetrainWithGyro extends Drivetrain {
     public static double FORWARD_ASSIST_SENSITIVITY = 1.0;
     public static final double FORWARD_ASSIST_MAX_TURN_SPEED = 0.1;
     
-    public double P = 0;
-    public double I = 0;
-    public double D = 0;
+    public double P = 0.2;
+    public double I = 0.0;
+    public double D = 0.0;
     
     
     public double computedValue;
