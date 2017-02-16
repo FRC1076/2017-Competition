@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Brakes;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.GearRamp;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
 /**
@@ -43,6 +44,9 @@ public class Robot extends IterativeRobot {
 	Solenoid brakesSolenoid = Hardware.Solenoids.doubleSolenoid(0, 1, Direction.RETRACTING);
 	Brakes brakes = new Brakes(brakesSolenoid);
 	Switch brakesSwitch = Hardware.HumanInterfaceDevices.xbox360(0).getLeftBumper();
+	Solenoid rampSolenoid = Hardware.Solenoids.doubleSolenoid(2, 3, Direction.EXTENDING);
+	GearRamp ramp = new GearRamp(rampSolenoid);
+	Switch rampSwitch = Hardware.HumanInterfaceDevices.xbox360(0).getRightBumper();
 
 	Switch switchLeft = Hardware.Switches.normallyClosed(0);
 	Switch switchRight = Hardware.Switches.normallyClosed(1);
@@ -147,8 +151,10 @@ public class Robot extends IterativeRobot {
 		Strongback.submit(teleopCommand);
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
-		reactor.onTriggered(brakesSwitch,()->brakes.set(Brakes.State.Enabled));
-		reactor.onUntriggered(brakesSwitch,()->brakes.set(Brakes.State.Disabled));
+		reactor.onTriggered(brakesSwitch, ()->brakes.set(Brakes.State.Enabled));
+		reactor.onUntriggered(brakesSwitch, ()->brakes.set(Brakes.State.Disabled));
+		reactor.onTriggered(rampSwitch, ()->ramp.set(GearRamp.State.Down));
+		reactor.onUntriggered(rampSwitch, ()->ramp.set(GearRamp.State.Up));
 	}
 
 	/**
