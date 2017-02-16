@@ -9,13 +9,17 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import java.net.SocketException;
 
 import org.strongback.Strongback;
+import org.strongback.SwitchReactor;
 import org.strongback.components.Motor;
+import org.strongback.components.Solenoid;
+import org.strongback.components.Solenoid.Direction;
 import org.strongback.components.Switch;
 import org.strongback.hardware.Hardware;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
+import org.usfirst.frc.team1076.robot.subsystems.Brakes;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
@@ -34,6 +38,11 @@ public class Robot extends IterativeRobot {
 	Drivetrain drivetrain = new Drivetrain(left, right);
 	TeleopCommand teleopCommand = new TeleopCommand(gamepad, drivetrain);
 	SendableChooser<Command> chooser = new SendableChooser<>();
+	SwitchReactor reactor = Strongback.switchReactor();
+	// @Todo put actual hardware numbers in here
+	Solenoid brakesSolenoid = Hardware.Solenoids.doubleSolenoid(0, 1, Direction.RETRACTING);
+	Brakes brakes = new Brakes(brakesSolenoid);
+	Switch brakesSwitch = Hardware.HumanInterfaceDevices.xbox360(0).getLeftBumper();
 
 	Switch switchLeft = Hardware.Switches.normallyClosed(0);
 	Switch switchRight = Hardware.Switches.normallyClosed(1);
@@ -138,6 +147,8 @@ public class Robot extends IterativeRobot {
 		Strongback.submit(teleopCommand);
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
+		reactor.onTriggered(brakesSwitch,()->brakes.set(Brakes.State.Enabled));
+		reactor.onUntriggered(brakesSwitch,()->brakes.set(Brakes.State.Disabled));
 	}
 
 	/**
