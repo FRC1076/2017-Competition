@@ -125,6 +125,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+	    refreshDrivetrainValues();
+	    
         double driveTime = SmarterDashboard.getNumber("Drive Time", 20.0);
         double turnAmount = SmarterDashboard.getNumber("Turn Amount", -90.0);
 	    ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, 0.25, driveTime);
@@ -158,6 +160,8 @@ public class Robot extends IterativeRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
+	    refreshDrivetrainValues(); 
+	    
 	    DrivetrainWithGyro.FORWARD_ASSIST_SENSITIVITY = SmarterDashboard.getNumber("Teleop Sensitivity", 1.0);
 	    
 		Strongback.logger().info("I LIVE!");
@@ -166,6 +170,16 @@ public class Robot extends IterativeRobot {
 			autonomousCommand.cancel();
 		drivetrain.updateProfile();
 	}
+	
+	/*
+	 * Read values from the SmartDashboard and update them for the
+	 * drivetrain.
+	 */
+    private void refreshDrivetrainValues() {
+        drivetrain.P = SmarterDashboard.getNumber("P", 0); 
+	    drivetrain.I = SmarterDashboard.getNumber("I", 0); 
+	    drivetrain.D = SmarterDashboard.getNumber("D", 0);
+    }
 
 	/**
 	 * This function is called periodically during operator control
