@@ -84,8 +84,6 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledInit() {
 	    Strongback.killAllCommands();
-		drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
-		drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
 		gyro.zero();
 		drivetrain.updateProfile();
 	}
@@ -156,10 +154,6 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		// This makes sure that the autonomous stops running when
-		// teleop starts running. If you want the autonomous to
-		// continue until interrupted by another command, remove
-		// this line or comment it out.
 	    refreshDrivetrainValues(); 
 	    
 	    DrivetrainWithGyro.FORWARD_ASSIST_SENSITIVITY = SmarterDashboard.getNumber("Teleop Sensitivity", 1.0);
@@ -176,6 +170,8 @@ public class Robot extends IterativeRobot {
 	 * drivetrain.
 	 */
     private void refreshDrivetrainValues() {
+        drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
+        drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
         drivetrain.P = SmarterDashboard.getNumber("P", 0); 
 	    drivetrain.I = SmarterDashboard.getNumber("I", 0); 
 	    drivetrain.D = SmarterDashboard.getNumber("D", 0);
