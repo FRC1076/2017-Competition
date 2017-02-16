@@ -38,6 +38,10 @@ public class TurnWithGyro extends Command {
 
     @Override
     public boolean execute() {
+        if (Math.abs(targetAngle - gyro.getAngle()) < 30) {
+            speed *= 0.7;
+        }
+        
         // If turning right
         if (targetAngle > 0) {
             drivetrain.setLeftSpeed(speed);
