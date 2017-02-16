@@ -48,7 +48,7 @@ public class Robot extends IterativeRobot {
 	Switch switchRight = Hardware.Switches.normallyClosed(1);
 	Switch switchLeft = Hardware.Switches.normallyClosed(0);
 	VisionReceiver receiver;
-	public static final String IP = "0.0.0.0"; // "10.10.76.2";
+	public static final String IP = "0.0.0.0"; // "10.10.76.22";
 	public static final int VISION_PORT = 5880;
 
 	/**
@@ -138,7 +138,9 @@ public class Robot extends IterativeRobot {
 		 * = new MyAutoCommand(); break; case "Default Auto": default:
 		 * autonomousCommand = new ExampleCommand(); break; }
 		 */
-
+        if (debugCount++ % 100 == 0) {
+//            Strongback.logger().info("Gyro: " + gyro.getAngle());
+        };
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null)
 			Strongback.submit(autonomousCommand);
@@ -150,6 +152,9 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		if (debugCount++ % 100 == 0) {
+		    Strongback.logger().info(receiver.getData().toString());
+		}
 	}
 
 	@Override
