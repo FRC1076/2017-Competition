@@ -4,20 +4,24 @@ package org.usfirst.frc.team1076.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.internal.HardwareHLUsageReporting;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 import java.net.SocketException;
 
 import org.strongback.Strongback;
+import org.strongback.SwitchReactor;
 import org.strongback.components.Motor;
+import org.strongback.components.Solenoid;
+import org.strongback.components.Solenoid.Direction;
 import org.strongback.components.Switch;
 import org.strongback.hardware.Hardware;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
+import org.usfirst.frc.team1076.robot.subsystems.Brakes;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.GearRamp;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
 /**
@@ -35,6 +39,14 @@ public class Robot extends IterativeRobot {
 	Drivetrain drivetrain = new Drivetrain(left, right);
 	TeleopCommand teleopCommand = new TeleopCommand(gamepad, drivetrain);
 	SendableChooser<Command> chooser = new SendableChooser<>();
+	SwitchReactor reactor = Strongback.switchReactor();
+	// @Todo put actual hardware numbers in here
+	Solenoid brakesSolenoid = Hardware.Solenoids.doubleSolenoid(0, 1, Direction.RETRACTING);
+	Brakes brakes = new Brakes(brakesSolenoid);
+	Switch brakesSwitch = Hardware.HumanInterfaceDevices.xbox360(0).getLeftBumper();
+	Solenoid rampSolenoid = Hardware.Solenoids.doubleSolenoid(2, 3, Direction.EXTENDING);
+	GearRamp ramp = new GearRamp(rampSolenoid);
+	Switch rampSwitch = Hardware.HumanInterfaceDevices.xbox360(0).getRightBumper();
 
 	Switch switchLeft = Hardware.Switches.normallyClosed(0);
 	Switch switchRight = Hardware.Switches.normallyClosed(1);
@@ -139,6 +151,10 @@ public class Robot extends IterativeRobot {
 		Strongback.submit(teleopCommand);
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
+		reactor.onTriggered(brakesSwitch, ()->brakes.set(Brakes.State.Enabled));
+		reactor.onUntriggered(brakesSwitch, ()->brakes.set(Brakes.State.Disabled));
+		reactor.onTriggered(rampSwitch, ()->ramp.set(GearRamp.State.Down));
+		reactor.onUntriggered(rampSwitch, ()->ramp.set(GearRamp.State.Up));
 	}
 
 	/**
