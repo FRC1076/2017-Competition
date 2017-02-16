@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
+import org.usfirst.frc.team1076.robot.commands.TurnWithVision;
 import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
@@ -64,6 +65,10 @@ public class Robot extends IterativeRobot {
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmarterDashboard.putDefaultNumber("Show Vision", 1);
 		SmarterDashboard.putDefaultNumber("Teleop Sensitivity", 1.0);
+		
+		SmarterDashboard.putDefaultNumber("Drive Time", 5.0);
+		SmarterDashboard.putDefaultNumber("Turn Amount", 60.0);
+		SmarterDashboard.putDefaultNumber("Speed", 0.25);
 		
 		SmarterDashboard.putDefaultNumber("P", 0.1);
 		SmarterDashboard.putDefaultNumber("I", 0.2);
@@ -125,10 +130,12 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 	    refreshDrivetrainValues();
 	    
-        double driveTime = SmarterDashboard.getNumber("Drive Time", 20.0);
-        double turnAmount = SmarterDashboard.getNumber("Turn Amount", -90.0);
-	    ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, 0.25, driveTime);
-	    TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, 0.25, turnAmount);
+        double driveTime = SmarterDashboard.getNumber("Drive Time", 5.0);
+        double turnAmount = SmarterDashboard.getNumber("Turn Amount", 60.0);
+        double speed = SmarterDashboard.getNumber("Speed", 0.25);
+	    ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, driveTime);
+	    TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, speed, turnAmount);
+	    TurnWithVision vision_turn = new TurnWithVision(drivetrain, receiver, speed);
 	    autonomousCommand = CommandGroup.runSequentially(forward, turn, forward);
 //		autonomousCommand = new ForwardWithGyro(gyro, drivetrain, 0.25, driveTime);
 //		autonomousCommand = new TurnWithGyro(gyro, drivetrain, 0.25, turnAmount)); 
