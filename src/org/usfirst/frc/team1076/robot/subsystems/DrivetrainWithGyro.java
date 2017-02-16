@@ -50,8 +50,8 @@ public class DrivetrainWithGyro extends Drivetrain {
             gyro.zero();
         }
         
-        leftMotor.setSpeed(left);
-        rightMotor.setSpeed(right);
+        setLeftSpeed(left);
+        setRightSpeed(right);
     }
     
     public void getPIDOutputValue(double value) {
