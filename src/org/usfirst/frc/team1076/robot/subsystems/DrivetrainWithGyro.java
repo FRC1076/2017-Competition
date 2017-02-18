@@ -30,6 +30,7 @@ public class DrivetrainWithGyro extends Drivetrain {
         PID = new SoftwarePIDController(SourceType.DISTANCE,
                                         ()->gyro.getAngle() / 45,
                                         this::getPIDOutputValue);
+        PID.withInputRange(-1.0, 1.0);
         PID.enable();
         updateProfile();
 //        debugPID();
@@ -41,13 +42,22 @@ public class DrivetrainWithGyro extends Drivetrain {
         double right = forward - rotate;
         if (shouldForwardAssist(rotate)) {
             PID.computeOutput();
-            if (computedValue > 0) { // Drifting right 
-                left = left * (1 - Math.abs(computedValue));
+            if (computedValue > 0) { // Drifting right
+                if (forward > 0) {
+                    left = left * (1 - Math.abs(computedValue));
+                } else {
+                    right = right * (1 - Math.abs(computedValue));
+                }
             } else {
-                right = right * (1 - Math.abs(computedValue));
+                if (forward > 0) {
+                    right = right * (1 - Math.abs(computedValue));
+                } else {
+                    left = left * (1 - Math.abs(computedValue));
+                }
             }
         } else {
             gyro.zero();
+            PID.withTarget(0);
         }
         
         setLeftSpeed(left);
