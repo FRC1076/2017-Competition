@@ -15,6 +15,7 @@ import org.strongback.hardware.Hardware;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
@@ -49,7 +50,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		Strongback.start();
-		gamepad.deadzone = 0.2;
+		SmarterDashboard.putDefaultNumber("Deadzone", 0.2);
+		
 		SmarterDashboard.putDefaultNumber("Left Factor", 1);
 		SmarterDashboard.putDefaultNumber("Right Factor", 1);
 
@@ -138,6 +140,7 @@ public class Robot extends IterativeRobot {
 		Strongback.submit(teleopCommand);
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
+        gamepad.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
 	}
 
 	/**
