@@ -25,6 +25,7 @@ import org.usfirst.frc.team1076.robot.commands.TurnWithVision;
 import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
+import org.usfirst.frc.team1076.robot.subsystems.Winch;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
 /**
@@ -46,13 +47,13 @@ public class Robot extends IterativeRobot {
 	
 	Motor winch1 = Hardware.Motors.talonSRX(5);
 	Motor winch2 = Hardware.Motors.talonSRX(6);
-	Motor winch = Motor.compose(winch1, winch2);
+	Motor winchMotors = Motor.compose(winch1, winch2);
 	
 	Gyroscope gyro = Hardware.AngleSensors.gyroscope(0);
 	
 	DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
-	
-	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, gamepad);
+	Winch winch = new Winch(winchMotors);
+	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, gamepad, winch);
 	SendableChooser<Command> chooser = new SendableChooser<>();
 	Switch switchRight = Hardware.Switches.normallyClosed(1);
 	Switch switchLeft = Hardware.Switches.normallyClosed(0);
