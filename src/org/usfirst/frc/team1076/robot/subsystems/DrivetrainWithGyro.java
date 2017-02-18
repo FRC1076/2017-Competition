@@ -35,31 +35,37 @@ public class DrivetrainWithGyro extends Drivetrain {
         updateProfile();
 //        debugPID();
     }
-    
+    double lastGyroRate;
     @Override
     public void arcade(double forward, double rotate) {
         double left = forward + rotate;
         double right = forward - rotate;
-        if (shouldForwardAssist(rotate)) {
+        if (shouldForwardAssist(rotate) && Math.abs(lastGyroRate) < 0.5) {
             PID.computeOutput();
-            if (computedValue > 0) { // Drifting right
-                if (forward > 0) {
-                    left = left * (1 - Math.abs(computedValue));
-                } else {
-                    right = right * (1 - Math.abs(computedValue));
-                }
-            } else {
-                if (forward > 0) {
-                    right = right * (1 - Math.abs(computedValue));
-                } else {
-                    left = left * (1 - Math.abs(computedValue));
-                }
-            }
+            left += computedValue;
+            right -= computedValue;
+//            if (computedValue > 0) {
+////                Strongback.logger().debug("Right drift");
+//                if (forward > 0) {
+//                    left = left  - Math.abs(computedValue);
+//                } else {
+//                    right = right - Math.abs(computedValue);
+//                }
+//            } else {
+////                Strongback.logger().debug("Left drift");
+//                if (forward > 0) {
+//                    right = right - Math.abs(computedValue);
+//                } else {
+//                    left = left - Math.abs(computedValue);
+//                }
+//            }
+            // Prevent the PID Controller from accidentally kicking us out of this
+            lastGyroRate = 0;
         } else {
             gyro.zero();
             PID.withTarget(0);
+            lastGyroRate = gyro.getRate();            
         }
-        
         setLeftSpeed(left);
         setRightSpeed(right);
     }
