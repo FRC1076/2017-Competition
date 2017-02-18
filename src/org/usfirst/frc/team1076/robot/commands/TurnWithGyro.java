@@ -11,6 +11,8 @@ import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
  * and negative angles turn *left*.
  */
 public class TurnWithGyro extends Command {
+    public double reduction_threshold = 30;
+    public double reduction_factor = 0.7;
     Gyroscope gyro;
     Drivetrain drivetrain;
     double speed;
@@ -38,10 +40,10 @@ public class TurnWithGyro extends Command {
 
     @Override
     public boolean execute() {
-        if (Math.abs(targetAngle - gyro.getAngle()) < 30) {
-            speed *= 0.7;
+        if (Math.abs(targetAngle - gyro.getAngle()) < reduction_threshold) {
+            speed *= reduction_factor;
         }
-        
+
         // If turning right
         if (targetAngle > 0) {
             drivetrain.setLeftSpeed(speed);

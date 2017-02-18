@@ -73,6 +73,9 @@ public class Robot extends IterativeRobot {
 		SmarterDashboard.putDefaultNumber("P", 0.1);
 		SmarterDashboard.putDefaultNumber("I", 0.2);
 		SmarterDashboard.putDefaultNumber("D", 0.3);
+		
+		SmarterDashboard.putDefaultNumber("Turn Reduction Factor", 0.7);
+		SmarterDashboard.putDefaultNumber("Turn Reduction Threshold", 30);
 		try {
 			receiver = new VisionReceiver(IP, VISION_PORT);
 		} catch (SocketException e) {
@@ -135,6 +138,8 @@ public class Robot extends IterativeRobot {
         double speed = SmarterDashboard.getNumber("Speed", 0.25);
 	    ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, driveTime);
 	    TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, speed, turnAmount);
+	    turn.reduction_factor = SmarterDashboard.getNumber("Turn Reduction Factor", 0.7);
+	    turn.reduction_threshold = SmarterDashboard.getNumber("Turn Reduction Threshold", 30);
 	    TurnWithVision vision_turn = new TurnWithVision(drivetrain, receiver, speed);
 	    autonomousCommand = CommandGroup.runSequentially(forward, turn, forward);
 //		autonomousCommand = new ForwardWithGyro(gyro, drivetrain, 0.25, driveTime);
