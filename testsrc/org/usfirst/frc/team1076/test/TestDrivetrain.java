@@ -74,4 +74,33 @@ public class TestDrivetrain {
 				0.0, right.getSpeed(), EPSILON);
 	}
 
+    @Test
+    public void testForwardArcade() {
+        drivetrain.arcade(1, 0);
+        assertEquals("Left motor should be equal to forward value", 
+                1.0, left.getSpeed(), EPSILON);
+        assertEquals("Right motor should be equal to forward value", 
+                1.0, right.getSpeed(), EPSILON);
+        
+        drivetrain.arcade(-1.0, 0);
+        assertEquals("Left motor should be equal to forward value", 
+                -1.0, left.getSpeed(), EPSILON);
+        assertEquals("Right motor should be equal to forward value", 
+                -1.0, right.getSpeed(), EPSILON);
+    }
+    
+    @Test
+    public void testRotateArcade() {
+        drivetrain.arcade(0, 1);
+        assertEquals("Left motor run forwards to turn robot left", 
+                1.0, left.getSpeed(), EPSILON);
+        assertEquals("Right motor run backwards to turn robot right", 
+                -1.0, right.getSpeed(), EPSILON);
+        
+        drivetrain.arcade(0, -1);
+        assertEquals("Left motor run backwards to turn robot right", 
+                -1.0, left.getSpeed(), EPSILON);
+        assertEquals("Right motor run forwards to turn robot right", 
+                1.0, right.getSpeed(), EPSILON);
+    }
 }

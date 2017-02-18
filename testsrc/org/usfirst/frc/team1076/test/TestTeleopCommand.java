@@ -63,10 +63,6 @@ public class TestTeleopCommand {
 		gamepad.lx = 0.5;
 		teleop.execute();
 		
-		System.out.println("[TeleopCommand Turning]");
-		System.out.println("Left Motor: " + left.getSpeed());
-		System.out.println("Right Motor: " + right.getSpeed());
-		
 		assertEquals("Left motor should be at maximum speed",
 				1.0, left.getSpeed(), EPSILON);
 		assertTrue("Right motor should be less than left motor",

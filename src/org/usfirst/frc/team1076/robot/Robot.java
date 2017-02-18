@@ -2,22 +2,29 @@
 package org.usfirst.frc.team1076.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 import java.net.SocketException;
 
 import org.strongback.Strongback;
+import org.strongback.command.Command;
+import org.strongback.command.CommandGroup;
+import org.strongback.components.Gyroscope;
 import org.strongback.components.Motor;
 import org.strongback.components.Switch;
 import org.strongback.hardware.Hardware;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
+import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
+import org.usfirst.frc.team1076.robot.commands.TurnWithVision;
+import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
 /**
@@ -30,17 +37,27 @@ import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 public class Robot extends IterativeRobot {
 	Gamepad gamepad = new Gamepad(0);
 	Command autonomousCommand;
-	Motor left = Hardware.Motors.talonSRX(0);
-	Motor right = Hardware.Motors.talonSRX(1).invert();  // This motor is placed backwards on the robot
-	Drivetrain drivetrain = new Drivetrain(left, right);
-	TeleopCommand teleopCommand = new TeleopCommand(gamepad, drivetrain);
-	SendableChooser<Command> chooser = new SendableChooser<>();
-
-	Switch switchLeft = Hardware.Switches.normallyClosed(0);
-	Switch switchRight = Hardware.Switches.normallyClosed(1);
+	Motor left1 = Hardware.Motors.talonSRX(3);
+	Motor left2 = Hardware.Motors.talonSRX(4);
+	Motor left = Motor.compose(left1, left2);
+	Motor right1 = Hardware.Motors.talonSRX(1);
+	Motor right2 = Hardware.Motors.talonSRX(2);
+	Motor right = Motor.compose(right1, right2).invert();
 	
+	Motor winch1 = Hardware.Motors.talonSRX(5);
+	Motor winch2 = Hardware.Motors.talonSRX(6);
+	Motor winch = Motor.compose(winch1, winch2);
+	
+	Gyroscope gyro = Hardware.AngleSensors.gyroscope(0);
+	
+	DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
+	
+	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, gamepad);
+	SendableChooser<Command> chooser = new SendableChooser<>();
+	Switch switchRight = Hardware.Switches.normallyClosed(1);
+	Switch switchLeft = Hardware.Switches.normallyClosed(0);
 	VisionReceiver receiver;
-	public static final String IP = "0.0.0.0"; // "10.10.76.2";
+	public static final String IP = "0.0.0.0"; // "10.10.76.22";
 	public static final int VISION_PORT = 5880;
 
 	/**
@@ -54,9 +71,20 @@ public class Robot extends IterativeRobot {
 		
 		SmarterDashboard.putDefaultNumber("Left Factor", 1);
 		SmarterDashboard.putDefaultNumber("Right Factor", 1);
-
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmarterDashboard.putDefaultNumber("Show Vision", 1);
+		SmarterDashboard.putDefaultNumber("Teleop Sensitivity", 1.0);
+		
+		SmarterDashboard.putDefaultNumber("Drive Time", 5.0);
+		SmarterDashboard.putDefaultNumber("Turn Amount", 60.0);
+		SmarterDashboard.putDefaultNumber("Speed", 0.25);
+		
+		SmarterDashboard.putDefaultNumber("P", 0.1);
+		SmarterDashboard.putDefaultNumber("I", 0.2);
+		SmarterDashboard.putDefaultNumber("D", 0.3);
+		
+		SmarterDashboard.putDefaultNumber("Turn Reduction Factor", 0.7);
+		SmarterDashboard.putDefaultNumber("Turn Reduction Threshold", 30);
 		try {
 			receiver = new VisionReceiver(IP, VISION_PORT);
 		} catch (SocketException e) {
@@ -72,25 +100,29 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-		drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
-		drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
+	    Strongback.killAllCommands();
+		gyro.zero();
+		drivetrain.updateProfile();
 	}
-
+	
 	int debugCount = 0;
 
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
 		if (debugCount++ % 100 == 0 && SmarterDashboard.getNumber("Show Vision", 0) == 1) {
-			if (receiver == null) {
-				Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
-			} else {
-				receiver.receive();
-				Strongback.logger().info(receiver.getData().toString());
-			}
-			
-			System.out.println("Left Switch: " + switchLeft.isTriggered());
-			System.out.println("Right Switch: " + switchRight.isTriggered());
+//			if (receiver == null) {
+//				Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
+//			} else {
+//				receiver.receive();
+//				Strongback.logger().info(receiver.getData().toString());
+//			}
+			System.out.println("Gyro: " + gyro.getAngle());
+//			System.out.println("P: " + drivetrain.P);
+//			System.out.println("I: " + drivetrain.I);
+//			System.out.println("D: " + drivetrain.D);
+//			System.out.println("Left Switch: " + switchLeft.isTriggered());
+//			System.out.println("Right Switch: " + switchRight.isTriggered());
 
 		}
 	}
@@ -108,18 +140,31 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = chooser.getSelected();
-
+	    refreshDrivetrainValues();
+	    
+        double driveTime = SmarterDashboard.getNumber("Drive Time", 5.0);
+        double turnAmount = SmarterDashboard.getNumber("Turn Amount", 60.0);
+        double speed = SmarterDashboard.getNumber("Speed", 0.25);
+	    ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, driveTime);
+	    TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, speed, turnAmount);
+	    turn.reduction_factor = SmarterDashboard.getNumber("Turn Reduction Factor", 0.7);
+	    turn.reduction_threshold = SmarterDashboard.getNumber("Turn Reduction Threshold", 30);
+	    TurnWithVision vision_turn = new TurnWithVision(drivetrain, receiver, speed);
+	    autonomousCommand = CommandGroup.runSequentially(forward, turn, vision_turn, forward);
+//		autonomousCommand = new ForwardWithGyro(gyro, drivetrain, 0.25, driveTime);
+//		autonomousCommand = turn;
 		/*
 		 * String autoSelected = SmarterDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
 		 * = new MyAutoCommand(); break; case "Default Auto": default:
 		 * autonomousCommand = new ExampleCommand(); break; }
 		 */
-
+        if (debugCount++ % 100 == 0) {
+//            Strongback.logger().info("Gyro: " + gyro.getAngle());
+        };
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null)
-			autonomousCommand.start();
+			Strongback.submit(autonomousCommand);
 	}
 
 	/**
@@ -128,26 +173,48 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		if (debugCount++ % 100 == 0) {
+		    Strongback.logger().info(receiver.getData().toString());
+		}
 	}
 
 	@Override
 	public void teleopInit() {
-		// This makes sure that the autonomous stops running when
-		// teleop starts running. If you want the autonomous to
-		// continue until interrupted by another command, remove
-		// this line or comment it out.
+	    refreshDrivetrainValues(); 
+	    
+	    DrivetrainWithGyro.FORWARD_ASSIST_SENSITIVITY = SmarterDashboard.getNumber("Teleop Sensitivity", 1.0);
+	    
 		Strongback.logger().info("I LIVE!");
 		Strongback.submit(teleopCommand);
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
+		drivetrain.updateProfile();
         gamepad.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
 	}
+	
+	/*
+	 * Read values from the SmartDashboard and update them for the
+	 * drivetrain.
+	 */
+    private void refreshDrivetrainValues() {
+        drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
+        drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
+        drivetrain.P = SmarterDashboard.getNumber("P", 0); 
+	    drivetrain.I = SmarterDashboard.getNumber("I", 0); 
+	    drivetrain.D = SmarterDashboard.getNumber("D", 0);
+    }
 
 	/**
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+//		System.out.println(gyro.getAngle());
+		if (debugCount++ % 100 == 0) {
+//		    Strongback.logger().info("PID Change: " + drivetrain.computedValue);
+		    Strongback.logger().info("Gyro rate: " + gyro.getRate());
+		};
+//		drivetrain.debugPID();
 	}
 
 	/**
