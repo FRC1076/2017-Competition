@@ -2,6 +2,7 @@ package org.usfirst.frc.team1076.test.mock;
 
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadAxis;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
+import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.IGamepad;
 
 public class MockGamepad implements IGamepad {
@@ -45,4 +46,22 @@ public class MockGamepad implements IGamepad {
 		default: return false;
 		}
 	}
+
+	/*
+	 * This is a mock; no difference between raw axis and
+	 * normal axis since there is no deadzone.
+	 */
+    @Override
+    public double getRawAxis(GamepadAxis axis) {
+        return getAxis(axis);
+    }
+
+    @Override
+    public Coords getStick(GamepadStick stick) {
+        switch (stick) {
+        case Left: return new Coords(lx, ly);
+        case Right: return new Coords(rx, ry);
+        default: return null; // Unreachable
+        }
+    }
 }
