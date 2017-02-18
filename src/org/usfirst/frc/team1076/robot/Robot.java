@@ -37,8 +37,16 @@ import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 public class Robot extends IterativeRobot {
 	Gamepad gamepad = new Gamepad(0);
 	Command autonomousCommand;
-	Motor left = Hardware.Motors.talonSRX(0);
-	Motor right = Hardware.Motors.talonSRX(1).invert();  // This motor is placed backwards on the robot
+	Motor left1 = Hardware.Motors.talonSRX(3);
+	Motor left2 = Hardware.Motors.talonSRX(4);
+	Motor left = Motor.compose(left1, left2);
+	Motor right1 = Hardware.Motors.talonSRX(1);
+	Motor right2 = Hardware.Motors.talonSRX(2);
+	Motor right = Motor.compose(right1, right2).invert();
+	
+	Motor winch1 = Hardware.Motors.talonSRX(5);
+	Motor winch2 = Hardware.Motors.talonSRX(6);
+	Motor winch = Motor.compose(winch1, winch2);
 	
 	Gyroscope gyro = Hardware.AngleSensors.gyroscope(0);
 	
