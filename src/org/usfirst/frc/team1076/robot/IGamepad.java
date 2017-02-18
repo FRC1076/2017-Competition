@@ -6,7 +6,7 @@ import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 
 public interface IGamepad {
 	class Coords {
-		double x, y;
+		public final double x, y;
 		public Coords(double x, double y) {
 			this.x = x;
 			this.y = y;
