@@ -141,9 +141,9 @@ public class Robot extends IterativeRobot {
 	    turn.reduction_factor = SmarterDashboard.getNumber("Turn Reduction Factor", 0.7);
 	    turn.reduction_threshold = SmarterDashboard.getNumber("Turn Reduction Threshold", 30);
 	    TurnWithVision vision_turn = new TurnWithVision(drivetrain, receiver, speed);
-	    autonomousCommand = CommandGroup.runSequentially(forward, turn, forward);
+	    autonomousCommand = CommandGroup.runSequentially(forward, turn, vision_turn, forward);
 //		autonomousCommand = new ForwardWithGyro(gyro, drivetrain, 0.25, driveTime);
-//		autonomousCommand = new TurnWithGyro(gyro, drivetrain, 0.25, turnAmount)); 
+//		autonomousCommand = turn;
 		/*
 		 * String autoSelected = SmarterDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -201,7 +201,8 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 //		System.out.println(gyro.getAngle());
 		if (debugCount++ % 100 == 0) {
-		    Strongback.logger().info("PID Change: " + drivetrain.computedValue);
+//		    Strongback.logger().info("PID Change: " + drivetrain.computedValue);
+		    Strongback.logger().info("Gyro rate: " + gyro.getRate());
 		};
 //		drivetrain.debugPID();
 	}

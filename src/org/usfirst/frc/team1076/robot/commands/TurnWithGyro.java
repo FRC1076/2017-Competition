@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1076.robot.commands;
 
+import org.strongback.Strongback;
 import org.strongback.command.Command;
 import org.strongback.components.Gyroscope;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
@@ -52,7 +53,13 @@ public class TurnWithGyro extends Command {
             drivetrain.setLeftSpeed(-speed);
             drivetrain.setRightSpeed(speed);
         }
-        return isFinished();
+        if (isFinished()) {
+            Strongback.logger().info("done, gyro=" + gyro.getAngle());
+            return true;
+        } else {
+            Strongback.logger().info("not done, gyro=" + gyro.getAngle());
+            return false;
+        }
     }
 
     public boolean isFinished() {
