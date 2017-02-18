@@ -95,8 +95,10 @@ public class Gamepad implements IGamepad {
 			x = 0;
 			y = 0;
 		} else {
-			x = (x - deadzone) / (1 - deadzone);
-			y = (y - deadzone) / (1 - deadzone);
+		    // If signum was not here, then negative values of x or y
+		    // would be too large (negative minus negative means higher absolutely)
+			x = (x - Math.signum(x) * deadzone) / (1 - deadzone);
+			y = (y - Math.signum(y) * deadzone) / (1 - deadzone);
 		}
 		
 		return new Coords(x, y);
