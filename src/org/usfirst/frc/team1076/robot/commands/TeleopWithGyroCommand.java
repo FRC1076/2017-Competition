@@ -4,6 +4,7 @@ import org.strongback.command.Command;
 import org.strongback.components.Gyroscope;
 import org.usfirst.frc.team1076.robot.IGamepad;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadAxis;
+import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
 
 public class TeleopWithGyroCommand extends Command {
@@ -25,8 +26,8 @@ public class TeleopWithGyroCommand extends Command {
     
     @Override
     public boolean execute() {
-        final double forward = gamepad.getAxis(GamepadAxis.RightY);
-        final double rotate = gamepad.getAxis(GamepadAxis.LeftX);
+        final double forward = gamepad.getStick(GamepadStick.Right).y; //.getAxis(GamepadAxis.RightY);
+        final double rotate = gamepad.getStick(GamepadStick.Left).x; //.getAxis(GamepadAxis.LeftX);
         drivetrain.arcade(forward, rotate);
         return false;
     }

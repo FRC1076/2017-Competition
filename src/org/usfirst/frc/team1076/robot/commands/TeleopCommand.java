@@ -2,6 +2,7 @@ package org.usfirst.frc.team1076.robot.commands;
 
 import org.strongback.command.Command;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadAxis;
+import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.IGamepad;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 
@@ -20,10 +21,9 @@ public class TeleopCommand extends Command {
     }
 
     // Called repeatedly when this Command is scheduled to run
-    @Override
-    public boolean execute() {    	
-    	final double forward = gamepad.getAxis(GamepadAxis.RightY);
-    	final double rotate = gamepad.getAxis(GamepadAxis.LeftX);
+    public boolean execute() {
+        final double forward = gamepad.getStick(GamepadStick.Right).y; //.getAxis(GamepadAxis.RightY);
+        final double rotate = gamepad.getStick(GamepadStick.Left).x; //.getAxis(GamepadAxis.LeftX);
     	leftRight.arcade(forward, rotate);
     	return isFinished();
     }
