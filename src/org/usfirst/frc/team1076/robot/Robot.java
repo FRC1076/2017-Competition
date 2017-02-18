@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import java.net.SocketException;
 
 import org.strongback.Strongback;
+import org.strongback.components.Gyroscope;
 import org.strongback.components.Motor;
 import org.strongback.components.Switch;
 import org.strongback.hardware.Hardware;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
+import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
@@ -33,7 +35,10 @@ public class Robot extends IterativeRobot {
 	Motor left = Hardware.Motors.talonSRX(0);
 	Motor right = Hardware.Motors.talonSRX(1).invert();  // This motor is placed backwards on the robot
 	Drivetrain drivetrain = new Drivetrain(left, right);
-	TeleopCommand teleopCommand = new TeleopCommand(gamepad, drivetrain);
+	
+	Gyroscope gyro = Hardware.AngleSensors.gyroscope(0);
+	
+	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(gyro, drivetrain, gamepad);
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
 	Switch switchLeft = Hardware.Switches.normallyClosed(0);
@@ -57,6 +62,7 @@ public class Robot extends IterativeRobot {
 
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmarterDashboard.putDefaultNumber("Show Vision", 1);
+		SmarterDashboard.putDefaultNumber("Teleop Sensitivity", 1.0);
 		try {
 			receiver = new VisionReceiver(IP, VISION_PORT);
 		} catch (SocketException e) {
@@ -72,25 +78,27 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
+	    Strongback.killAllCommands();
 		drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
 		drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
+		gyro.zero();
 	}
-
+	
 	int debugCount = 0;
 
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
 		if (debugCount++ % 100 == 0 && SmarterDashboard.getNumber("Show Vision", 0) == 1) {
-			if (receiver == null) {
-				Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
-			} else {
-				receiver.receive();
-				Strongback.logger().info(receiver.getData().toString());
-			}
-			
-			System.out.println("Left Switch: " + switchLeft.isTriggered());
-			System.out.println("Right Switch: " + switchRight.isTriggered());
+//			if (receiver == null) {
+//				Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
+//			} else {
+//				receiver.receive();
+//				Strongback.logger().info(receiver.getData().toString());
+//			}
+			System.out.println(gyro.getAngle());
+//			System.out.println("Left Switch: " + switchLeft.isTriggered());
+//			System.out.println("Right Switch: " + switchRight.isTriggered());
 
 		}
 	}
@@ -136,6 +144,8 @@ public class Robot extends IterativeRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
+	    TeleopWithGyroCommand.FORWARD_ASSIST_SENSITIVITY = SmarterDashboard.getNumber("Teleop Sensitivity", 1.0);
+	    
 		Strongback.logger().info("I LIVE!");
 		Strongback.submit(teleopCommand);
 		if (autonomousCommand != null)
@@ -148,6 +158,7 @@ public class Robot extends IterativeRobot {
 	 */
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+//		System.out.println(gyro.getAngle());
 	}
 
 	/**
