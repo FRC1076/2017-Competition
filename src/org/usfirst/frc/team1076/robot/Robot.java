@@ -3,7 +3,6 @@ package org.usfirst.frc.team1076.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.internal.HardwareHLUsageReporting;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 import java.net.SocketException;
@@ -19,6 +18,7 @@ import org.strongback.hardware.Hardware;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
+import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
 import org.usfirst.frc.team1076.robot.commands.TurnWithVision;
@@ -67,7 +67,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		Strongback.start();
-		gamepad.deadzone = 0.2;
+		SmarterDashboard.putDefaultNumber("Deadzone", 0.2);
+		
 		SmarterDashboard.putDefaultNumber("Left Factor", 1);
 		SmarterDashboard.putDefaultNumber("Right Factor", 1);
 		// chooser.addObject("My Auto", new MyAutoCommand());
@@ -188,6 +189,7 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
 		drivetrain.updateProfile();
+        gamepad.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
 	}
 	
 	/*
