@@ -8,16 +8,22 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import java.net.SocketException;
 
 import org.strongback.Strongback;
+import org.strongback.Strongback.Configurator;
 import org.strongback.command.Command;
 import org.strongback.command.CommandGroup;
 import org.strongback.components.Gyroscope;
 import org.strongback.components.Motor;
+import org.strongback.components.PneumaticsModule;
+import org.strongback.components.Solenoid;
 import org.strongback.components.Switch;
 import org.strongback.hardware.Hardware;
+import org.strongback.mock.Mock;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import org.usfirst.frc.team1076.robot.commands.BrakeCommand;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
+import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcher;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
@@ -41,27 +47,40 @@ public class Robot extends IterativeRobot {
 	Command autonomousCommand;
 	Motor left1 = Hardware.Motors.talonSRX(3);
 	Motor left2 = Hardware.Motors.talonSRX(4);
-	Motor left = Motor.compose(left1, left2);
+	// Motor left = Motor.compose(left1, left2);
+	Motor left = Mock.stoppedMotor();
 	Motor right1 = Hardware.Motors.talonSRX(1);
 	Motor right2 = Hardware.Motors.talonSRX(2);
-	Motor right = Motor.compose(right1, right2).invert();
-	
+//	Motor right = Motor.compose(right1, right2).invert();
+	Motor right = Mock.stoppedMotor();
 	Motor winch1 = Hardware.Motors.talonSRX(5);
 	Motor winch2 = Hardware.Motors.talonSRX(6);
-	Motor winchMotors = Motor.compose(winch1, winch2);
+//	Motor winchMotors = Motor.compose(winch1, winch2);
+	Motor winchMotors = Mock.stoppedMotor();
+	
+//	PneumaticsModule pneumatics = Hardware.pneumaticsModule(0);
+	PneumaticsModule pneumatics = Mock.pnuematicsModule();
+//    Solenoid shifter = Hardware.Solenoids.doubleSolenoid(0, 1, Solenoid.Direction.RETRACTING);
+//    Solenoid brake = Hardware.Solenoids.doubleSolenoid(2, 3, Solenoid.Direction.RETRACTING);
+//    Solenoid holder = Hardware.Solenoids.doubleSolenoid(4, 5, Solenoid.Direction.RETRACTING);
+	
+	Solenoid shifter = Mock.manualSolenoid();
+	Solenoid brake = Mock.manualSolenoid();
+	Solenoid holder = Mock.manualSolenoid();
 	
 	Gyroscope gyro = Hardware.AngleSensors.gyroscope(0);
 	
 	DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
 	Winch winch = new Winch(winchMotors);
 	TeleopCommand teleopCommand = new TeleopCommand(drivetrain, driver, operator, winch);
+//	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, driver, operator, winch);
 	SendableChooser<Command> chooser = new SendableChooser<>();
 	Switch switchRight = Hardware.Switches.normallyClosed(1);
 	Switch switchLeft = Hardware.Switches.normallyClosed(0);
 	VisionReceiver receiver;
 	public static final String IP = "0.0.0.0"; // "10.10.76.22";
 	public static final int VISION_PORT = 5880;
-
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -69,6 +88,12 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		Strongback.start();
+		
+		pneumatics.automaticMode().on();
+		shifter.retract();
+		brake.retract();
+		holder.retract();
+		
 		SmarterDashboard.putDefaultNumber("Deadzone", 0.2);
 		
 		SmarterDashboard.putDefaultNumber("Left Factor", 1);
@@ -81,12 +106,13 @@ public class Robot extends IterativeRobot {
 		SmarterDashboard.putDefaultNumber("Turn Amount", 60.0);
 		SmarterDashboard.putDefaultNumber("Speed", 0.25);
 		
-		SmarterDashboard.putDefaultNumber("P", 0.1);
-		SmarterDashboard.putDefaultNumber("I", 0.2);
-		SmarterDashboard.putDefaultNumber("D", 0.3);
+		SmarterDashboard.putDefaultNumber("P", 0.0);
+		SmarterDashboard.putDefaultNumber("I", 0.0);
+		SmarterDashboard.putDefaultNumber("D", 0.0);
 		
 		SmarterDashboard.putDefaultNumber("Turn Reduction Factor", 0.7);
 		SmarterDashboard.putDefaultNumber("Turn Reduction Threshold", 30);
+		
 		try {
 			receiver = new VisionReceiver(IP, VISION_PORT);
 		} catch (SocketException e) {
@@ -192,6 +218,9 @@ public class Robot extends IterativeRobot {
 			autonomousCommand.cancel();
 		drivetrain.updateProfile();
         driver.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
+        Strongback.submit(new BrakeCommand(brake, driver));
+        Strongback.submit(new SolenoidSwitcher(shifter, driver));
+        Strongback.submit(new SolenoidSwitcher(holder, operator));
 	}
 	
 	/*
@@ -214,8 +243,11 @@ public class Robot extends IterativeRobot {
 //		System.out.println(gyro.getAngle());
 		if (debugCount++ % 100 == 0) {
 //		    Strongback.logger().info("PID Change: " + drivetrain.computedValue);
-		    Strongback.logger().info("Gyro rate: " + gyro.getRate());
+		    Strongback.logger().info("Shifter: " + shifter.getDirection().toString());
+		    Strongback.logger().info("Brakes: " + brake.getDirection().toString());
+		    Strongback.logger().info("Holder: " + holder.getDirection().toString());
 		};
+		
 //		drivetrain.debugPID();
 	}
 
