@@ -33,12 +33,12 @@ public class TeleopCommand extends Command {
         final double rotate = driver.getStick(GamepadStick.Left).x; //.getAxis(GamepadAxis.LeftX);
     	leftRight.arcade(forward, rotate);
     	
-    	final double winch_extend = gamepad.getAxis(GamepadAxis.LeftTrigger);
-    	final double winch_retract = gamepad.getAxis(GamepadAxis.RightTrigger);
+    	final double winchSpeed = operator.getStick(GamepadStick.Left).y;
     	// Ideally you shouldn't press both buttons at the same time, however
     	// taking the difference of the two is a simple way of allowing both actions
     	// without special logic
-    	winch.setSpeed(winch_extend - winch_retract);
+    	winch.setSpeed(winchSpeed);
+    	
     	return isFinished();
     }
     
