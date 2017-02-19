@@ -23,7 +23,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team1076.robot.commands.BrakeCommand;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
-import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcher;
+import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcherTwoButton;
+import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
@@ -47,26 +48,26 @@ public class Robot extends IterativeRobot {
 	Command autonomousCommand;
 	Motor left1 = Hardware.Motors.talonSRX(3);
 	Motor left2 = Hardware.Motors.talonSRX(4);
-	// Motor left = Motor.compose(left1, left2);
-	Motor left = Mock.stoppedMotor();
+	 Motor left = Motor.compose(left1, left2);
+//	Motor left = Mock.stoppedMotor();
 	Motor right1 = Hardware.Motors.talonSRX(1);
 	Motor right2 = Hardware.Motors.talonSRX(2);
-//	Motor right = Motor.compose(right1, right2).invert();
-	Motor right = Mock.stoppedMotor();
+	Motor right = Motor.compose(right1, right2).invert();
+//	Motor right = Mock.stoppedMotor();
 	Motor winch1 = Hardware.Motors.talonSRX(5);
 	Motor winch2 = Hardware.Motors.talonSRX(6);
-//	Motor winchMotors = Motor.compose(winch1, winch2);
-	Motor winchMotors = Mock.stoppedMotor();
+	Motor winchMotors = Motor.compose(winch1, winch2);
+//	Motor winchMotors = Mock.stoppedMotor();
 	
-//	PneumaticsModule pneumatics = Hardware.pneumaticsModule(0);
-	PneumaticsModule pneumatics = Mock.pnuematicsModule();
-//    Solenoid shifter = Hardware.Solenoids.doubleSolenoid(0, 1, Solenoid.Direction.RETRACTING);
-//    Solenoid brake = Hardware.Solenoids.doubleSolenoid(2, 3, Solenoid.Direction.RETRACTING);
-//    Solenoid holder = Hardware.Solenoids.doubleSolenoid(4, 5, Solenoid.Direction.RETRACTING);
+	PneumaticsModule pneumatics = Hardware.pneumaticsModule(0);
+//	PneumaticsModule pneumatics = Mock.pnuematicsModule();
+    Solenoid shifter = Hardware.Solenoids.doubleSolenoid(0, 1, Solenoid.Direction.RETRACTING);
+    Solenoid brake = Hardware.Solenoids.doubleSolenoid(2, 3, Solenoid.Direction.RETRACTING);
+    Solenoid holder = Hardware.Solenoids.doubleSolenoid(4, 5, Solenoid.Direction.RETRACTING);
 	
-	Solenoid shifter = Mock.manualSolenoid();
-	Solenoid brake = Mock.manualSolenoid();
-	Solenoid holder = Mock.manualSolenoid();
+//	Solenoid shifter = Mock.manualSolenoid();
+//	Solenoid brake = Mock.manualSolenoid();
+//	Solenoid holder = Mock.manualSolenoid();
 	
 	Gyroscope gyro = Hardware.AngleSensors.gyroscope(0);
 	
@@ -219,8 +220,8 @@ public class Robot extends IterativeRobot {
 		drivetrain.updateProfile();
         driver.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
         Strongback.submit(new BrakeCommand(brake, driver));
-        Strongback.submit(new SolenoidSwitcher(shifter, driver));
-        Strongback.submit(new SolenoidSwitcher(holder, operator));
+        Strongback.submit(new SolenoidSwitcherTwoButton(shifter, driver, GamepadButton.LB, GamepadButton.RB));
+        Strongback.submit(new SolenoidSwitcherTwoButton(holder, operator, GamepadButton.LB, GamepadButton.RB));
 	}
 	
 	/*

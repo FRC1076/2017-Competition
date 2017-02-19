@@ -5,19 +5,21 @@ import org.strongback.components.Solenoid;
 import org.usfirst.frc.team1076.robot.Gamepad;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
 
-public class SolenoidSwitcher extends Command {
+public class SolenoidSwitcherTwoButton extends Command {
     Solenoid gearShifter;
     Gamepad gamepad;
+    GamepadButton retractButton; // = GamepadButton.LB;
+    GamepadButton extendButton; // = GamepadButton.RB;
     
-    public SolenoidSwitcher(Solenoid gearShifter, Gamepad gamepad) {
+    public SolenoidSwitcherTwoButton(Solenoid gearShifter, Gamepad gamepad, GamepadButton retractButton, GamepadButton extendButton) {
         this.gearShifter = gearShifter;
         this.gamepad = gamepad;
     }
     
     public boolean execute() {
-        if (gamepad.getButton(GamepadButton.LB)) {
+        if (gamepad.getButton(retractButton)) {
             gearShifter.retract();
-        } else if (gamepad.getButton(GamepadButton.RB)) {
+        } else if (gamepad.getButton(extendButton)) {
             gearShifter.extend();
         }
         
