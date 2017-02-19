@@ -8,6 +8,7 @@ import org.strongback.mock.Mock;
 import org.strongback.mock.MockMotor;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.Winch;
 import org.usfirst.frc.team1076.test.mock.MockGamepad;
 
 public class TestTeleopCommand {
@@ -16,20 +17,22 @@ public class TestTeleopCommand {
 
 	MockMotor left = Mock.stoppedMotor();
 	MockMotor right = Mock.stoppedMotor();
-	MockGamepad gamepad = new MockGamepad();
+	Winch winch = new Winch(Mock.stoppedMotor()); // Mock winch
+	MockGamepad driver = new MockGamepad();
+	MockGamepad operator = new MockGamepad();
 	Drivetrain drivetrain = new Drivetrain(left, right);
-	TeleopCommand teleop = new TeleopCommand(gamepad, drivetrain);
+	TeleopCommand teleop = new TeleopCommand(drivetrain, driver, operator, winch);
 	
 	@Before
 	public void reset() {
 		left.setSpeed(0);
 		right.setSpeed(0);
-		gamepad.reset();
+		driver.reset();
 	}
 	
 	@Test
 	public void testForwards() {
-		gamepad.ry = 1;
+		driver.ry = 1;
 		teleop.execute();
 		assertEquals("Left motor should be 1.0 when going forward",
 				1.0, left.getSpeed(), EPSILON);
@@ -39,7 +42,7 @@ public class TestTeleopCommand {
 	
 	@Test
 	public void testRotateLeft() {
-		gamepad.lx = 1;
+		driver.lx = 1;
 		teleop.execute();
 		assertEquals("Left motor should be moving forwards when the robot turns left",
 				1.0, left.getSpeed(), EPSILON);
@@ -49,7 +52,7 @@ public class TestTeleopCommand {
 
     @Test
     public void testRotateRight() {
-        gamepad.lx = -1;
+        driver.lx = -1;
         teleop.execute();
         assertEquals("Left motor should be moving backwards when the robot turns right",
                 -1.0, left.getSpeed(), EPSILON);
@@ -59,8 +62,8 @@ public class TestTeleopCommand {
 	
 	@Test
 	public void testRotateAndForwards() {
-		gamepad.ry = 1;
-		gamepad.lx = 0.5;
+		driver.ry = 1;
+		driver.lx = 0.5;
 		teleop.execute();
 		
 		assertEquals("Left motor should be at maximum speed",

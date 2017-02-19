@@ -15,25 +15,22 @@ import org.usfirst.frc.team1076.robot.subsystems.Winch;
  */
 public class TeleopCommand extends Command {
 	Drivetrain leftRight;
-	IGamepad gamepad;
+	IGamepad driver;
+	IGamepad operator;
 	Winch winch;
 	
-    public TeleopCommand(IGamepad gamepad, Drivetrain leftRight, Winch winch) {
+    public TeleopCommand(Drivetrain leftRight, IGamepad driver, IGamepad operator, Winch winch) {
          super(leftRight, winch); //Require the motors and winch
-         this.gamepad = gamepad;
+         this.driver = driver;
          this.leftRight = leftRight;
          this.winch = winch;
-    }
-    
-    public TeleopCommand(IGamepad gamepad, Drivetrain leftRight) {
-        this(gamepad, leftRight, new Winch(Mock.stoppedMotor()));
-        Strongback.logger().warn("TeleopCommand initalized without Winch, using mock winch instead");
+         this.operator = operator;
     }
 
     // Called repeatedly when this Command is scheduled to run
     public boolean execute() {
-        final double forward = gamepad.getStick(GamepadStick.Right).y; //.getAxis(GamepadAxis.RightY);
-        final double rotate = gamepad.getStick(GamepadStick.Left).x; //.getAxis(GamepadAxis.LeftX);
+        final double forward = driver.getStick(GamepadStick.Right).y; //.getAxis(GamepadAxis.RightY);
+        final double rotate = driver.getStick(GamepadStick.Left).x; //.getAxis(GamepadAxis.LeftX);
     	leftRight.arcade(forward, rotate);
     	
     	final double winch_extend = gamepad.getAxis(GamepadAxis.LeftTrigger);
