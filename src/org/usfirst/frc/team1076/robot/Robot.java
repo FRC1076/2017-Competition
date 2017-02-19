@@ -36,7 +36,8 @@ import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	Gamepad gamepad = new Gamepad(0);
+	Gamepad driver = new Gamepad(0);
+	Gamepad operator = new Gamepad(1);
 	Command autonomousCommand;
 	Motor left1 = Hardware.Motors.talonSRX(3);
 	Motor left2 = Hardware.Motors.talonSRX(4);
@@ -53,7 +54,7 @@ public class Robot extends IterativeRobot {
 	
 	DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
 	Winch winch = new Winch(winchMotors);
-	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, gamepad, winch);
+	TeleopCommand teleopCommand = new TeleopCommand(drivetrain, driver, operator, winch);
 	SendableChooser<Command> chooser = new SendableChooser<>();
 	Switch switchRight = Hardware.Switches.normallyClosed(1);
 	Switch switchLeft = Hardware.Switches.normallyClosed(0);
@@ -190,7 +191,7 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
 		drivetrain.updateProfile();
-        gamepad.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
+        driver.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
 	}
 	
 	/*
