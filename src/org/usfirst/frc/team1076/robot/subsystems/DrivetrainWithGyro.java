@@ -1,12 +1,8 @@
 package org.usfirst.frc.team1076.robot.subsystems;
 
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
-
 import org.strongback.Strongback;
 import org.strongback.components.Gyroscope;
 import org.strongback.components.Motor;
-import org.strongback.control.PIDController;
 import org.strongback.control.SoftwarePIDController;
 import org.strongback.control.SoftwarePIDController.SourceType;
 
@@ -14,7 +10,7 @@ public class DrivetrainWithGyro extends Drivetrain {
     public static double FORWARD_ASSIST_SENSITIVITY = 1.0;
     public static final double FORWARD_ASSIST_MAX_TURN_SPEED = 0.1;
     
-    public double P = 0.2;
+    public double P = 0.0;
     public double I = 0.0;
     public double D = 0.0;
     
