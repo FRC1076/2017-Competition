@@ -23,12 +23,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team1076.robot.commands.BrakeCommand;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
+import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcherOneButton;
 import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcherTwoButton;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
 import org.usfirst.frc.team1076.robot.commands.TurnWithVision;
+import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcherOneButton.SwitchType;
 import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
@@ -91,9 +93,9 @@ public class Robot extends IterativeRobot {
 		Strongback.start();
 		
 		pneumatics.automaticMode().on();
-		shifter.retract();
-		brake.retract();
-		holder.retract();
+		shifter.extend(); // Start low gear
+		brake.extend(); // Start brakes raised
+		holder.retract(); // Start doors down
 		
 		SmarterDashboard.putDefaultNumber("Deadzone", 0.2);
 		
@@ -221,7 +223,9 @@ public class Robot extends IterativeRobot {
         driver.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
         operator.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
         Strongback.submit(new BrakeCommand(brake, driver));
-        Strongback.submit(new SolenoidSwitcherTwoButton(shifter, driver, GamepadButton.LB, GamepadButton.RB));
+        // RB = high gear, no RB = low gear
+        Strongback.submit(new SolenoidSwitcherOneButton(shifter, driver, GamepadButton.RB, SwitchType.HOLD_RETRACT));
+        // LB = down, RB = up
         Strongback.submit(new SolenoidSwitcherTwoButton(holder, operator, GamepadButton.LB, GamepadButton.RB));
 	}
 	
