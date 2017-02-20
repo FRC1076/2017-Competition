@@ -16,6 +16,7 @@ import org.strongback.components.Motor;
 import org.strongback.components.PneumaticsModule;
 import org.strongback.components.Solenoid;
 import org.strongback.components.Switch;
+import org.strongback.components.TalonSRX;
 import org.strongback.hardware.Hardware;
 import org.strongback.mock.Mock;
 
@@ -48,19 +49,19 @@ public class Robot extends IterativeRobot {
 	Gamepad driver = new Gamepad(0);
 	Gamepad operator = new Gamepad(1);
 	Command autonomousCommand;
-	Motor left1 = Hardware.Motors.talonSRX(3);
-	Motor left2 = Hardware.Motors.talonSRX(4);
-	 Motor left = Motor.compose(left1, left2);
+	TalonSRX left1 = Hardware.Motors.talonSRX(3).enableBrakeMode(true);
+	TalonSRX left2 = Hardware.Motors.talonSRX(4).enableBrakeMode(true);
+	Motor left = Motor.compose(left1, left2);
 //	Motor left = Mock.stoppedMotor();
-	Motor right1 = Hardware.Motors.talonSRX(1);
-	Motor right2 = Hardware.Motors.talonSRX(2);
+	TalonSRX right1 = Hardware.Motors.talonSRX(1).enableBrakeMode(true);
+	TalonSRX right2 = Hardware.Motors.talonSRX(2).enableBrakeMode(true);
 	Motor right = Motor.compose(right1, right2).invert();
 //	Motor right = Mock.stoppedMotor();
-	Motor winch1 = Hardware.Motors.talonSRX(5);
-	Motor winch2 = Hardware.Motors.talonSRX(6);
+	TalonSRX winch1 = Hardware.Motors.talonSRX(5).enableBrakeMode(true);
+	TalonSRX winch2 = Hardware.Motors.talonSRX(6).enableBrakeMode(true);
 	Motor winchMotors = Motor.compose(winch1, winch2);
 //	Motor winchMotors = Mock.stoppedMotor();
-	
+	Gyroscope gyro2 = Hardware.AngleSensors.gyroscope(SPI.Port.kMXP);
 	PneumaticsModule pneumatics = Hardware.pneumaticsModule(0);
 //	PneumaticsModule pneumatics = Mock.pnuematicsModule();
     Solenoid shifter = Hardware.Solenoids.doubleSolenoid(0, 1, Solenoid.Direction.RETRACTING);
