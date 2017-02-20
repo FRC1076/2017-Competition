@@ -219,6 +219,7 @@ public class Robot extends IterativeRobot {
 			autonomousCommand.cancel();
 		drivetrain.updateProfile();
         driver.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
+        operator.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
         Strongback.submit(new BrakeCommand(brake, driver));
         Strongback.submit(new SolenoidSwitcherTwoButton(shifter, driver, GamepadButton.LB, GamepadButton.RB));
         Strongback.submit(new SolenoidSwitcherTwoButton(holder, operator, GamepadButton.LB, GamepadButton.RB));
