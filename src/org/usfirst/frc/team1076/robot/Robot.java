@@ -192,6 +192,7 @@ public class Robot extends IterativeRobot {
 			autonomousCommand.cancel();
 		drivetrain.updateProfile();
         driver.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
+        operator.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
 	}
 	
 	/*
