@@ -14,6 +14,8 @@ public class SolenoidSwitcherTwoButton extends Command {
     public SolenoidSwitcherTwoButton(Solenoid gearShifter, Gamepad gamepad, GamepadButton retractButton, GamepadButton extendButton) {
         this.gearShifter = gearShifter;
         this.gamepad = gamepad;
+        this.retractButton = retractButton;
+        this.extendButton = extendButton;
     }
     
     public boolean execute() {
@@ -22,7 +24,7 @@ public class SolenoidSwitcherTwoButton extends Command {
         } else if (gamepad.getButton(extendButton)) {
             gearShifter.extend();
         }
-        
+         
         return false;
     }
     
