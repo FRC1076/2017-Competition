@@ -17,9 +17,9 @@ public class BrakeCommand extends Command {
     
     public boolean execute() {
         final double trigger = gamepad.getAxis(GamepadAxis.RightTrigger);
-        if (trigger > 0.5) {
+        if (trigger < 0.5) { // Keep brakes up
             brake.extend();
-        } else {
+        } else { // Activate brakes
             brake.retract();
         }
         return false;
