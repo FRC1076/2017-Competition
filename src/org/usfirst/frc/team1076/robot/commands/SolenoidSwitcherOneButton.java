@@ -7,7 +7,7 @@ import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
 
 public class SolenoidSwitcherOneButton extends Command {
     public enum SwitchType {
-        HOLD, STICKY;
+        HOLD_EXTEND, HOLD_RETRACT, STICKY;
     }
     
     Solenoid gearShifter;
@@ -28,7 +28,7 @@ public class SolenoidSwitcherOneButton extends Command {
     public boolean execute() {
         if (type == SwitchType.STICKY) {
             stickyExecute();
-        } else if (type == SwitchType.HOLD) {
+        } else if (type == SwitchType.HOLD_EXTEND || type == SwitchType.HOLD_RETRACT) {
             holdExecute();
         }
         
@@ -48,14 +48,21 @@ public class SolenoidSwitcherOneButton extends Command {
         }
     }
     
-    
     public void holdExecute() {
         boolean buttonHeld = gamepad.getButton(button);
         // Button pressed edge
         if (buttonHeld && !lastButton) {
-            gearShifter.extend();
+            if (type == SwitchType.HOLD_EXTEND) {
+                gearShifter.extend();
+            } else if (type == SwitchType.HOLD_RETRACT) {
+                gearShifter.retract();
+            }
         } else if (!buttonHeld && lastButton) { // Button released edge
-            gearShifter.retract();
+            if (type == SwitchType.HOLD_EXTEND) {
+                gearShifter.retract();
+            } else if (type == SwitchType.HOLD_RETRACT) {
+                gearShifter.extend();
+            }
         }
     }
 }
