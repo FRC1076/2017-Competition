@@ -7,7 +7,7 @@ import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
 
 public class SolenoidSwitcherOneButton extends Command {
     public enum SwitchType {
-        HOLD_EXTEND, HOLD_RETRACT, STICKY;
+        ON_HOLD_EXTEND, ON_HOLD_RETRACT, STICKY;
     }
     
     Solenoid gearShifter;
@@ -28,8 +28,10 @@ public class SolenoidSwitcherOneButton extends Command {
     public boolean execute() {
         if (type == SwitchType.STICKY) {
             stickyExecute();
-        } else if (type == SwitchType.HOLD_EXTEND || type == SwitchType.HOLD_RETRACT) {
-            holdExecute();
+        } else if (type == SwitchType.ON_HOLD_EXTEND) {
+            onHoldExtendExecute();
+        } else if (type == SwitchType.ON_HOLD_RETRACT) {
+            onHoldRetractExecute();
         }
         
         lastButton = gamepad.getButton(button);
@@ -48,21 +50,23 @@ public class SolenoidSwitcherOneButton extends Command {
         }
     }
     
-    public void holdExecute() {
+    public void onHoldExtendExecute() {
         boolean buttonHeld = gamepad.getButton(button);
         // Button pressed edge
         if (buttonHeld && !lastButton) {
-            if (type == SwitchType.HOLD_EXTEND) {
-                gearShifter.extend();
-            } else if (type == SwitchType.HOLD_RETRACT) {
-                gearShifter.retract();
-            }
+            gearShifter.extend();
         } else if (!buttonHeld && lastButton) { // Button released edge
-            if (type == SwitchType.HOLD_EXTEND) {
-                gearShifter.retract();
-            } else if (type == SwitchType.HOLD_RETRACT) {
-                gearShifter.extend();
-            }
+            gearShifter.retract();
         }
+    }
+    
+    public void onHoldRetractExecute() {
+        boolean buttonHeld = gamepad.getButton(button);
+        // Button pressed edge
+        if (buttonHeld && !lastButton) {
+            gearShifter.retract();
+        } else if (!buttonHeld && lastButton) { // Button released edge
+            gearShifter.extend();
+        }        
     }
 }

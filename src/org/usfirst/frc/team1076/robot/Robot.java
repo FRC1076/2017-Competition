@@ -94,9 +94,12 @@ public class Robot extends IterativeRobot {
 		Strongback.start();
 		
 		pneumatics.automaticMode().on();
+		// Extend = low gear, retract = high gear
 		shifter.extend(); // Start low gear
-		brake.extend(); // Start brakes raised
-		holder.retract(); // Start doors down
+		// Extend = brake, retract = no brake
+		brake.retract(); // Start brakes raised
+		// Extend = doors up, retract = doors down
+//		holder.retract(); // Start doors down
 		
 		SmarterDashboard.putDefaultNumber("Deadzone", 0.2);
 		
@@ -223,9 +226,10 @@ public class Robot extends IterativeRobot {
 		drivetrain.updateProfile();
         driver.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
         operator.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
-        Strongback.submit(new BrakeCommand(brake, driver));
+        // LB = brake on, no RB = brake off
+        Strongback.submit(new SolenoidSwitcherOneButton(brake, driver, GamepadButton.LB, SwitchType.ON_HOLD_EXTEND));
         // RB = high gear, no RB = low gear
-        Strongback.submit(new SolenoidSwitcherOneButton(shifter, driver, GamepadButton.RB, SwitchType.HOLD_RETRACT));
+        Strongback.submit(new SolenoidSwitcherOneButton(shifter, driver, GamepadButton.RB, SwitchType.ON_HOLD_RETRACT));
         // LB = down, RB = up
         Strongback.submit(new SolenoidSwitcherTwoButton(holder, operator, GamepadButton.LB, GamepadButton.RB));
 	}
