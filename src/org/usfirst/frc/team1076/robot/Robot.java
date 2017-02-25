@@ -153,16 +153,14 @@ public class Robot extends IterativeRobot {
             TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, turn_speed, turnAmount);
             turn.reduction_factor = SmarterDashboard.getNumber("Turn Reduction Factor", 0.7);
             turn.reduction_threshold = SmarterDashboard.getNumber("Turn Reduction Threshold", 30);
-            ForwardWithGyro forward2 = new ForwardWithGyro(gyro, drivetrain, speed, driveTime);
-//            ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
-            leftAuto = CommandGroup.runSequentially(forward, turn, forward2);
+            ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
+            leftAuto = CommandGroup.runSequentially(forward, turn, vision);
         }
         // CENTER
         {
             double vision_speed_center = 0.5;
             double vision_time_center = vision_time*1.5;
-            ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, driveTime);
-            centerAuto = forward; // new ForwardWithVision(drivetrainVision, 10, vision_speed_center, vision_time_center);
+            centerAuto = new ForwardWithVision(drivetrainVision, 10, vision_speed_center, vision_time_center);
         }
         // RIGHT
         {
@@ -170,9 +168,8 @@ public class Robot extends IterativeRobot {
             TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, turn_speed, -turnAmount);
             turn.reduction_factor = SmarterDashboard.getNumber("Turn Reduction Factor", 0.7);
             turn.reduction_threshold = SmarterDashboard.getNumber("Turn Reduction Threshold", 30);
-            ForwardWithGyro forward2 = new ForwardWithGyro(gyro, drivetrain, speed, driveTime);
-//            ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
-            rightAuto = CommandGroup.runSequentially(forward, turn, forward2);
+            ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
+            rightAuto = CommandGroup.runSequentially(forward, turn, vision);
         }
         // NONE
         {
