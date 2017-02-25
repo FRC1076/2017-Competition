@@ -23,9 +23,8 @@ public class ForwardWithVision extends Command {
     @Override
     public boolean execute() {
         receiver.receive();
-        double distance = receiver.getData().getRange();
         drivetrain.arcade(speed, 0);
-        return distance < goalDistance;
+        return false;
     }
     
     @Override
