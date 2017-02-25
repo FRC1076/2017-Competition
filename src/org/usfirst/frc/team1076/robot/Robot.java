@@ -92,6 +92,9 @@ public class Robot extends IterativeRobot {
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
+	
+	Command leftAuto, centerAuto, rightAuto, noAuto, testAuto;
+	
 	@Override
 	public void robotInit() {
 		Strongback.start();
@@ -116,15 +119,16 @@ public class Robot extends IterativeRobot {
 		SmarterDashboard.putDefaultNumber("Turn Amount", 60.0);
 		SmarterDashboard.putDefaultNumber("Speed", 0.25);
 		
-		SmarterDashboard.putDefaultNumber("Gyro P", 0.0);
+		SmarterDashboard.putDefaultNumber("Gyro P", 6.0);
 		SmarterDashboard.putDefaultNumber("Gyro I", 0.0);
 		SmarterDashboard.putDefaultNumber("Gyro D", 0.0);
 
-        SmarterDashboard.putDefaultNumber("Vision P", 0.0);
+        SmarterDashboard.putDefaultNumber("Vision P", 3.0);
         SmarterDashboard.putDefaultNumber("Vision I", 0.0);
         SmarterDashboard.putDefaultNumber("Vision D", 0.0);
-		
         SmarterDashboard.putDefaultNumber("Vision Norm Factor", 45.0);
+        
+        
 		SmarterDashboard.putDefaultNumber("Turn Reduction Factor", 1.0);
 		SmarterDashboard.putDefaultNumber("Turn Reduction Threshold", 30);
 		
@@ -133,6 +137,55 @@ public class Robot extends IterativeRobot {
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
+		
+		 drivetrainVision = new DrivetrainWithVision(left, right, receiver);
+		
+        // AUTONOMOUS SETUP
+        double driveTime = 2.0; // SmarterDashboard.getNumber("Drive Time", 5.0);
+        double turnAmount = 60.0; // SmarterDashboard.getNumber("Turn Amount", 60.0);
+        double speed = 0.5; // SmarterDashboard.getNumber("Speed", 0.25);
+        double turn_speed = 0.4;
+        double vision_speed = 0.5;
+        double vision_time = 2.5;
+        // LEFT
+        {
+            ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, driveTime);
+            TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, turn_speed, turnAmount);
+            turn.reduction_factor = SmarterDashboard.getNumber("Turn Reduction Factor", 0.7);
+            turn.reduction_threshold = SmarterDashboard.getNumber("Turn Reduction Threshold", 30);
+            ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
+            leftAuto = CommandGroup.runSequentially(forward, turn, vision);
+        }
+        // CENTER
+        {
+            double vision_speed_center = 0.5;
+            double vision_time_center = vision_time*1.5;
+            centerAuto = new ForwardWithVision(drivetrainVision, 10, vision_speed_center, vision_time_center);
+        }
+        // RIGHT
+        {
+            ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, driveTime);
+            TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, turn_speed, -turnAmount);
+            turn.reduction_factor = SmarterDashboard.getNumber("Turn Reduction Factor", 0.7);
+            turn.reduction_threshold = SmarterDashboard.getNumber("Turn Reduction Threshold", 30);
+            ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
+            rightAuto = CommandGroup.runSequentially(forward, turn, vision);
+        }
+        // NONE
+        {
+            noAuto = Command.create(() -> {});
+        }
+        // TEST
+        {
+            testAuto = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
+        }
+		
+		chooser.addObject("Left Autonomous", leftAuto);
+        chooser.addObject("Center Autonomous", centerAuto);
+        chooser.addObject("Right Autonomous", rightAuto);
+        chooser.addDefault("Disable Autonomous", noAuto);
+        chooser.addObject("Test Autonomous", testAuto);
+
 		SmarterDashboard.putData("Auto mode", chooser);
 		refreshDrivetrainValues();
 	}
@@ -147,6 +200,7 @@ public class Robot extends IterativeRobot {
 	    Strongback.killAllCommands();
 		gyro.zero();
 		refreshDrivetrainValues();
+		autonomousCommand = chooser.getSelected();
 	}
 	
 	int debugCount = 0;
@@ -185,31 +239,15 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 	    refreshDrivetrainValues();
-	    
-        double driveTime = SmarterDashboard.getNumber("Drive Time", 5.0);
-        double turnAmount = SmarterDashboard.getNumber("Turn Amount", 60.0);
-        double speed = SmarterDashboard.getNumber("Speed", 0.25);
-	    ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, driveTime);
-	    TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, speed, turnAmount);
-	    turn.reduction_factor = SmarterDashboard.getNumber("Turn Reduction Factor", 0.7);
-	    turn.reduction_threshold = SmarterDashboard.getNumber("Turn Reduction Threshold", 30);
-	     ForwardWithVision vision_turn = new ForwardWithVision(drivetrainVision, 10, 0.1);
-//	    ForwardWithVision
-	    autonomousCommand = CommandGroup.runSequentially(forward, turn, vision_turn, forward);
-//		autonomousCommand = new ForwardWithGyro(gyro, drivetrain, 0.25, driveTime);
-//		autonomousCommand = turn;
-		/*
-		 * String autoSelected = SmarterDashboard.getString("Auto Selector",
-		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-		 * = new MyAutoCommand(); break; case "Default Auto": default:
-		 * autonomousCommand = new ExampleCommand(); break; }
-		 */
+
+	    autonomousCommand = chooser.getSelected();
+        
+        if (autonomousCommand != null)
+            Strongback.submit(autonomousCommand);
+        
         if (debugCount++ % 100 == 0) {
 //            Strongback.logger().info("Gyro: " + gyro.getAngle());
         };
-		// schedule the autonomous command (example)
-        if (autonomousCommand != null)
-			Strongback.submit(autonomousCommand);
 	}
 
 	/**
