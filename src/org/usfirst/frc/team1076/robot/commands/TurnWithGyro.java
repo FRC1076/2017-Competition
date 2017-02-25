@@ -54,10 +54,8 @@ public class TurnWithGyro extends Command {
             drivetrain.setRightSpeed(speed);
         }
         if (isFinished()) {
-            Strongback.logger().info("done, gyro=" + gyro.getAngle());
             return true;
         } else {
-            Strongback.logger().info("not done, gyro=" + gyro.getAngle());
             return false;
         }
     }
