@@ -112,12 +112,13 @@ public class Robot extends IterativeRobot {
 		SmarterDashboard.putDefaultNumber("Left Factor", 1);
 		SmarterDashboard.putDefaultNumber("Right Factor", 1);
 		// chooser.addObject("My Auto", new MyAutoCommand());
-		SmarterDashboard.putDefaultNumber("Show Vision", 1);
-		SmarterDashboard.putDefaultNumber("Teleop Sensitivity", 1.0);
 		
-		SmarterDashboard.putDefaultNumber("Drive Time", 5.0);
+		SmarterDashboard.putDefaultNumber("First Drive Time", 2.0);
+		SmarterDashboard.putDefaultNumber("First Drive Speed", 0.5);
 		SmarterDashboard.putDefaultNumber("Turn Amount", 60.0);
-		SmarterDashboard.putDefaultNumber("Speed", 0.25);
+		SmarterDashboard.putDefaultNumber("Turn Speed", 0.4);
+        SmarterDashboard.putDefaultNumber("Second Drive Time", 2.5);
+        SmarterDashboard.putDefaultNumber("Second Drive Speed", 0.5);		
 		
 		SmarterDashboard.putDefaultNumber("Gyro P", 6.0);
 		SmarterDashboard.putDefaultNumber("Gyro I", 0.0);
@@ -141,12 +142,13 @@ public class Robot extends IterativeRobot {
 		 drivetrainVision = new DrivetrainWithVision(left, right, receiver);
 		
         // AUTONOMOUS SETUP
-        double driveTime = 2.0; // SmarterDashboard.getNumber("Drive Time", 5.0);
-        double turnAmount = 60.0; // SmarterDashboard.getNumber("Turn Amount", 60.0);
-        double speed = 0.5; // SmarterDashboard.getNumber("Speed", 0.25);
-        double turn_speed = 0.4;
-        double vision_speed = 0.5;
-        double vision_time = 2.5;
+        double driveTime = SmarterDashboard.getNumber("First Drive Time", 2.0);
+        double speed = SmarterDashboard.getNumber("First Drive Speed", 0.5);
+        double turnAmount = SmarterDashboard.getNumber("Turn Amount", 60.0);
+        double turn_speed = SmarterDashboard.getNumber("Turn Speed", 0.4);
+        double vision_time = SmarterDashboard.getNumber("Second Drive Time", 2.5);
+        double vision_speed = SmarterDashboard.getNumber("Second Drive Speed", 0.5);
+        
         // LEFT
         {
             ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, driveTime);
