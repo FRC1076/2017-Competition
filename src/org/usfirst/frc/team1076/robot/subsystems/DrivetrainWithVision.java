@@ -8,7 +8,7 @@ import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
 public class DrivetrainWithVision extends Drivetrain {
     public static final int ERROR_TRESHHOLD = 5;
-    
+    public double VISION_NORMAL = 45.0;
     public double P = 0.0;
     public double I = 0.0;
     public double D = 0.0;
@@ -21,8 +21,8 @@ public class DrivetrainWithVision extends Drivetrain {
     public DrivetrainWithVision(Motor left, Motor right, VisionReceiver receiver) {
         super(left, right);
         this.receiver = receiver;
-        PID = new SoftwarePIDController(SourceType.DISTANCE,
-                                        ()->receiver.getData().getHeading(),
+        PID = new SoftwarePIDController(SourceType.DISTANCE, // Negative because heading is reverse to gyro
+                                        ()->-receiver.getData().getHeading()/VISION_NORMAL,
                                         this::getPIDOutputValue);
         PID.withInputRange(-1.0, 1.0);
         PID.withTarget(0);
@@ -54,6 +54,9 @@ public class DrivetrainWithVision extends Drivetrain {
     }
     
     public void updateProfile() {
+        if (P == 0 && I == 0 && D == 0) {
+            Strongback.logger().warn("Vision PID is all zero!");
+        }
         PID.withProfile(0, P, I, D);
     }
     

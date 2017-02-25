@@ -124,6 +124,7 @@ public class Robot extends IterativeRobot {
         SmarterDashboard.putDefaultNumber("Vision I", 0.0);
         SmarterDashboard.putDefaultNumber("Vision D", 0.0);
 		
+        SmarterDashboard.putDefaultNumber("Vision Norm Factor", 45.0);
 		SmarterDashboard.putDefaultNumber("Turn Reduction Factor", 1.0);
 		SmarterDashboard.putDefaultNumber("Turn Reduction Threshold", 30);
 		
@@ -257,6 +258,7 @@ public class Robot extends IterativeRobot {
 	    drivetrainVision.P = SmarterDashboard.getNumber("Vision P", 3.0); 
 	    drivetrainVision.I = SmarterDashboard.getNumber("Vision I", 0); 
 	    drivetrainVision.D = SmarterDashboard.getNumber("Vision D", 0);
+	    drivetrainVision.VISION_NORMAL = SmarterDashboard.getNumber("Vision Norm Factor", 45.0);
 	    drivetrain.updateProfile();
 	    drivetrainVision.updateProfile();
     }
