@@ -87,7 +87,7 @@ public class Robot extends IterativeRobot {
 	VisionReceiver receiver;
 	public static final String IP = "0.0.0.0"; // "10.10.76.22";
 	public static final int VISION_PORT = 5880;
-	DrivetrainWithVision drivetrainVision = new DrivetrainWithVision(left, right, receiver);
+	DrivetrainWithVision drivetrainVision;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -133,6 +133,7 @@ public class Robot extends IterativeRobot {
 			e.printStackTrace();
 		}
 		SmarterDashboard.putData("Auto mode", chooser);
+		refreshDrivetrainValues();
 	}
 
 	/**
@@ -144,7 +145,7 @@ public class Robot extends IterativeRobot {
 	public void disabledInit() {
 	    Strongback.killAllCommands();
 		gyro.zero();
-		drivetrain.updateProfile();
+		refreshDrivetrainValues();
 	}
 	
 	int debugCount = 0;
@@ -247,14 +248,17 @@ public class Robot extends IterativeRobot {
 	 * drivetrain.
 	 */
     private void refreshDrivetrainValues() {
+        Strongback.logger().info("Refreshed PID values");        
         drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
         drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
-        drivetrain.P = SmarterDashboard.getNumber("Gyro P", 0); 
+        drivetrain.P = SmarterDashboard.getNumber("Gyro P", 6.0); 
 	    drivetrain.I = SmarterDashboard.getNumber("Gyro I", 0); 
 	    drivetrain.D = SmarterDashboard.getNumber("Gyro D", 0);
-	    drivetrainVision.P = SmarterDashboard.getNumber("Vision P", 0); 
+	    drivetrainVision.P = SmarterDashboard.getNumber("Vision P", 3.0); 
 	    drivetrainVision.I = SmarterDashboard.getNumber("Vision I", 0); 
 	    drivetrainVision.D = SmarterDashboard.getNumber("Vision D", 0);
+	    drivetrain.updateProfile();
+	    drivetrainVision.updateProfile();
     }
 
 	/**
