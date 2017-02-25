@@ -2,6 +2,7 @@
 package org.usfirst.frc.team1076.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team1076.robot.commands.BrakeCommand;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
+import org.usfirst.frc.team1076.robot.commands.ForwardWithVision;
 import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcherOneButton;
 import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcherTwoButton;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
@@ -35,6 +37,7 @@ import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcherOneButton.SwitchT
 import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
+import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithVision;
 import org.usfirst.frc.team1076.robot.subsystems.Winch;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
@@ -75,16 +78,17 @@ public class Robot extends IterativeRobot {
 	Gyroscope gyro = Hardware.AngleSensors.gyroscope(0);
 	
 	DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
+	
 	Winch winch = new Winch(winchMotors);
-	TeleopCommand teleopCommand = new TeleopCommand(drivetrain, driver, operator, winch);
-//	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, driver, operator, winch);
+//	TeleopCommand teleopCommand = new TeleopCommand(drivetrain, driver, operator, winch);
+	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, driver, operator, winch);
 	SendableChooser<Command> chooser = new SendableChooser<>();
 	Switch switchRight = Hardware.Switches.normallyClosed(1);
 	Switch switchLeft = Hardware.Switches.normallyClosed(0);
 	VisionReceiver receiver;
 	public static final String IP = "0.0.0.0"; // "10.10.76.22";
 	public static final int VISION_PORT = 5880;
-	
+	DrivetrainWithVision drivetrainVision = new DrivetrainWithVision(left, right, receiver);
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -113,11 +117,15 @@ public class Robot extends IterativeRobot {
 		SmarterDashboard.putDefaultNumber("Turn Amount", 60.0);
 		SmarterDashboard.putDefaultNumber("Speed", 0.25);
 		
-		SmarterDashboard.putDefaultNumber("P", 0.0);
-		SmarterDashboard.putDefaultNumber("I", 0.0);
-		SmarterDashboard.putDefaultNumber("D", 0.0);
+		SmarterDashboard.putDefaultNumber("Gyro P", 0.0);
+		SmarterDashboard.putDefaultNumber("Gyro I", 0.0);
+		SmarterDashboard.putDefaultNumber("Gyro D", 0.0);
+
+        SmarterDashboard.putDefaultNumber("Vision P", 0.0);
+        SmarterDashboard.putDefaultNumber("Vision I", 0.0);
+        SmarterDashboard.putDefaultNumber("Vision D", 0.0);
 		
-		SmarterDashboard.putDefaultNumber("Turn Reduction Factor", 0.7);
+		SmarterDashboard.putDefaultNumber("Turn Reduction Factor", 1.0);
 		SmarterDashboard.putDefaultNumber("Turn Reduction Threshold", 30);
 		
 		try {
@@ -145,14 +153,14 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
-		if (debugCount++ % 100 == 0 && SmarterDashboard.getNumber("Show Vision", 0) == 1) {
-//			if (receiver == null) {
-//				Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
-//			} else {
-//				receiver.receive();
-//				Strongback.logger().info(receiver.getData().toString());
-//			}
-			System.out.println("Gyro: " + gyro.getAngle());
+		if (debugCount++ % 100 == 0) {
+			if (receiver == null) {
+				Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
+			} else {
+				receiver.receive();
+				Strongback.logger().info("debug" + receiver.getData().toString());
+			}
+//			System.out.println("Gyro: " + gyro.getAngle());
 //			System.out.println("P: " + drivetrain.P);
 //			System.out.println("I: " + drivetrain.I);
 //			System.out.println("D: " + drivetrain.D);
@@ -184,7 +192,8 @@ public class Robot extends IterativeRobot {
 	    TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, speed, turnAmount);
 	    turn.reduction_factor = SmarterDashboard.getNumber("Turn Reduction Factor", 0.7);
 	    turn.reduction_threshold = SmarterDashboard.getNumber("Turn Reduction Threshold", 30);
-	    TurnWithVision vision_turn = new TurnWithVision(drivetrain, receiver, speed);
+	     ForwardWithVision vision_turn = new ForwardWithVision(drivetrainVision, 10, 0.1);
+//	    ForwardWithVision
 	    autonomousCommand = CommandGroup.runSequentially(forward, turn, vision_turn, forward);
 //		autonomousCommand = new ForwardWithGyro(gyro, drivetrain, 0.25, driveTime);
 //		autonomousCommand = turn;
@@ -198,7 +207,7 @@ public class Robot extends IterativeRobot {
 //            Strongback.logger().info("Gyro: " + gyro.getAngle());
         };
 		// schedule the autonomous command (example)
-		if (autonomousCommand != null)
+        if (autonomousCommand != null)
 			Strongback.submit(autonomousCommand);
 	}
 
@@ -241,9 +250,12 @@ public class Robot extends IterativeRobot {
     private void refreshDrivetrainValues() {
         drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
         drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
-        drivetrain.P = SmarterDashboard.getNumber("P", 0); 
-	    drivetrain.I = SmarterDashboard.getNumber("I", 0); 
-	    drivetrain.D = SmarterDashboard.getNumber("D", 0);
+        drivetrain.P = SmarterDashboard.getNumber("Gyro P", 0); 
+	    drivetrain.I = SmarterDashboard.getNumber("Gyro I", 0); 
+	    drivetrain.D = SmarterDashboard.getNumber("Gyro D", 0);
+	    drivetrainVision.P = SmarterDashboard.getNumber("Vision P", 0); 
+	    drivetrainVision.I = SmarterDashboard.getNumber("Vision I", 0); 
+	    drivetrainVision.D = SmarterDashboard.getNumber("Vision D", 0);
     }
 
 	/**
@@ -251,17 +263,14 @@ public class Robot extends IterativeRobot {
 	 */
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-//		System.out.println(gyro.getAngle());
 		if (debugCount++ % 100 == 0) {
-//		    Strongback.logger().info("PID Change: " + drivetrain.computedValue);
-		    Strongback.logger().info("Shifter: " + shifter.getDirection().toString());
-		    Strongback.logger().info("Brakes: " + brake.getDirection().toString());
-		    Strongback.logger().info("Holder: " + holder.getDirection().toString());
-		};
+		    System.out.println("Gyro:"  + gyro.getAngle());
+		    System.out.println("PID correct" + drivetrain.computedValue);
+		}
 		
 //		drivetrain.debugPID();
 	}
-
+	
 	/**
 	 * This function is called periodically during test mode
 	 */

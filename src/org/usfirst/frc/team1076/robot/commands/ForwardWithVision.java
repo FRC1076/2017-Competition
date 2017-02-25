@@ -1,0 +1,34 @@
+package org.usfirst.frc.team1076.robot.commands;
+
+import org.strongback.command.Command;
+import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithVision;
+import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
+
+public class ForwardWithVision extends Command {
+    Drivetrain drivetrain;
+    VisionReceiver receiver;
+    double speed;
+    double goalDistance;
+    
+    public ForwardWithVision(DrivetrainWithVision drivetrain, double distance, double speed) {
+        super(5.0);
+        this.drivetrain = drivetrain;
+        this.receiver = drivetrain.getReceiver();
+        this.speed = speed;
+        this.goalDistance = distance;
+    }
+    
+    @Override
+    public boolean execute() {
+        receiver.receive();
+        double distance = receiver.getData().getRange();
+        drivetrain.arcade(speed, 0);
+        return distance < goalDistance;
+    }
+    
+    @Override
+    public void end() {
+        drivetrain.stop();
+    }
+}
