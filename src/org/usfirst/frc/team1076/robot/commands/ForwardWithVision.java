@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1076.robot.commands;
 
+import org.strongback.Strongback;
 import org.strongback.command.Command;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithVision;
@@ -11,8 +12,8 @@ public class ForwardWithVision extends Command {
     double speed;
     double goalDistance;
     
-    public ForwardWithVision(DrivetrainWithVision drivetrain, double distance, double speed) {
-        super(5.0);
+    public ForwardWithVision(DrivetrainWithVision drivetrain, double distance, double speed, double time) {
+        super(time);
         this.drivetrain = drivetrain;
         this.receiver = drivetrain.getReceiver();
         this.speed = speed;
