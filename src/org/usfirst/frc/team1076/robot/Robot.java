@@ -64,7 +64,6 @@ public class Robot extends IterativeRobot {
 	TalonSRX winch2 = Hardware.Motors.talonSRX(6).enableBrakeMode(true);
 	Motor winchMotors = Motor.compose(winch1, winch2);
 //	Motor winchMotors = Mock.stoppedMotor();
-	Gyroscope gyro2 = Hardware.AngleSensors.gyroscope(SPI.Port.kMXP);
 	PneumaticsModule pneumatics = Hardware.pneumaticsModule(0);
 //	PneumaticsModule pneumatics = Mock.pnuematicsModule();
     Solenoid shifter = Hardware.Solenoids.doubleSolenoid(0, 1, Solenoid.Direction.RETRACTING);
@@ -75,7 +74,7 @@ public class Robot extends IterativeRobot {
 //	Solenoid brake = Mock.manualSolenoid();
 //	Solenoid holder = Mock.manualSolenoid();
 	
-	Gyroscope gyro = Hardware.AngleSensors.gyroscope(0);
+	Gyroscope gyro = Hardware.AngleSensors.gyroscope(SPI.Port.kOnboardCS0);
 	
 	DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
 	
