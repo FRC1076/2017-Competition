@@ -14,7 +14,6 @@ import org.usfirst.frc.team1076.robot.subsystems.Winch;
  * This command is intended to run continuously for the entire lifetime of the teleop mode.
  */
 public class TeleopCommand extends Command {
-	public static final double ROTATE_FACTOR = 0.8;
     Drivetrain leftRight;
 	IGamepad driver;
 	IGamepad operator;
@@ -31,7 +30,7 @@ public class TeleopCommand extends Command {
     // Called repeatedly when this Command is scheduled to run
     public boolean execute() {
         final double forward = driver.getStick(GamepadStick.Right).y; //.getAxis(GamepadAxis.RightY);
-        final double rotate = driver.getStick(GamepadStick.Left).x * ROTATE_FACTOR; //.getAxis(GamepadAxis.LeftX);
+        final double rotate = driver.getStick(GamepadStick.Left).x; //.getAxis(GamepadAxis.LeftX);
         // Makes the robot drive left (from the robot's perspective) when driving backwards
         // instead of driving left from the driver's perspective.
         if (forward >= 0) {
