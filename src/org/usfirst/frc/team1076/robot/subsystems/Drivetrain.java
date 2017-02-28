@@ -13,6 +13,7 @@ public class Drivetrain implements Requirable {
 	public double rightFactor = 1.0;
 	Motor leftMotor;
 	Motor rightMotor;
+	boolean enabled = true;
 	
 	/**
 	 * Constructs on instance of LeftRightMotors, passing it two motor controllers
@@ -30,7 +31,11 @@ public class Drivetrain implements Requirable {
 	 * @param speed in the range -1 to 1 inclusive.
 	 */
 	public void setLeftSpeed(double speed) {
-		this.leftMotor.setSpeed(speed * leftFactor);
+	    if (enabled) {
+	        leftMotor.setSpeed(speed * leftFactor);
+	    } else {
+	        leftMotor.setSpeed(0);
+	    }
 	}
 
 	/**
@@ -38,7 +43,12 @@ public class Drivetrain implements Requirable {
 	 * @param speed in the range -1 to 1 inclusive.
 	 */
 	public void setRightSpeed(double speed) {
-		this.rightMotor.setSpeed(speed * rightFactor);
+	    if (enabled) {
+	        rightMotor.setSpeed(speed * rightFactor);
+	    } else {
+	        rightMotor.setSpeed(0);
+	    }
+		
 	}
 	
 	/**
@@ -82,6 +92,14 @@ public class Drivetrain implements Requirable {
             result = Math.max(result, Math.abs(item));
         }
         return result;
+    }
+    
+    public void enable() {
+        enabled = true;
+    }
+    
+    public void disable() {
+        enabled = false;
     }
 }
 
