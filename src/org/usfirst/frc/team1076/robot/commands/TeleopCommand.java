@@ -41,11 +41,11 @@ public class TeleopCommand extends Command {
 
         // Makes the robot drive left (from the robot's perspective) when driving backwards
         // instead of driving left from the driver's perspective.
-        if (forward >= 0) {
-            leftRight.arcade(forward, rotate*Math.abs(rotate));
-        } else {
-            leftRight.arcade(forward, -(rotate*Math.abs(rotate)));
-        }
+//        if (forward >= 0) {
+          leftRight.arcade(forward, rotate*Math.abs(rotate));
+//        } else {
+//            leftRight.arcade(forward, -(rotate*Math.abs(rotate)));
+//        }
         final double winchSpeed = operator.getStick(GamepadStick.Left).y;
         // Ideally you shouldn't press both buttons at the same time, however
         // taking the difference of the two is a simple way of allowing both actions
