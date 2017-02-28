@@ -7,7 +7,6 @@ import org.strongback.control.SoftwarePIDController;
 import org.strongback.control.SoftwarePIDController.SourceType;
 
 public class DrivetrainWithGyro extends Drivetrain {
-    public static double FORWARD_ASSIST_SENSITIVITY = 1.0;
     public static final double FORWARD_ASSIST_MAX_TURN_SPEED = 0.1;
     
     public double P = 0.0;
@@ -19,6 +18,7 @@ public class DrivetrainWithGyro extends Drivetrain {
     int previousSign = 0;
     Gyroscope gyro;
     SoftwarePIDController PID;
+    
     
     public DrivetrainWithGyro(Motor left, Motor right, Gyroscope gyro) {
         super(left, right);

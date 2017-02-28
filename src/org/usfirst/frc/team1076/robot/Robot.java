@@ -107,8 +107,6 @@ public class Robot extends IterativeRobot {
 		// Extend = doors up, retract = doors down
 //		holder.retract(); // Start doors down
 		
-		SmarterDashboard.putDefaultNumber("Deadzone", 0.2);
-		
 		SmarterDashboard.putDefaultNumber("Left Factor", 1);
 		SmarterDashboard.putDefaultNumber("Right Factor", 1);
 		// chooser.addObject("My Auto", new MyAutoCommand());
@@ -204,26 +202,11 @@ public class Robot extends IterativeRobot {
 		autonomousCommand = chooser.getSelected();
 	}
 	
-	int debugCount = 0;
+	
 
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
-		if (debugCount++ % 100 == 0) {
-			if (receiver == null) {
-				Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
-			} else {
-				receiver.receive();
-				Strongback.logger().info("debug" + receiver.getData().toString());
-			}
-//			System.out.println("Gyro: " + gyro.getAngle());
-//			System.out.println("P: " + drivetrain.P);
-//			System.out.println("I: " + drivetrain.I);
-//			System.out.println("D: " + drivetrain.D);
-//			System.out.println("Left Switch: " + switchLeft.isTriggered());
-//			System.out.println("Right Switch: " + switchRight.isTriggered());
-
-		}
 	}
 
 	/**
@@ -245,10 +228,6 @@ public class Robot extends IterativeRobot {
         
         if (autonomousCommand != null)
             Strongback.submit(autonomousCommand);
-        
-        if (debugCount++ % 100 == 0) {
-//            Strongback.logger().info("Gyro: " + gyro.getAngle());
-        };
 	}
 
 	/**
@@ -257,24 +236,19 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		if (debugCount++ % 100 == 0) {
-		    Strongback.logger().info(receiver.getData().toString());
-		}
 	}
 
 	@Override
 	public void teleopInit() {
 	    refreshDrivetrainValues(); 
 	    
-	    DrivetrainWithGyro.FORWARD_ASSIST_SENSITIVITY = SmarterDashboard.getNumber("Teleop Sensitivity", 1.0);
-	    
-		Strongback.logger().info("I LIVE!");
 		Strongback.submit(teleopCommand);
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
+		
 		drivetrain.updateProfile();
-        driver.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
-        operator.deadzone = SmarterDashboard.getNumber("Deadzone", 0.2);
+        driver.deadzone = 0.2;
+        operator.deadzone = 0.2;
         // LB = brake on, no RB = brake off
         Strongback.submit(new SolenoidSwitcherOneButton(brake, driver, GamepadButton.LB, SwitchType.ON_HOLD_EXTEND));
         // RB = high gear, no RB = low gear
@@ -318,7 +292,22 @@ public class Robot extends IterativeRobot {
 	/**
 	 * This function is called periodically during test mode
 	 */
+	int debugCount = 0;
 	public void testPeriodic() {
+        if (debugCount++ % 100 == 0) {
+            if (receiver == null) {
+                Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
+            } else {
+                receiver.receive();
+                Strongback.logger().info("Vision: " + receiver.getData().toString());
+            }
+            System.out.println("Gyro: " + gyro.getAngle());
+            System.out.println("P: " + drivetrain.P);
+            System.out.println("I: " + drivetrain.I);
+            System.out.println("D: " + drivetrain.D);
+//          System.out.println("Left Switch: " + switchLeft.isTriggered());
+//          System.out.println("Right Switch: " + switchRight.isTriggered());
+        }
 		LiveWindow.run();
 	}
 }
