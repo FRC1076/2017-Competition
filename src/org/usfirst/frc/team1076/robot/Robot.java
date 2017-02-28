@@ -1,9 +1,11 @@
 
 package org.usfirst.frc.team1076.robot;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 import java.net.SocketException;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import org.usfirst.frc.team1076.robot.commands.BrakeCommand;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithVision;
+import org.usfirst.frc.team1076.robot.commands.RecalibrateGyro;
 import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcherOneButton;
 import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcherTwoButton;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
@@ -73,8 +76,9 @@ public class Robot extends IterativeRobot {
 //	Solenoid shifter = Mock.manualSolenoid();
 //	Solenoid brake = Mock.manualSolenoid();
 //	Solenoid holder = Mock.manualSolenoid();
-	
-	Gyroscope gyro = Hardware.AngleSensors.gyroscope(SPI.Port.kOnboardCS0);
+    
+	Gyro wpilib_gyro = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
+	Gyroscope gyro = Hardware.AngleSensors.gyroscope(wpilib_gyro);
 	
 	DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
 	
@@ -187,6 +191,8 @@ public class Robot extends IterativeRobot {
 
 		SmarterDashboard.putData("Auto mode", chooser);
 		refreshDrivetrainValues();
+		
+		SmarterDashboard.putData("Recalibrate Gyro", new RecalibrateGyro(wpilib_gyro, drivetrain));
 	}
 
 	/**
