@@ -22,7 +22,6 @@ public class ForwardWithVision extends Command {
     
     @Override
     public boolean execute() {
-        receiver.receive();
         drivetrain.arcade(speed, 0);
         return false;
     }
