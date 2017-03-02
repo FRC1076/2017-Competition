@@ -43,7 +43,7 @@ public class VisionReceiver {
 	                socket.receive(packet);
 	            } catch (SocketTimeoutException e) {
 	                // Exit once we have received all the packets.
-	            	Strongback.logger().warn("Out of packets!");
+	            	Strongback.eventRecorder().record("VisionReciever", "Out of packets!");
 	                return;
 	            } catch (IOException e) {
 	                e.printStackTrace();

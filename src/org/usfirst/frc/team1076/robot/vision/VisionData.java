@@ -35,6 +35,7 @@ public class VisionData {
         try {
     	    update(new JSONObject(new JSONTokener(json)));
         } catch (JSONException e) {
+        	Strongback.eventRecorder().record("VisionData", "Bad JSON Packet: " + json);
         }
     }
     
@@ -71,7 +72,7 @@ public class VisionData {
             // Malformed or incomplete JSON packet. This is likely an error.
             errorCount += 1;
             status = VisionStatus.ERROR;
-            Strongback.logger().warn("Bad JSON Packet");
+            Strongback.eventRecorder().record("VisionData", "Bad JSON Packet: " + json);
         }
     }
     
@@ -81,6 +82,7 @@ public class VisionData {
     	} catch (JSONException e) {
             errorCount += 1;
             status = VisionStatus.ERROR;
+            Strongback.eventRecorder().record("VisionData", "Bad JSON Packet: " + json);
     	}
     }
     
