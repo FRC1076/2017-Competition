@@ -3,6 +3,7 @@ package org.usfirst.frc.team1076.robot.vision;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.strongback.Strongback;
 
 /**
  * This class processes JSON packets for vision.
@@ -12,7 +13,7 @@ public class VisionData {
         LEFT, RIGHT, OK, ERROR
     }
 
-    int heading = 0;
+    double heading = 0;
     double range = 0.0;
     VisionStatus status = VisionStatus.ERROR;
     int errorCount = 0;
@@ -64,12 +65,13 @@ public class VisionData {
                 status = VisionStatus.ERROR;
                 errorCount += 1;
             }
-            heading = json.getInt("heading");
+            heading = json.getDouble("heading");
             range = json.getDouble("range");
         } else { 
             // Malformed or incomplete JSON packet. This is likely an error.
             errorCount += 1;
             status = VisionStatus.ERROR;
+            Strongback.logger().warn("Bad JSON Packet");
         }
     }
     
@@ -86,7 +88,7 @@ public class VisionData {
      * The angle of the target, in degrees, from the middle of the robot.
      * Should return from -180 to 180
      */
-    public int getHeading() {
+    public double getHeading() {
         return heading;
     }
 

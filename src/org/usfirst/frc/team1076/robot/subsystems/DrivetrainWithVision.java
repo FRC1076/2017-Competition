@@ -21,8 +21,8 @@ public class DrivetrainWithVision extends Drivetrain {
     public DrivetrainWithVision(Motor left, Motor right, VisionReceiver receiver) {
         super(left, right);
         this.receiver = receiver;
-        PID = new SoftwarePIDController(SourceType.DISTANCE, // Negative because heading is reverse to gyro
-                                        ()->-receiver.getData().getHeading()/VISION_NORMAL,
+        PID = new SoftwarePIDController(SourceType.DISTANCE,
+                                        ()->receiver.getData().getHeading()/VISION_NORMAL,
                                         this::getPIDOutputValue);
         PID.withInputRange(-1.0, 1.0);
         PID.withTarget(0);

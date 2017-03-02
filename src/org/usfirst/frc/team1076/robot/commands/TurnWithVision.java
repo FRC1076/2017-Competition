@@ -28,7 +28,7 @@ public class TurnWithVision extends Command {
     @Override
     public boolean execute() {
         receiver.receive();
-        int heading = receiver.getData().getHeading();
+        double heading = receiver.getData().getHeading();
         int errorCount = receiver.getData().getErrorCount();
         /* The heading essentially acts as the direction to turn.
          * Negative = left, positive = right.

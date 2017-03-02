@@ -7,6 +7,8 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
+import org.strongback.Strongback;
+
 /**
  * This class reads from an IP address and port 
  * It expects to receive data packets relating to vision.
@@ -41,6 +43,7 @@ public class VisionReceiver {
 	                socket.receive(packet);
 	            } catch (SocketTimeoutException e) {
 	                // Exit once we have received all the packets.
+	            	Strongback.logger().warn("Out of packets!");
 	                return;
 	            } catch (IOException e) {
 	                e.printStackTrace();

@@ -212,6 +212,12 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledPeriodic() {
+        if (receiver == null) {
+            Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
+        } else {
+            receiver.receive();
+            Strongback.logger().info("Vision: " + receiver.getData().toString());
+        }
 		Scheduler.getInstance().run();
 	}
 
@@ -308,12 +314,9 @@ public class Robot extends IterativeRobot {
                 Strongback.logger().info("Vision: " + receiver.getData().toString());
             }
             System.out.println("Gyro: " + gyro.getAngle());
-            System.out.println("P: " + drivetrain.P);
-            System.out.println("I: " + drivetrain.I);
-            System.out.println("D: " + drivetrain.D);
 //          System.out.println("Left Switch: " + switchLeft.isTriggered());
 //          System.out.println("Right Switch: " + switchRight.isTriggered());
         }
-		LiveWindow.run();
+		// LiveWindow.run();
 	}
 }
