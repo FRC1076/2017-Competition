@@ -18,6 +18,7 @@ public class RecalibrateGyro extends Command implements Sendable {
     
     @Override
     protected void execute() {
+    	Strongback.logger().info("Recalibrating the gyro. Please don't move the robot!");
         drivetrain.disable();
         try {
             Thread.sleep(100);
@@ -25,9 +26,8 @@ public class RecalibrateGyro extends Command implements Sendable {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        Strongback.logger().info("Recalibrating the gyro. Please don't move the robot!");
         gyro.calibrate();
-        Strongback.logger().info("Recalibration complete!");
+        gyro.reset();
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -35,6 +35,7 @@ public class RecalibrateGyro extends Command implements Sendable {
             e.printStackTrace();
         }
         drivetrain.enable();
+        Strongback.logger().info("Recalibration complete!");
     }
     
     @Override
