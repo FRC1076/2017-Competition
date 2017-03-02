@@ -157,7 +157,7 @@ public class Robot extends IterativeRobot {
             turn.reduction_factor = SmarterDashboard.getNumber("Turn Reduction Factor", 0.7);
             turn.reduction_threshold = SmarterDashboard.getNumber("Turn Reduction Threshold", 30);
             ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
-            leftAuto = CommandGroup.runSequentially(forward, turn, vision);
+            leftAuto = CommandGroup.runSequentially(forward, turn, Command.create(0.5, () -> {return false;}), vision);
         }
         // CENTER
         {
@@ -172,7 +172,7 @@ public class Robot extends IterativeRobot {
             turn.reduction_factor = SmarterDashboard.getNumber("Turn Reduction Factor", 0.7);
             turn.reduction_threshold = SmarterDashboard.getNumber("Turn Reduction Threshold", 30);
             ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
-            rightAuto = CommandGroup.runSequentially(forward, turn, vision);
+            rightAuto = CommandGroup.runSequentially(forward, turn, Command.create(0.5, () -> {return false;}), vision);
         }
         // NONE
         {
