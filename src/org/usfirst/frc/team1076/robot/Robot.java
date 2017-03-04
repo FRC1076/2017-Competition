@@ -119,24 +119,24 @@ public class Robot extends IterativeRobot {
 		SmarterDashboard.putDefaultNumber("Right Factor", 1);
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		
-		SmarterDashboard.putDefaultNumber("First Drive Time", 2.0);
-		SmarterDashboard.putDefaultNumber("First Drive Speed", 0.5);
-		SmarterDashboard.putDefaultNumber("Turn Amount", 60.0);
-		SmarterDashboard.putDefaultNumber("Turn Speed", 0.4);
-        SmarterDashboard.putDefaultNumber("Second Drive Time", 2.5);
-        SmarterDashboard.putDefaultNumber("Second Drive Speed", 0.5);		
-		
+		SmarterDashboard.putDefaultNumber("First Drive Time", 1.4);
+		SmarterDashboard.putDefaultNumber("First Drive Speed", 0.9);
+		SmarterDashboard.putDefaultNumber("Turn Amount", 55.0);
+		SmarterDashboard.putDefaultNumber("Turn Speed", 0.65);
+        SmarterDashboard.putDefaultNumber("Second Drive Time", 2.2);
+        SmarterDashboard.putDefaultNumber("Second Drive Speed", 0.65);		
+        
 		SmarterDashboard.putDefaultNumber("Gyro P", 2.5);
 		SmarterDashboard.putDefaultNumber("Gyro I", 0.0);
 		SmarterDashboard.putDefaultNumber("Gyro D", 0.5);
 
-        SmarterDashboard.putDefaultNumber("Vision P", 3.0);
+        SmarterDashboard.putDefaultNumber("Vision P", 0.5);
         SmarterDashboard.putDefaultNumber("Vision I", 0.0);
         SmarterDashboard.putDefaultNumber("Vision D", 0.0);
         SmarterDashboard.putDefaultNumber("Vision Norm Factor", 45.0);
         
-		SmarterDashboard.putDefaultNumber("Turn Reduction Factor", 1.0);
-		SmarterDashboard.putDefaultNumber("Turn Reduction Threshold", 30);
+        SmarterDashboard.putDefaultNumber("Turn Final Speed", 0.0);
+        SmarterDashboard.putDefaultNumber("Turn Ease Out Threshold", 5.0);
 		
 		try {
 			receiver = new VisionReceiver(IP, VISION_PORT);
