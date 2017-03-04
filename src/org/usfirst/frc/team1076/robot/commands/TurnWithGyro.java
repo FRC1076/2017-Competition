@@ -12,12 +12,12 @@ import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
  * and negative angles turn *left*.
  */
 public class TurnWithGyro extends Command {
-    public double reduction_threshold = 30;
-    public double reduction_factor = 0.7;
+    public double easeOutThreshold = 1.0;
+    public double finalSpeed = 0.0;
+    double targetAngle;
     Gyroscope gyro;
     Drivetrain drivetrain;
-    double speed;
-    double targetAngle;
+    double initialSpeed;
     
     /**
      * Create a new TurnWithGyro 
@@ -26,11 +26,11 @@ public class TurnWithGyro extends Command {
      * @param speed       speed from -1 to 1 (inclusive) to drive at
      * @param targetAngle angle, in degrees, to turn. Note that positive is right, while negative is left
      */
-    public TurnWithGyro(Gyroscope gyro, Drivetrain drivetrain, double speed, double targetAngle) {
+    public TurnWithGyro(Gyroscope gyro, Drivetrain drivetrain, double initialSpeed, double targetAngle) {
         super(drivetrain);
         this.gyro = gyro;
         this.drivetrain = drivetrain;
-        this.speed = speed;
+        this.initialSpeed = initialSpeed;
         this.targetAngle = targetAngle;
     }
 
@@ -41,8 +41,11 @@ public class TurnWithGyro extends Command {
 
     @Override
     public boolean execute() {
-        if (Math.abs(targetAngle - gyro.getAngle()) < reduction_threshold) {
-            speed *= reduction_factor;
+        double progress = gyro.getAngle() / targetAngle;
+        double speed = initialSpeed;
+        if (progress > easeOutThreshold) {
+            double slope = (initialSpeed - finalSpeed) / (1 - easeOutThreshold);
+            speed = -slope * (progress - easeOutThreshold) + initialSpeed;
         }
 
         // If turning right
@@ -53,11 +56,7 @@ public class TurnWithGyro extends Command {
             drivetrain.setLeftSpeed(-speed);
             drivetrain.setRightSpeed(speed);
         }
-        if (isFinished()) {
-            return true;
-        } else {
-            return false;
-        }
+        return isFinished();
     }
 
     public boolean isFinished() {
