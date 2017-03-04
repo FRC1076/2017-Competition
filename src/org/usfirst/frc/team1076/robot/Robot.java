@@ -55,12 +55,15 @@ import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 public class Robot extends IterativeRobot {
 	Gamepad driver = new Gamepad(0);
 	Gamepad operator = new Gamepad(1);
-	TalonSRX left1 = Hardware.Motors.talonSRX(3).enableBrakeMode(true);
-	TalonSRX left2 = Hardware.Motors.talonSRX(4).enableBrakeMode(true);
+	
+	final double PULSES_PER_DEGREE = 1000;
+	
+	TalonSRX left1 = Hardware.Motors.talonSRX(3, PULSES_PER_DEGREE).enableBrakeMode(true);
+	TalonSRX left2 = Hardware.Motors.talonSRX(4, PULSES_PER_DEGREE).enableBrakeMode(true);
 	Motor left = Motor.compose(left1, left2);
 //	Motor left = Mock.stoppedMotor();
-	TalonSRX right1 = Hardware.Motors.talonSRX(1).enableBrakeMode(true);
-	TalonSRX right2 = Hardware.Motors.talonSRX(2).enableBrakeMode(true);
+	TalonSRX right1 = Hardware.Motors.talonSRX(1, PULSES_PER_DEGREE).enableBrakeMode(true);
+	TalonSRX right2 = Hardware.Motors.talonSRX(2, PULSES_PER_DEGREE).enableBrakeMode(true);
 	Motor right = Motor.compose(right1, right2).invert();
 //	Motor right = Mock.stoppedMotor();
 	TalonSRX winch1 = Hardware.Motors.talonSRX(5).enableBrakeMode(true);
@@ -73,6 +76,14 @@ public class Robot extends IterativeRobot {
     Solenoid brake = Hardware.Solenoids.doubleSolenoid(2, 3, Solenoid.Direction.RETRACTING);
     Solenoid holder = Hardware.Solenoids.doubleSolenoid(4, 5, Solenoid.Direction.RETRACTING);
 	
+    Gyroscope encoderLeft1 = left1.getEncoderInput();
+    Gyroscope encoderLeft2 = left2.getEncoderInput();
+    Gyroscope encoderRight1 = right1.getEncoderInput();
+    Gyroscope encoderRight2 = right2.getEncoderInput();
+   
+    
+    
+    
 //	Solenoid shifter = Mock.manualSolenoid();
 //	Solenoid brake = Mock.manualSolenoid();
 //	Solenoid holder = Mock.manualSolenoid();
@@ -312,11 +323,19 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		if (debugCount++ % 100 == 0) {
+		    if (accelerometer == null) {
+		        Strongback.logger().warn("Accelerometer is null!");
+		    }
 		    System.out.println("Gyro:"  + gyro.getAngle());
 		    System.out.println("PID correct" + drivetrain.computedValue);
 		    System.out.println("accelerometerX " + accelerometer.getX());
 		    System.out.println("accelerometerY " + accelerometer.getY());
 		    System.out.println("accelerometerZ " + accelerometer.getZ());
+		    System.out.println("encoder left1 " + encoderLeft1.getRate());
+		    System.out.println("encoder left2 " + encoderLeft2.getRate());
+		    System.out.println("encoder right1 " + encoderRight1.getRate());
+		    System.out.println("encoder right2 " + encoderRight2.getRate());
+		    
 		}
 		
 //		drivetrain.debugPID();
