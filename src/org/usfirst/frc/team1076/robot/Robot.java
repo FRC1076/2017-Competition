@@ -2,6 +2,7 @@
 package org.usfirst.frc.team1076.robot;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -78,6 +79,8 @@ public class Robot extends IterativeRobot {
     
 	Gyro wpilib_gyro = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
 	Gyroscope gyro = Hardware.AngleSensors.gyroscope(wpilib_gyro);
+	
+	BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
 	
 	DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
 	
@@ -311,6 +314,9 @@ public class Robot extends IterativeRobot {
 		if (debugCount++ % 100 == 0) {
 		    System.out.println("Gyro:"  + gyro.getAngle());
 		    System.out.println("PID correct" + drivetrain.computedValue);
+		    System.out.println("accelerometerX " + accelerometer.getX());
+		    System.out.println("accelerometerY " + accelerometer.getY());
+		    System.out.println("accelerometerZ " + accelerometer.getZ());
 		}
 		
 //		drivetrain.debugPID();
