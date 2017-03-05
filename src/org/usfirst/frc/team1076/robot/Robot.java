@@ -15,12 +15,14 @@ import org.strongback.Strongback;
 import org.strongback.Strongback.Configurator;
 import org.strongback.command.Command;
 import org.strongback.command.CommandGroup;
+import org.strongback.components.Accelerometer;
 import org.strongback.components.Gyroscope;
 import org.strongback.components.Motor;
 import org.strongback.components.PneumaticsModule;
 import org.strongback.components.Solenoid;
 import org.strongback.components.Switch;
 import org.strongback.components.TalonSRX;
+import org.strongback.components.ThreeAxisAccelerometer;
 import org.strongback.hardware.Hardware;
 import org.strongback.mock.Mock;
 
@@ -80,9 +82,6 @@ public class Robot extends IterativeRobot {
     Gyroscope encoderLeft2 = left2.getEncoderInput();
     Gyroscope encoderRight1 = right1.getEncoderInput();
     Gyroscope encoderRight2 = right2.getEncoderInput();
-   
-    
-    
     
 //	Solenoid shifter = Mock.manualSolenoid();
 //	Solenoid brake = Mock.manualSolenoid();
@@ -91,7 +90,7 @@ public class Robot extends IterativeRobot {
 	Gyro wpilib_gyro = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
 	Gyroscope gyro = Hardware.AngleSensors.gyroscope(wpilib_gyro);
 	
-	BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
+	ThreeAxisAccelerometer accelerometer = Hardware.Accelerometers.builtIn();
 	
 	DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
 	
@@ -328,9 +327,9 @@ public class Robot extends IterativeRobot {
 		    }
 		    System.out.println("Gyro:"  + gyro.getAngle());
 		    System.out.println("PID correct" + drivetrain.computedValue);
-		    System.out.println("accelerometerX " + accelerometer.getX());
-		    System.out.println("accelerometerY " + accelerometer.getY());
-		    System.out.println("accelerometerZ " + accelerometer.getZ());
+		    System.out.println("accelerometerX " + accelerometer.getXDirection().getAcceleration());
+		    System.out.println("accelerometerY " + accelerometer.getYDirection().getAcceleration());
+		    System.out.println("accelerometerZ " + accelerometer.getZDirection().getAcceleration());
 		    System.out.println("encoder left1 " + encoderLeft1.getRate());
 		    System.out.println("encoder left2 " + encoderLeft2.getRate());
 		    System.out.println("encoder right1 " + encoderRight1.getRate());
