@@ -129,6 +129,14 @@ public class Robot extends IterativeRobot {
 		// Extend = doors up, retract = doors down
 //		holder.retract(); // Start doors down
 		
+		// Ensure drivetrain has brake mode, not coast. 
+		left1.enableBrakeMode(true);
+		left2.enableBrakeMode(true);
+		right1.enableBrakeMode(true);
+		right2.enableBrakeMode(true);
+		
+		
+		// SMART DASHBOARD
 		SmarterDashboard.putDefaultNumber("Left Factor", 1);
 		SmarterDashboard.putDefaultNumber("Right Factor", 1);
 		// chooser.addObject("My Auto", new MyAutoCommand());
@@ -139,7 +147,8 @@ public class Robot extends IterativeRobot {
 		SmarterDashboard.putDefaultNumber("Turn Speed", 0.65);
         SmarterDashboard.putDefaultNumber("Second Drive Time", 2.2);
         SmarterDashboard.putDefaultNumber("Second Drive Speed", 0.65);		
-        
+        SmarterDashboard.putDefaultNumber("Center Drive Time", 5.0);
+        SmarterDashboard.putDefaultNumber("Center Drive Speed", 0.65);
 		SmarterDashboard.putDefaultNumber("Gyro P", 2.5);
 		SmarterDashboard.putDefaultNumber("Gyro I", 0.0);
 		SmarterDashboard.putDefaultNumber("Gyro D", 0.5);
@@ -222,42 +231,36 @@ public class Robot extends IterativeRobot {
 	    // AUTONOMOUS SETUP
         double driveTime = SmarterDashboard.getNumber("First Drive Time", 2.0);
         double speed = SmarterDashboard.getNumber("First Drive Speed", 0.5);
-        double turnAmount = SmarterDashboard.getNumber("Turn Amount", 60.0);
+        double turnAmount = SmarterDashboard.getNumber("Turn Amount", 60.0) * (commandChoice == CommandEnum.RIGHT ? -1 : 1); // Turns opposite way if on right
         double turn_speed = SmarterDashboard.getNumber("Turn Speed", 0.4);
         double vision_time = SmarterDashboard.getNumber("Second Drive Time", 2.5);
         double vision_speed = SmarterDashboard.getNumber("Second Drive Speed", 0.5);
+        double center_drive_time = SmarterDashboard.getNumber("Center Drive Time", 5.0);
+        double center_drive_speed = SmarterDashboard.getNumber("Center Drive Speed", 0.65);
+        
         double turn_final_speed = SmarterDashboard.getNumber("Turn Final Speed", 0.0);
         double turn_ease_out_threshold = SmarterDashboard.getNumber("Turn Ease Out Threshold", 0.5);
         
         double accelerometer_threshold = SmarterDashboard.getNumber("Accelerometer Threshold", 1.0);
         
         switch (commandChoice) {
-        case LEFT: {
+        case LEFT:
+        case RIGHT:
+        {
             ForwardWithGyro forward = new ForwardWithGyro(drivetrain, speed, driveTime);
             TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, turn_speed, turnAmount);
-            SmarterDashboard.putDefaultNumber("Turn Final Speed", 0.0);
-            SmarterDashboard.putDefaultNumber("Turn Ease Out Threshold", 0);
             turn.finalSpeed = turn_final_speed;
             turn.easeOutThreshold = turn_ease_out_threshold;
             ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
             AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision);
-            autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.pause(0.5), CommandGroup.runSimultaneously(watchdog, vision));
+            autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.pause(1.0), CommandGroup.runSimultaneously(watchdog, vision));
             break;
         }
         case CENTER: {
-            double vision_speed_center = 0.5;
-            double vision_time_center = vision_time*1.5;
-            autonomousCommand = new ForwardWithVision(drivetrainVision, 10, vision_speed_center, vision_time_center);
-            break;
-        }
-        case RIGHT: {
-            ForwardWithGyro forward = new ForwardWithGyro(drivetrain, speed, driveTime);
-            TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, turn_speed, -turnAmount);
-            turn.finalSpeed = turn_final_speed;
-            turn.easeOutThreshold = turn_ease_out_threshold;
-            ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
-            AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision);
-            autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.pause(0.5), CommandGroup.runSimultaneously(watchdog, vision));
+            ForwardWithVision vision_center = new ForwardWithVision(drivetrainVision, 10, center_drive_speed, center_drive_time);
+            AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision_center);
+            watchdog.accelerometer_threshold = accelerometer_threshold;
+            autonomousCommand = CommandGroup.runSimultaneously(vision_center, watchdog);
             break;
         }
         case NONE: {
@@ -329,7 +332,7 @@ public class Robot extends IterativeRobot {
 	 */
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		if (debugCount++ % 100 == 0) {
+		if (debugCount++ % 100 == -1) {
 		    if (accelerometer == null) {
 		        Strongback.logger().warn("Accelerometer is null!");
 		    }
