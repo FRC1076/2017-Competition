@@ -9,6 +9,7 @@ import org.strongback.mock.MockGyroscope;
 import org.strongback.mock.MockMotor;
 import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
 import org.usfirst.frc.team1076.test.mock.MockGamepad;
 
 public class TestTurnWithGyro {
@@ -18,7 +19,7 @@ public class TestTurnWithGyro {
     MockMotor right = Mock.stoppedMotor();
     MockGamepad gamepad = new MockGamepad();
     MockGyroscope gyro = Mock.gyroscope();
-    Drivetrain drivetrain = new Drivetrain(left, right);
+    DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
     
     
     @Before
@@ -32,7 +33,7 @@ public class TestTurnWithGyro {
     @Test
     public void testInitializeZerosGyro() {
         gyro.setAngle(100);
-        TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, 0.0, 0.0);
+        TurnWithGyro turn = new TurnWithGyro(drivetrain, 0.0, 0.0);
         turn.initialize();
         assertEquals("The command should zero the gyro when initialized",
                 0.0, gyro.getAngle(), EPSILON);
@@ -40,19 +41,19 @@ public class TestTurnWithGyro {
 
     @Test
     public void testDoesNotFinishEarly() {
-        TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, 0.0, 60.0);
+        TurnWithGyro turn = new TurnWithGyro(drivetrain, 0.0, 60.0);
         assertFalse("The command should not finish before rotating to the correct angle",
                 turn.isFinished());
     }
     
     @Test
     public void testDoesFinish() {
-        TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, 0.0, 60.0);
+        TurnWithGyro turn = new TurnWithGyro(drivetrain, 0.0, 60.0);
         gyro.setAngle(60.0);
         assertTrue("The command should finish after rotating to the correct angle",
                 turn.isFinished());
         
-        turn = new TurnWithGyro(gyro, drivetrain, 0.0, -60.0);
+        turn = new TurnWithGyro(drivetrain, 0.0, -60.0);
         gyro.setAngle(-70.0);
         assertTrue("The command should finish after rotating to the correct angle",
                 turn.isFinished());
@@ -61,7 +62,7 @@ public class TestTurnWithGyro {
     @Test
     public void testTurnLeft() {
         double speed = Math.random();
-        TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, speed, -60.0);
+        TurnWithGyro turn = new TurnWithGyro(drivetrain, speed, -60.0);
         turn.execute();
         assertEquals("The left motor should be negative when turning left",
                 -speed, left.getSpeed(), EPSILON);
@@ -72,7 +73,7 @@ public class TestTurnWithGyro {
     @Test
     public void testTurnRight() {
         double speed = Math.random();
-        TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, speed, 60.0);
+        TurnWithGyro turn = new TurnWithGyro(drivetrain, speed, 60.0);
         turn.execute();
         assertEquals("The left motor should be positive when turning right",
                 speed, left.getSpeed(), EPSILON);
@@ -82,7 +83,7 @@ public class TestTurnWithGyro {
     
     @Test
     public void testEndStopsMotors() {
-        TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, 1.0, 0.0);
+        TurnWithGyro turn = new TurnWithGyro(drivetrain, 1.0, 0.0);
         turn.execute();
         turn.end();
         assertEquals("The left motor should stop when end is called.", 0.0, left.getSpeed(), EPSILON);

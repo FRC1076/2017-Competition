@@ -248,7 +248,7 @@ public class Robot extends IterativeRobot {
         case RIGHT:
         {
             ForwardWithGyro forward = new ForwardWithGyro(drivetrain, speed, driveTime);
-            TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, turn_speed, turnAmount);
+            TurnWithGyro turn = new TurnWithGyro(drivetrain, turn_speed, turnAmount);
             turn.finalSpeed = turn_final_speed;
             turn.easeOutThreshold = turn_ease_out_threshold;
             ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
@@ -269,7 +269,7 @@ public class Robot extends IterativeRobot {
         }
         case TEST: {
             //          testAuto = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
-            TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, turn_speed, turnAmount);
+            TurnWithGyro turn = new TurnWithGyro(drivetrain, turn_speed, turnAmount);
             turn.finalSpeed = turn_final_speed;
             turn.easeOutThreshold = turn_ease_out_threshold;
             autonomousCommand = turn;
