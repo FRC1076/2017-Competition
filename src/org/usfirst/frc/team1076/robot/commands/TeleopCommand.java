@@ -37,8 +37,9 @@ public class TeleopCommand extends Command {
 
         if (isReversed) {
             forward = -forward;
+            rotate = -rotate;
         }
-
+        
         // Makes the robot drive left (from the robot's perspective) when driving backwards
         // instead of driving left from the driver's perspective.
         if (forward >= 0) {
@@ -61,7 +62,6 @@ public class TeleopCommand extends Command {
                 isReversed = true;
                 Strongback.logger().info("Controls are now reversed!");
             }
-
         }
         lastEdge = driver.getButton(GamepadButton.X);
 
