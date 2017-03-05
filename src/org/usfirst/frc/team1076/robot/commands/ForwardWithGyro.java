@@ -9,7 +9,7 @@ import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
  * It uses the gyroscope's angle as a correction mechanism, slowing
  * one of the motors in order to keep straight.
  */
-public class ForwardWithGyro extends Command {
+public class ForwardWithGyro extends CancelableCommand {
     Gyroscope gyro;
     Drivetrain drivetrain;
     double speed;
@@ -43,11 +43,17 @@ public class ForwardWithGyro extends Command {
     public boolean execute() {
         drivetrain.arcade(speed, 0);
         
-        return false; // This command only stops after timing out
+       return !isRunning;
     }
     
     @Override
     public void end() {
         drivetrain.stop();
+    }
+    
+    @Override
+    public void doCancel() {
+        isRunning = false;
+        
     }
 }
