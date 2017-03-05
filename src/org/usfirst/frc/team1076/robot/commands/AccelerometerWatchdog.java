@@ -1,11 +1,12 @@
 package org.usfirst.frc.team1076.robot.commands;
 
+import org.strongback.Strongback;
 import org.strongback.command.Command;
 import org.strongback.components.Accelerometer;
 import org.strongback.components.ThreeAxisAccelerometer;
 
 public class AccelerometerWatchdog extends Command {
-
+    public double accelerometer_threshold = 1.0;
     // take a command
     // while that command runs
     // we check the accelerometer
@@ -23,10 +24,13 @@ public class AccelerometerWatchdog extends Command {
     @Override
     public boolean execute() {
         if(command.isRunning() == false) {
+            Strongback.logger().info("Command Not Running, exiting now");
             return true;
         }
         
-        if(accelerometer.getAcceleration() > 0 && Math.abs(accelerometer.getAcceleration()) > 10) {
+        double acceleration = accelerometer.getAcceleration();
+        if(acceleration > 0 && Math.abs(acceleration) > accelerometer_threshold) {
+            Strongback.logger().info("Acceleration Hit Detected: " + acceleration);
             command.doCancel();
             return true;
         }

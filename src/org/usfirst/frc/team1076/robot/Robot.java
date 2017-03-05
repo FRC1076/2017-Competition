@@ -148,10 +148,12 @@ public class Robot extends IterativeRobot {
         SmarterDashboard.putDefaultNumber("Vision I", 0.0);
         SmarterDashboard.putDefaultNumber("Vision D", 0.0);
         SmarterDashboard.putDefaultNumber("Vision Norm Factor", 45.0);
-        
+
         SmarterDashboard.putDefaultNumber("Turn Final Speed", 0.0);
         SmarterDashboard.putDefaultNumber("Turn Ease Out Threshold", 5.0);
 		
+        SmarterDashboard.putDefaultNumber("Accelerometer Threshold", 1.0);
+        
 		try {
 			receiver = new VisionReceiver(IP, VISION_PORT);
 		} catch (SocketException e) {
