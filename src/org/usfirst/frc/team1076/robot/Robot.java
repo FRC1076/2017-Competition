@@ -28,6 +28,7 @@ import org.strongback.mock.Mock;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import org.usfirst.frc.team1076.robot.commands.AccelerometerWatchdog;
 import org.usfirst.frc.team1076.robot.commands.BrakeCommand;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithVision;
@@ -224,17 +225,21 @@ public class Robot extends IterativeRobot {
         double vision_time = SmarterDashboard.getNumber("Second Drive Time", 2.5);
         double vision_speed = SmarterDashboard.getNumber("Second Drive Speed", 0.5);
         double turn_final_speed = SmarterDashboard.getNumber("Turn Final Speed", 0.0);
-        double turn_ease_out_threshold = SmarterDashboard.getNumber("Turn Ease Out Threshold", 0.5); 
+        double turn_ease_out_threshold = SmarterDashboard.getNumber("Turn Ease Out Threshold", 0.5);
+        
+        double accelerometer_threshold = SmarterDashboard.getNumber("Accelerometer Threshold", 1.0);
+        
         switch (commandChoice) {
         case LEFT: {
-            ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, driveTime);
+            ForwardWithGyro forward = new ForwardWithGyro(drivetrain, speed, driveTime);
             TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, turn_speed, turnAmount);
             SmarterDashboard.putDefaultNumber("Turn Final Speed", 0.0);
             SmarterDashboard.putDefaultNumber("Turn Ease Out Threshold", 0);
             turn.finalSpeed = turn_final_speed;
             turn.easeOutThreshold = turn_ease_out_threshold;
             ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
-            autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.create(0.5, () -> {return false;}), vision);
+            AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision);
+            autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.pause(0.5), CommandGroup.runSimultaneously(watchdog, vision));
             break;
         }
         case CENTER: {
@@ -244,12 +249,13 @@ public class Robot extends IterativeRobot {
             break;
         }
         case RIGHT: {
-            ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, driveTime);
+            ForwardWithGyro forward = new ForwardWithGyro(drivetrain, speed, driveTime);
             TurnWithGyro turn = new TurnWithGyro(gyro, drivetrain, turn_speed, -turnAmount);
             turn.finalSpeed = turn_final_speed;
             turn.easeOutThreshold = turn_ease_out_threshold;
             ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
-            autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.create(0.5, () -> {return false;}), vision);
+            AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision);
+            autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.pause(0.5), CommandGroup.runSimultaneously(watchdog, vision));
             break;
         }
         case NONE: {
