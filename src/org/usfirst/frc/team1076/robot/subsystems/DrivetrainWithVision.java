@@ -38,12 +38,12 @@ public class DrivetrainWithVision extends Drivetrain {
         double right = forward;
         receiver.receive();
         // Only do PID if we're reasonably sure that our data is up to date
-        Strongback.logger().info("Error count: " + receiver.getData().getErrorCount());
+//        Strongback.logger().info("Error count: " + receiver.getData().getErrorCount());
         if (receiver.getData().getErrorCount() < ERROR_TRESHHOLD) {
             PID.computeOutput();
             left += computedValue;
             right -= computedValue;
-            Strongback.logger().info("PID change: " + computedValue + " | Heading: " + receiver.getData().getHeading());
+//            Strongback.logger().info("PID change: " + computedValue + " | Heading: " + receiver.getData().getHeading());
         }
         setLeftSpeed(left);
         setRightSpeed(right);

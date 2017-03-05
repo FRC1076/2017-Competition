@@ -3,6 +3,7 @@ package org.usfirst.frc.team1076.robot.commands;
 import org.strongback.command.Command;
 import org.strongback.components.Gyroscope;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
 
 /**
  * ForwardWithGyro attempts to go straight at the specified speed.
@@ -11,7 +12,7 @@ import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
  */
 public class ForwardWithGyro extends CancelableCommand {
     Gyroscope gyro;
-    Drivetrain drivetrain;
+    DrivetrainWithGyro drivetrain;
     double speed;
     
     /**
@@ -21,16 +22,15 @@ public class ForwardWithGyro extends CancelableCommand {
      * @param speed       speed from -1 to 1 (inclusive) to drive at
      * @param targetTime  time, in seconds, to drive forward
      */
-    public ForwardWithGyro(Gyroscope gyro, Drivetrain drivetrain, double speed, double targetTime) {
+    public ForwardWithGyro(DrivetrainWithGyro drivetrain, double speed, double targetTime) {
         super(targetTime, drivetrain); // This command automatically times out after the specified time. 
-        this.gyro = gyro;
         this.drivetrain = drivetrain;
         this.speed = speed;
     }
     
     @Override
     public void initialize() {
-        gyro.zero();
+        drivetrain.getGyro().zero();
     }
     
     /**

@@ -33,12 +33,6 @@ public class ForwardWithVision extends CancelableCommand {
 
     @Override
     public void doCancel() {
-        // so this needs to make the command stop running
-        // we can do that by returning true in execute
-        // currently we're returning false
-        // so instead, we should return the opposite of isRunning
-        // do that
-        // also make sure that doCancel ensures the cancel thing
         isRunning = false;
     }
 }

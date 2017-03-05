@@ -10,6 +10,7 @@ import org.strongback.mock.MockGyroscope;
 import org.strongback.mock.MockMotor;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
 import org.usfirst.frc.team1076.test.mock.MockGamepad;
 
 public class TestForwardWithGyro {
@@ -20,7 +21,7 @@ public class TestForwardWithGyro {
     MockMotor right = Mock.stoppedMotor();
     MockGamepad gamepad = new MockGamepad();
     MockGyroscope gyro = Mock.gyroscope();
-    Drivetrain drivetrain = new Drivetrain(left, right);
+    DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
     
     
     @Before
@@ -34,7 +35,7 @@ public class TestForwardWithGyro {
     @Test
     public void testInitializeZerosGyro() {
         gyro.setAngle(100);
-        ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, 0, 0);
+        ForwardWithGyro forward = new ForwardWithGyro(drivetrain, 0, 0);
         forward.initialize();
         assertEquals("The gyro's angle should be zeroed prior to executing the command",
                 0.0, gyro.getAngle(), EPSILON);
@@ -44,7 +45,7 @@ public class TestForwardWithGyro {
     public void testMotorsBothPositive() {
         for (int i = -90; i < 90; i++) {
             gyro.setAngle(i);
-            ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, 1.0, 0);
+            ForwardWithGyro forward = new ForwardWithGyro(drivetrain, 1.0, 0);
             forward.execute();
             assertTrue("The left motor should be positive (actual: " + left.getSpeed() + " angle: " + gyro.getAngle(),
                     0 < left.getSpeed());
@@ -57,7 +58,7 @@ public class TestForwardWithGyro {
     public void testMotorsBothNegative() {
         for (int i = -90; i < 90; i++) {
             gyro.setAngle(i);
-            ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, -1.0, 0);
+            ForwardWithGyro forward = new ForwardWithGyro(drivetrain, -1.0, 0);
             forward.execute();
             assertTrue("The left motor should be negative (actual: " + left.getSpeed() + " angle: " + gyro.getAngle(),
                     0 > left.getSpeed());
@@ -69,7 +70,7 @@ public class TestForwardWithGyro {
     @Test
     public void testRunsForCorrectTime() {
         // Should run for a second
-        ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, 0, 1.0);
+        ForwardWithGyro forward = new ForwardWithGyro(drivetrain, 0, 1.0);
         CommandTester tester = new CommandTester(forward);
         // step steps the command forward by the number of *milliseconds* passed
         assertFalse("The command should not finish executing before the specified time", tester.step(0));
@@ -81,7 +82,7 @@ public class TestForwardWithGyro {
         gyro.setAngle(0);
         for (int i = 0; i < NUM_TEST_ITERS; i++) {
             double speed = Math.random(); 
-            ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, speed, 0);
+            ForwardWithGyro forward = new ForwardWithGyro(drivetrain, speed, 0);
             forward.execute();
             assertEquals("The left motor should drive without being reduced when there is no angle rotation",
                 speed, left.getSpeed(), EPSILON);
@@ -92,7 +93,7 @@ public class TestForwardWithGyro {
     
     @Test
     public void testEndStopsMotors() {
-        ForwardWithGyro forward = new ForwardWithGyro(gyro, drivetrain, 1.0, 0.0);
+        ForwardWithGyro forward = new ForwardWithGyro(drivetrain, 1.0, 0.0);
         forward.execute();
         forward.end();
         assertEquals("The left motor should stop when end is called.", 0.0, left.getSpeed(), EPSILON);
