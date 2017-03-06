@@ -99,9 +99,10 @@ public class Robot extends IterativeRobot {
 //	TeleopCommand teleopCommand = new TeleopCommand(drivetrain, driver, operator, winch);
 	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, driver, operator, winch);
 
-	SendableChooser<CommandEnum> chooser = new SendableChooser<CommandEnum>();
+//	SendableChooser<CommandEnum> chooser = new SendableChooser<CommandEnum>();
 	public enum CommandEnum { LEFT, RIGHT, CENTER, TEST, NONE };
 	CommandEnum commandChoice;
+	String autonomousSmartdashboardMessage = "Autonomous Type (accepted values: are left, right, center, test, and disable)";
 	Command autonomousCommand;
 	
 	Switch switchRight = Hardware.Switches.normallyClosed(1);
@@ -169,15 +170,17 @@ public class Robot extends IterativeRobot {
 			e.printStackTrace();
 		}
 		
-		 drivetrainVision = new DrivetrainWithVision(left, right, receiver);
+		drivetrainVision = new DrivetrainWithVision(left, right, receiver);
 		
-		chooser.addObject("Left Autonomous", CommandEnum.LEFT);
-        chooser.addObject("Center Autonomous", CommandEnum.CENTER);
-        chooser.addObject("Right Autonomous", CommandEnum.RIGHT);
-        chooser.addDefault("Disable Autonomous", CommandEnum.NONE);
-        chooser.addObject("Test Autonomous", CommandEnum.TEST);
+		SmarterDashboard.putDefaultString(autonomousSmartdashboardMessage, "center");
+		 
+//		chooser.addObject("Left Autonomous", CommandEnum.LEFT);
+//        chooser.addObject("Center Autonomous", CommandEnum.CENTER);
+//        chooser.addObject("Right Autonomous", CommandEnum.RIGHT);
+//        chooser.addDefault("Disable Autonomous", CommandEnum.NONE);
+//        chooser.addObject("Test Autonomous", CommandEnum.TEST);
 
-		SmarterDashboard.putData("Auto mode", chooser);
+//		SmarterDashboard.putData("Auto mode", chooser);
 		refreshDrivetrainValues();
 		
 		SmarterDashboard.putData("Recalibrate Gyro", new RecalibrateGyro(wpilib_gyro, drivetrain));
@@ -193,7 +196,7 @@ public class Robot extends IterativeRobot {
 	    Strongback.killAllCommands();
 		gyro.zero();
 		refreshDrivetrainValues();
-		commandChoice = chooser.getSelected();
+//		commandChoice = chooser.getSelected();
 	}
 	
 	
@@ -226,7 +229,35 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 	    refreshDrivetrainValues();
 	    
-	    commandChoice = chooser.getSelected();
+	    String stringChoice = SmarterDashboard.getString(autonomousSmartdashboardMessage, "center");
+	    
+	    switch(stringChoice.toLowerCase()) {
+	    case "l":
+	    case "left":
+	        commandChoice = CommandEnum.LEFT;
+	        break;
+	    case "r":
+	    case "right":
+	        commandChoice = CommandEnum.RIGHT;
+            break;
+	    case "c":
+	    case "center":
+	        commandChoice = CommandEnum.CENTER;
+            break;
+	    case "t":
+	    case "test":
+	        commandChoice = CommandEnum.TEST;
+            break;
+	    case "d":
+	    case "disable":
+	        commandChoice = CommandEnum.NONE;
+	        break;
+        default:
+            Strongback.logger().warn(stringChoice + "is not a recognized autonomous mode. Defaulting to center");
+            commandChoice = CommandEnum.CENTER;
+            break;
+
+	    }
 	    
 	    // AUTONOMOUS SETUP
         double driveTime = SmarterDashboard.getNumber("First Drive Time", 2.0);
@@ -332,7 +363,7 @@ public class Robot extends IterativeRobot {
 	 */
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		if (debugCount++ % 100 == -1) {
+		if (debugCount++ % 100 == 0) {
 		    if (accelerometer == null) {
 		        Strongback.logger().warn("Accelerometer is null!");
 		    }
