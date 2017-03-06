@@ -56,8 +56,8 @@ import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	Gamepad driver = new Gamepad(0);
-	Gamepad operator = new Gamepad(1);
+	IGamepad driver = new Gamepad(0);
+	IGamepad operator = new Gamepad(1);
 	
 	final double PULSES_PER_DEGREE = 1000;
 	
@@ -298,8 +298,8 @@ public class Robot extends IterativeRobot {
 			autonomousCommand.cancel();
 		
 		drivetrain.updateProfile();
-        driver.deadzone = 0.2;
-        operator.deadzone = 0.2;
+        driver.setDeadzone(0.2);
+        operator.setDeadzone(0.2);
         // LB = brake on, no RB = brake off
         Strongback.submit(new SolenoidSwitcherOneButton(brake, driver, GamepadButton.LB, SwitchType.ON_HOLD_EXTEND));
         // RB = high gear, no RB = low gear

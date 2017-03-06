@@ -6,10 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.strongback.mock.Mock;
 import org.strongback.mock.MockMotor;
+import org.usfirst.frc.team1076.robot.MockGamepad;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.Winch;
-import org.usfirst.frc.team1076.test.mock.MockGamepad;
 
 public class TestTeleopCommand {
 

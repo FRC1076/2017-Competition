@@ -103,4 +103,9 @@ public class Gamepad implements IGamepad {
 		
 		return new Coords(x, y);
 	}
+
+    @Override
+    public void setDeadzone(double deadzone) {
+        this.deadzone = deadzone;
+    }
 }

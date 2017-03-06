@@ -1,15 +1,14 @@
-package org.usfirst.frc.team1076.test.mock;
+package org.usfirst.frc.team1076.robot;
 
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadAxis;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
-import org.usfirst.frc.team1076.robot.IGamepad;
 
 public class MockGamepad implements IGamepad {
 
 	public double lt, lx, ly, rt, rx, ry;
 	public boolean a, b, back, lb, lstick, rb, rstick, start, x, y;
-	
+	public double deadzone;
 	public MockGamepad() {
 		reset();
 	}
@@ -63,5 +62,10 @@ public class MockGamepad implements IGamepad {
         case Right: return new Coords(rx, ry);
         default: return null; // Unreachable
         }
+    }
+
+    @Override
+    public void setDeadzone(double deadzone) {
+        this.deadzone = deadzone;
     }
 }

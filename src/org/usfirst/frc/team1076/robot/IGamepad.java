@@ -17,4 +17,5 @@ public interface IGamepad {
 	public double getRawAxis(GamepadAxis axis);
 	public boolean getButton(GamepadButton button);
 	public Coords getStick(GamepadStick stick);
+    public void setDeadzone(double deadzone);
 }

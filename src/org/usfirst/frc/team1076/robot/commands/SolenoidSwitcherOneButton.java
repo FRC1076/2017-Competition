@@ -4,6 +4,7 @@ import org.strongback.command.Command;
 import org.strongback.components.Solenoid;
 import org.usfirst.frc.team1076.robot.Gamepad;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
+import org.usfirst.frc.team1076.robot.IGamepad;
 
 public class SolenoidSwitcherOneButton extends Command {
     public enum SwitchType {
@@ -11,14 +12,14 @@ public class SolenoidSwitcherOneButton extends Command {
     }
     
     Solenoid gearShifter;
-    Gamepad gamepad;
+    IGamepad gamepad;
     GamepadButton button;
     SwitchType type;
     
     boolean lastButton;
     
     
-    public SolenoidSwitcherOneButton(Solenoid gearShifter, Gamepad gamepad, GamepadButton button, SwitchType type) {
+    public SolenoidSwitcherOneButton(Solenoid gearShifter, IGamepad gamepad, GamepadButton button, SwitchType type) {
         this.gearShifter = gearShifter;
         this.gamepad = gamepad;
         this.button = button;
