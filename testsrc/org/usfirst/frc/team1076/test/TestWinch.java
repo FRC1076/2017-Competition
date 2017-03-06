@@ -18,13 +18,13 @@ public class TestWinch {
         motor.setSpeed(0);
     }
 
-    @Test
-    public void testSetSpeed() {
-        winch.extend(1.0);
-        assertEquals("Winch should be set to the right speed", 1.0, motor.getSpeed(), EPSILON);
-        winch.extend(-1.0);
-        assertEquals("Winch should be set to the right speed", -1.0, motor.getSpeed(), EPSILON);
-    }
+//    @Test
+//    public void testSetSpeed() {
+//        winch.extend(1.0);
+//        assertEquals("Winch should be set to the right speed", 1.0, motor.getSpeed(), EPSILON);
+//        winch.extend(-1.0);
+//        assertEquals("Winch should be set to the right speed", -1.0, motor.getSpeed(), EPSILON);
+//    }
 
     
     @Test
@@ -33,10 +33,10 @@ public class TestWinch {
         assertEquals("Winch should extend", 1.0, motor.getSpeed(), EPSILON);
     }
 
-    @Test
-    public void testRetract() {
-        winch.retract(1.0);
-        assertEquals("Winch should retract", -1.0, motor.getSpeed(), EPSILON);
-    }
+//    @Test
+//    public void testRetract() {
+//        winch.retract(1.0);
+//        assertEquals("Winch should retract", -1.0, motor.getSpeed(), EPSILON);
+//    }
 
 }

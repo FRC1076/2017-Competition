@@ -51,7 +51,7 @@ public class TeleopCommand extends Command {
         // Ideally you shouldn't press both buttons at the same time, however
         // taking the difference of the two is a simple way of allowing both actions
         // without special logic
-        winch.setSpeed(winchSpeed);
+        winch.extend(winchSpeed);
 
         // Rising Edge of X button
         if (driver.getButton(GamepadButton.X) && !lastEdge) {

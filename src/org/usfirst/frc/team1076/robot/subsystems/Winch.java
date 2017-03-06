@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1076.robot.subsystems;
 
+import org.strongback.Strongback;
 import org.strongback.command.Requirable;
 import org.strongback.components.Motor;
 
@@ -26,23 +27,25 @@ public class Winch implements Requirable {
     /**
      * Set the speed of the winch. Positive extends, negative retracts
      */
-    public void setSpeed(double speed) {
-        winch.setSpeed(speed);
-    }
+//    public void setSpeed(double speed) {
+//        winch.setSpeed(speed);
+//    }
     
     /**
      * Extend the winch at the set speed
      * @param speed
      */
     public void extend(double speed) {
-        winch.setSpeed(speed);
+        if (speed >= 0) {
+            winch.setSpeed(speed);
+        }
     }
     
     /**
      * Retract the winch at the set speed
      * @param speed
      */
-    public void retract(double speed) {
-        winch.setSpeed(-speed);
-    }
+//    public void retract(double speed) {
+//        winch.setSpeed(-speed);
+//    }
 }
