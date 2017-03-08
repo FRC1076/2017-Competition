@@ -334,11 +334,17 @@ public class Robot extends IterativeRobot {
         driver.setDeadzone(0.2);
         operator.setDeadzone(0.2);
         // LB = brake on, no RB = brake off
-        Strongback.submit(new SolenoidSwitcherOneButton(brake, driver, GamepadButton.LB, SwitchType.ON_HOLD_EXTEND));
+        Strongback.switchReactor().onTriggered(strongbackDriver.getLeftBumper(), ()->brake.extend());
+        Strongback.switchReactor().onUntriggered(strongbackDriver.getLeftBumper(), ()->brake.retract());
+//        Strongback.submit(new SolenoidSwitcherOneButton(brake, driver, GamepadButton.LB, SwitchType.ON_HOLD_EXTEND));
         // RB = high gear, no RB = low gear
-        Strongback.submit(new SolenoidSwitcherOneButton(shifter, driver, GamepadButton.RB, SwitchType.ON_HOLD_RETRACT));
+        Strongback.switchReactor().onTriggered(strongbackDriver.getRightBumper(), ()->shifter.retract());
+        Strongback.switchReactor().onUntriggered(strongbackDriver.getRightBumper(), ()->shifter.extend());
+//        Strongback.submit(new SolenoidSwitcherOneButton(shifter, driver, GamepadButton.RB, SwitchType.ON_HOLD_RETRACT));
         // LB = down, RB = up
-        Strongback.submit(new SolenoidSwitcherTwoButton(holder, operator, GamepadButton.LB, GamepadButton.RB));
+        Strongback.switchReactor().onTriggered(strongbackOperator.getLeftBumper(), ()->holder.retract());
+        Strongback.switchReactor().onTriggered(strongbackOperator.getRightBumper(), ()->holder.extend());
+//        Strongback.submit(new SolenoidSwitcherTwoButton(holder, operator, GamepadButton.LB, GamepadButton.RB));
 	}
 	
 	/*
