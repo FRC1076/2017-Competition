@@ -38,8 +38,10 @@ public class DrivetrainWithGyro extends Drivetrain {
         double right = forward - rotate;
         if (shouldForwardAssist(rotate) && Math.abs(lastGyroRate) < 0.5) {
             PID.computeOutput();
-            left += computedValue;
-            right -= computedValue;
+            if (forward != 0) {
+                left += computedValue;
+                right -= computedValue;
+            }
 //            if (computedValue > 0) {
 ////                Strongback.logger().debug("Right drift");
 //                if (forward > 0) {
