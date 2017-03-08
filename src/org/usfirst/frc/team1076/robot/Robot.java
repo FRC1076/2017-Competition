@@ -56,8 +56,10 @@ import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	IGamepad driver = new Gamepad(0);
-	IGamepad operator = new Gamepad(1);
+    org.strongback.components.ui.Gamepad strongbackDriver = Hardware.HumanInterfaceDevices.xbox360(0);
+    org.strongback.components.ui.Gamepad strongbackOperator = Hardware.HumanInterfaceDevices.xbox360(1);
+	IGamepad driver = new StrongbackGamepad(strongbackDriver);
+	IGamepad operator = new StrongbackGamepad(strongbackOperator);
 	
 	final double PULSES_PER_DEGREE = 1000;
 	

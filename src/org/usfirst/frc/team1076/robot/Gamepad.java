@@ -1,5 +1,7 @@
 package org.usfirst.frc.team1076.robot;
 
+import org.strongback.Strongback;
+
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class Gamepad implements IGamepad {
@@ -53,6 +55,11 @@ public class Gamepad implements IGamepad {
 	private int port;
 	private DriverStation driverStation;
 	
+	Gamepad() {
+	    driverStation = null;
+	    Strongback.logger().info("Not using a DriverStation instance for Gamepad!");
+	}
+	
 	Gamepad(int port) {
 		this.port = port;
 		driverStation = DriverStation.getInstance();
@@ -103,7 +110,7 @@ public class Gamepad implements IGamepad {
 		
 		return new Coords(x, y);
 	}
-
+	
     @Override
     public void setDeadzone(double deadzone) {
         this.deadzone = deadzone;
