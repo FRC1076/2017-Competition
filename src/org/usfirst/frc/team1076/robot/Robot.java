@@ -150,9 +150,9 @@ public class Robot extends IterativeRobot {
         SmarterDashboard.putDefaultNumber("Second Drive Speed", 0.65);		
         SmarterDashboard.putDefaultNumber("Center Drive Time", 5.0);
         SmarterDashboard.putDefaultNumber("Center Drive Speed", 0.65);
-		SmarterDashboard.putDefaultNumber("Gyro P", 2.5);
+		SmarterDashboard.putDefaultNumber("Gyro P", 0.0);
 		SmarterDashboard.putDefaultNumber("Gyro I", 0.0);
-		SmarterDashboard.putDefaultNumber("Gyro D", 0.5);
+		SmarterDashboard.putDefaultNumber("Gyro D", 0.0);
 
         SmarterDashboard.putDefaultNumber("Vision P", 0.5);
         SmarterDashboard.putDefaultNumber("Vision I", 0.0);
@@ -347,9 +347,9 @@ public class Robot extends IterativeRobot {
         Strongback.logger().info("Refreshed PID values");        
         drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
         drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
-        drivetrain.P = SmarterDashboard.getNumber("Gyro P", 2.5); 
+        drivetrain.P = SmarterDashboard.getNumber("Gyro P", 0.0); 
 	    drivetrain.I = SmarterDashboard.getNumber("Gyro I", 0); 
-	    drivetrain.D = SmarterDashboard.getNumber("Gyro D", 0.5);
+	    drivetrain.D = SmarterDashboard.getNumber("Gyro D", 0.0);
 	    drivetrainVision.P = SmarterDashboard.getNumber("Vision P", 3.0); 
 	    drivetrainVision.I = SmarterDashboard.getNumber("Vision I", 0); 
 	    drivetrainVision.D = SmarterDashboard.getNumber("Vision D", 0);
