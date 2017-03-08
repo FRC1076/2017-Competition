@@ -43,6 +43,9 @@ public class TeleopCommand extends Command {
         // Makes the robot drive left (from the robot's perspective) when driving backwards
         // instead of driving left from the driver's perspective.
         if (forward >= 0) {
+            if (forward == 0 && isReversed) {
+                rotate = -rotate;
+            }
             leftRight.arcade(forward, rotate*Math.abs(rotate));
         } else {
             leftRight.arcade(forward, -(rotate*Math.abs(rotate)));

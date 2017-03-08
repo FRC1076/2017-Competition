@@ -1,5 +1,7 @@
 package org.usfirst.frc.team1076.robot;
 
+import org.usfirst.frc.team1076.robot.Gamepad.GamepadAxis;
+
 public class StrongbackGamepad extends Gamepad {
     
     org.strongback.components.ui.Gamepad gamepad;
@@ -10,7 +12,12 @@ public class StrongbackGamepad extends Gamepad {
 
     @Override
     public double getRawAxis(GamepadAxis axis) {
-        return gamepad.getAxis(axis.value()).read();
+        double value = gamepad.getAxis(axis.value()).read();
+        // inverts y-axis because it is backwards (unaltered, the gamepad treats down as positive)
+        if (axis == GamepadAxis.LeftY || axis == GamepadAxis.RightY) {
+            return -value;
+        }
+        return value;
     }
 
     @Override
