@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1076.robot.commands;
 
+import org.strongback.Strongback;
 import org.strongback.command.Command;
 import org.strongback.components.Gyroscope;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
@@ -30,6 +31,7 @@ public class ForwardWithGyro extends CancelableCommand {
     
     @Override
     public void initialize() {
+        Strongback.logger().info("BEGIN ForwardWithGyro AUTO");
         drivetrain.getGyro().zero();
     }
     
@@ -48,6 +50,7 @@ public class ForwardWithGyro extends CancelableCommand {
     
     @Override
     public void end() {
+        Strongback.logger().info("END ForwardWithGyro AUTO");
         drivetrain.stop();
     }
     

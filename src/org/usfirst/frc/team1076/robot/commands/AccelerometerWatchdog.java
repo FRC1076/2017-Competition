@@ -31,6 +31,7 @@ public class AccelerometerWatchdog extends Command {
         double acceleration = accelerometer.getAcceleration();
         if(acceleration > 0 && Math.abs(acceleration) > accelerometer_threshold) {
             Strongback.logger().info("Acceleration Hit Detected: " + acceleration);
+            Strongback.logger().info("Canceled Command: " + command.getClass().getName());
             command.doCancel();
             return true;
         }

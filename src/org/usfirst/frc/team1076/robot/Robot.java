@@ -123,7 +123,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		Strongback.start();
-		
+		Strongback.logger().info("BEGIN ROBOT INIT");
 		pneumatics.automaticMode().on();
 		// Extend = low gear, retract = high gear
 		shifter.extend(); // Start low gear
@@ -186,6 +186,7 @@ public class Robot extends IterativeRobot {
 		refreshDrivetrainValues();
 		
 		SmarterDashboard.putData("Recalibrate Gyro", new RecalibrateGyro(wpilib_gyro, drivetrain));
+		Strongback.logger().info("END ROBOT INIT");
 	}
 
 	/**
@@ -195,6 +196,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
+	    Strongback.logger().info("DISABLED");
 	    Strongback.killAllCommands();
 		gyro.zero();
 		refreshDrivetrainValues();
@@ -229,6 +231,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+	    Strongback.logger().info("BEGIN AUTONOMOUS INIT");
 	    refreshDrivetrainValues();
 	    
 	    String stringChoice = SmarterDashboard.getString(autonomousSmartdashboardMessage, "center");
@@ -260,6 +263,8 @@ public class Robot extends IterativeRobot {
             break;
 
 	    }
+	    
+	    Strongback.logger().info("USING AUTONOMOUS TYPE " + commandChoice.toString());
 	    
 	    // AUTONOMOUS SETUP
         double driveTime = SmarterDashboard.getNumber("First Drive Time", 2.0);
@@ -310,8 +315,11 @@ public class Robot extends IterativeRobot {
         }
         }
         
-        if (autonomousCommand != null)
+        if (autonomousCommand != null) {
             Strongback.submit(autonomousCommand);
+        }
+        
+        Strongback.logger().info("END AUTONOMOUS INIT");
 	}
 
 	/**
@@ -320,10 +328,19 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+        if (debugCount++ % 100 == 0) {
+            if (receiver == null) {
+                Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
+            } else {
+                receiver.receive();
+                Strongback.logger().info("Vision: " + receiver.getData().toString());
+            } 
+        }
 	}
 
 	@Override
 	public void teleopInit() {
+	    Strongback.logger().info("BEGIN TELEOP INIT");
 	    refreshDrivetrainValues(); 
 	    
 		Strongback.submit(teleopCommand);
@@ -345,6 +362,7 @@ public class Robot extends IterativeRobot {
         Strongback.switchReactor().onTriggered(strongbackOperator.getLeftBumper(), ()->holder.retract());
         Strongback.switchReactor().onTriggered(strongbackOperator.getRightBumper(), ()->holder.extend());
 //        Strongback.submit(new SolenoidSwitcherTwoButton(holder, operator, GamepadButton.LB, GamepadButton.RB));
+        Strongback.logger().info("END TELEOP INIT");
 	}
 	
 	/*
@@ -376,17 +394,8 @@ public class Robot extends IterativeRobot {
 		        Strongback.logger().warn("Accelerometer is null!");
 		    }
 		    System.out.println("Gyro:"  + gyro.getAngle());
-		    System.out.println("PID correct" + drivetrain.computedValue);
-		    System.out.println("accelerometerX " + accelerometer.getXDirection().getAcceleration());
-		    System.out.println("accelerometerY " + accelerometer.getYDirection().getAcceleration());
-		    System.out.println("accelerometerZ " + accelerometer.getZDirection().getAcceleration());
-		    System.out.println("encoder left1 " + encoderLeft1.getRate());
-		    System.out.println("encoder left2 " + encoderLeft2.getRate());
-		    System.out.println("encoder right1 " + encoderRight1.getRate());
-		    System.out.println("encoder right2 " + encoderRight2.getRate());
-		    
+		    System.out.println("PID correction " + drivetrain.computedValue);
 		}
-		
 //		drivetrain.debugPID();
 	}
 	

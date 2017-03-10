@@ -21,6 +21,11 @@ public class ForwardWithVision extends CancelableCommand {
     }
     
     @Override
+    public void initialize() {
+        Strongback.logger().info("BEGIN ForwardWithVision AUTO");
+    }
+    
+    @Override
     public boolean execute() {
         drivetrain.arcade(speed, 0);
         return !isRunning;
@@ -28,6 +33,7 @@ public class ForwardWithVision extends CancelableCommand {
     
     @Override
     public void end() {
+        Strongback.logger().info("END ForwardWithVision AUTO");
         drivetrain.stop();
     }
 

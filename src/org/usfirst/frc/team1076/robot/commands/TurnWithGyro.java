@@ -37,6 +37,7 @@ public class TurnWithGyro extends Command {
 
     @Override
     public void initialize() {
+        Strongback.logger().info("BEGIN TurnWithGyro AUTO");
         gyro.zero();
     }
 
@@ -66,6 +67,8 @@ public class TurnWithGyro extends Command {
 
     @Override
     public void end() {
+        Strongback.logger().info("Finished Turning, Goal: " + targetAngle + ", Actual: " + gyro.getAngle());
+        Strongback.logger().info("END TurnWithGyro AUTO");
         drivetrain.stop();
     }
 }
