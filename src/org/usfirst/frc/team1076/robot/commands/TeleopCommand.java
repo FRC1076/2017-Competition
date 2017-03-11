@@ -2,8 +2,6 @@ package org.usfirst.frc.team1076.robot.commands;
 
 import org.strongback.Strongback;
 import org.strongback.command.Command;
-import org.strongback.mock.Mock;
-import org.usfirst.frc.team1076.robot.Gamepad.GamepadAxis;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.IGamepad;

@@ -1,7 +1,5 @@
 package org.usfirst.frc.team1076.robot;
 
-import org.usfirst.frc.team1076.robot.Gamepad.GamepadAxis;
-
 public class StrongbackGamepad extends Gamepad {
     
     org.strongback.components.ui.Gamepad gamepad;

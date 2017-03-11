@@ -1,6 +1,8 @@
 package org.usfirst.frc.team1076.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +11,6 @@ import org.strongback.mock.MockGyroscope;
 import org.strongback.mock.MockMotor;
 import org.usfirst.frc.team1076.robot.MockGamepad;
 import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
-import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
 
 public class TestTurnWithGyro {

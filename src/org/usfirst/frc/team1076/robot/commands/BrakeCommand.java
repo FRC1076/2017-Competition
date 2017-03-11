@@ -1,6 +1,5 @@
 package org.usfirst.frc.team1076.robot.commands;
 
-import org.strongback.Strongback;
 import org.strongback.command.Command;
 import org.strongback.components.Solenoid;
 import org.usfirst.frc.team1076.robot.Gamepad;

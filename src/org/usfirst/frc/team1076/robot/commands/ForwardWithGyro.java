@@ -1,9 +1,7 @@
 package org.usfirst.frc.team1076.robot.commands;
 
 import org.strongback.Strongback;
-import org.strongback.command.Command;
 import org.strongback.components.Gyroscope;
-import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
 
 /**

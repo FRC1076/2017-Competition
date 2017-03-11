@@ -1,21 +1,11 @@
 
 package org.usfirst.frc.team1076.robot;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.BuiltInAccelerometer;
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-
 import java.net.SocketException;
 
 import org.strongback.Strongback;
-import org.strongback.Strongback.Configurator;
 import org.strongback.command.Command;
 import org.strongback.command.CommandGroup;
-import org.strongback.components.Accelerometer;
 import org.strongback.components.Gyroscope;
 import org.strongback.components.Motor;
 import org.strongback.components.PneumaticsModule;
@@ -24,29 +14,22 @@ import org.strongback.components.Switch;
 import org.strongback.components.TalonSRX;
 import org.strongback.components.ThreeAxisAccelerometer;
 import org.strongback.hardware.Hardware;
-import org.strongback.mock.Mock;
-
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-
 import org.usfirst.frc.team1076.robot.commands.AccelerometerWatchdog;
-import org.usfirst.frc.team1076.robot.commands.BrakeCommand;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithVision;
 import org.usfirst.frc.team1076.robot.commands.RecalibrateGyro;
-import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcherOneButton;
-import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcherTwoButton;
-import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
-import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
-import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
-import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
-import org.usfirst.frc.team1076.robot.commands.TurnWithVision;
-import org.usfirst.frc.team1076.robot.commands.SolenoidSwitcherOneButton.SwitchType;
 import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
-import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithVision;
 import org.usfirst.frc.team1076.robot.subsystems.Winch;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
+
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
  * The VM is configured to automatically run this class, and to call the

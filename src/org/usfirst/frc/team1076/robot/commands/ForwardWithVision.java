@@ -1,7 +1,6 @@
 package org.usfirst.frc.team1076.robot.commands;
 
 import org.strongback.Strongback;
-import org.strongback.command.Command;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithVision;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;

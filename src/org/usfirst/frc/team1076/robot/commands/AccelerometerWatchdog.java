@@ -3,7 +3,6 @@ package org.usfirst.frc.team1076.robot.commands;
 import org.strongback.Strongback;
 import org.strongback.command.Command;
 import org.strongback.components.Accelerometer;
-import org.strongback.components.ThreeAxisAccelerometer;
 
 public class AccelerometerWatchdog extends Command {
     public double accelerometer_threshold = 1.0;

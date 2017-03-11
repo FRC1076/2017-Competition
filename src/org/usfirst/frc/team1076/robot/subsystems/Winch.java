@@ -1,6 +1,5 @@
 package org.usfirst.frc.team1076.robot.subsystems;
 
-import org.strongback.Strongback;
 import org.strongback.command.Requirable;
 import org.strongback.components.Motor;
 
