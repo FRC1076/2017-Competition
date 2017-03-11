@@ -102,9 +102,9 @@ public class Robot extends IterativeRobot {
 	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, driver, operator, winch);
 
 //	SendableChooser<CommandEnum> chooser = new SendableChooser<CommandEnum>();
-	public enum CommandEnum { LEFT, RIGHT, CENTER, TEST_LEFT, TEST_CENTER, NONE };
+	public enum CommandEnum { LEFT, RIGHT, CENTER, NONE };
 	CommandEnum commandChoice;
-	String autonomousSmartdashboardMessage = "Autonomous Type (accepted values: are left, right, center, test center, test left, and disable)";
+	String autonomousSmartdashboardMessage = "Autonomous Type (accepted values: are left, right, center, and disable)";
 	Command autonomousCommand;
 	
 	Switch switchRight = Hardware.Switches.normallyClosed(1);
@@ -165,6 +165,9 @@ public class Robot extends IterativeRobot {
         SmarterDashboard.putDefaultNumber("Turn Ease Out Threshold", 5.0);
 		
         SmarterDashboard.putDefaultNumber("Accelerometer Threshold", 1.0);
+
+        SmarterDashboard.putDefaultNumber("Backward Time", 0.5);
+        SmarterDashboard.putDefaultNumber("Backward Speed", -0.1);
         
 		try {
 			receiver = new VisionReceiver(IP, VISION_PORT);
@@ -249,14 +252,6 @@ public class Robot extends IterativeRobot {
 	    case "center":
 	        commandChoice = CommandEnum.CENTER;
             break;
-	    case "tc":
-	    case "test center":
-	        commandChoice = CommandEnum.TEST_CENTER;
-            break;
-	    case "tl":
-	    case "test left":
-	        commandChoice = CommandEnum.TEST_LEFT;
-	        break;
 	    case "d":
 	    case "disable":
 	        commandChoice = CommandEnum.NONE;
@@ -299,37 +294,20 @@ public class Robot extends IterativeRobot {
             turn.easeOutThreshold = turn_ease_out_threshold;
             ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
             AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision);
-            autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.pause(1.0), CommandGroup.runSimultaneously(watchdog, vision));
+            ForwardWithGyro backward = new ForwardWithGyro(drivetrain, backward_drive_speed, backward_drive_time);
+            autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.pause(1.0), CommandGroup.runSimultaneously(watchdog, vision), backward);
             break;
         }
         case CENTER: {
             ForwardWithVision vision_center = new ForwardWithVision(drivetrainVision, 10, center_drive_speed, center_drive_time);
             AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision_center);
             watchdog.accelerometer_threshold = accelerometer_threshold;
-            autonomousCommand = CommandGroup.runSimultaneously(vision_center, watchdog);
+            ForwardWithGyro backward = new ForwardWithGyro(drivetrain, backward_drive_speed, backward_drive_time);
+            autonomousCommand = CommandGroup.runSequentially(CommandGroup.runSimultaneously(vision_center, watchdog), backward);
             break;
         }
         case NONE: {
             autonomousCommand = Command.create(() -> {});
-            break;
-        }
-        case TEST_LEFT: {
-            ForwardWithGyro forward = new ForwardWithGyro(drivetrain, speed, driveTime);
-            TurnWithGyro turn = new TurnWithGyro(drivetrain, turn_speed, turnAmount);
-            turn.finalSpeed = turn_final_speed;
-            turn.easeOutThreshold = turn_ease_out_threshold;
-            ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
-            AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision);
-            ForwardWithGyro backward = new ForwardWithGyro(drivetrain, backward_drive_speed, backward_drive_time);
-            autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.pause(1.0), CommandGroup.runSimultaneously(watchdog, vision), backward);
-            break;
-        }
-        case TEST_CENTER: {
-            ForwardWithVision vision_center = new ForwardWithVision(drivetrainVision, 10, center_drive_speed, center_drive_time);
-            AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision_center);
-            watchdog.accelerometer_threshold = accelerometer_threshold;
-            ForwardWithGyro backward = new ForwardWithGyro(drivetrain, backward_drive_speed, backward_drive_time);
-            autonomousCommand = CommandGroup.runSequentially(CommandGroup.runSimultaneously(vision_center, watchdog), backward);
             break;
         }
         }
