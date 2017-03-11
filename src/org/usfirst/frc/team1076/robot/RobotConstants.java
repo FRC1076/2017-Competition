@@ -15,7 +15,7 @@ public class RobotConstants {
     public static final double CENTER_DRIVE_SPEED = 0.65;
     
     public static final double BACKWARD_TIME = 0.5;
-    public static final double BACKWARD_SPEED = -0.1;
+    public static final double BACKWARD_SPEED = -0.15;
     
     public static final double GYRO_P = 1.5;
     public static final double GYRO_I = 0.0;
