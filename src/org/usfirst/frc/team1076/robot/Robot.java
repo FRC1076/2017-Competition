@@ -127,30 +127,30 @@ public class Robot extends IterativeRobot {
 //		SmarterDashboard.putDefaultNumber("Right Factor", 1);
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		
-		SmarterDashboard.putDefaultNumber("First Drive Time", 1.4);
-		SmarterDashboard.putDefaultNumber("First Drive Speed", 0.9);
-		SmarterDashboard.putDefaultNumber("Turn Amount", 42.0);
-		SmarterDashboard.putDefaultNumber("Turn Speed", 0.65);
-        SmarterDashboard.putDefaultNumber("Second Drive Time", 5.0);
-        SmarterDashboard.putDefaultNumber("Second Drive Speed", 0.65);		
-        SmarterDashboard.putDefaultNumber("Center Drive Time", 5.0);
-        SmarterDashboard.putDefaultNumber("Center Drive Speed", 0.65);
-		SmarterDashboard.putDefaultNumber("Gyro P", 1.5);
-		SmarterDashboard.putDefaultNumber("Gyro I", 0.0);
-		SmarterDashboard.putDefaultNumber("Gyro D", 0.5);
+		SmarterDashboard.putDefaultNumber("First Drive Time", RobotConstants.FIRST_DRIVE_TIME);
+		SmarterDashboard.putDefaultNumber("First Drive Speed", RobotConstants.FIRST_DRIVE_SPEED);
+		SmarterDashboard.putDefaultNumber("Turn Amount", RobotConstants.TURN_AMOUNT);
+		SmarterDashboard.putDefaultNumber("Turn Speed", RobotConstants.TURN_SPEED);
+        SmarterDashboard.putDefaultNumber("Second Drive Time", RobotConstants.SECOND_DRIVE_TIME);
+        SmarterDashboard.putDefaultNumber("Second Drive Speed", RobotConstants.SECOND_DRIVE_SPEED);
+        SmarterDashboard.putDefaultNumber("Center Drive Time", RobotConstants.CENTER_DRIVE_TIME);
+        SmarterDashboard.putDefaultNumber("Center Drive Speed", RobotConstants.CENTER_DRIVE_SPEED);
+		SmarterDashboard.putDefaultNumber("Gyro P", RobotConstants.GYRO_P);
+		SmarterDashboard.putDefaultNumber("Gyro I", RobotConstants.GYRO_I);
+		SmarterDashboard.putDefaultNumber("Gyro D", RobotConstants.GYRO_D);
 
-        SmarterDashboard.putDefaultNumber("Vision P", 0.5);
-        SmarterDashboard.putDefaultNumber("Vision I", 0.0);
-        SmarterDashboard.putDefaultNumber("Vision D", 0.0);
-//        SmarterDashboard.putDefaultNumber("Vision Norm Factor", 45.0);
+        SmarterDashboard.putDefaultNumber("Vision P", RobotConstants.VISION_P);
+        SmarterDashboard.putDefaultNumber("Vision I", RobotConstants.VISION_I);
+        SmarterDashboard.putDefaultNumber("Vision D", RobotConstants.VISION_D);
+//        SmarterDashboard.putDefaultNumber("Vision Norm FputDefaultNumber("Vision Norm Factor);
 
-        SmarterDashboard.putDefaultNumber("Turn Final Speed", 0.0);
-        SmarterDashboard.putDefaultNumber("Turn Ease Out Threshold", 5.0);
+        SmarterDashboard.putDefaultNumber("Turn Final Speed", RobotConstants.TURN_FINAL_SPEED);
+        SmarterDashboard.putDefaultNumber("Turn Ease Out Threshold", RobotConstants.TURN_EASE_OUT_THRESHOLD);
 		
-        SmarterDashboard.putDefaultNumber("Accelerometer Threshold", 1.0);
+        SmarterDashboard.putDefaultNumber("Accelerometer Threshold", RobotConstants.ACCELEROMETER_THRESHOLD);
 
-        SmarterDashboard.putDefaultNumber("Backward Time", 0.5);
-        SmarterDashboard.putDefaultNumber("Backward Speed", -0.1);
+        SmarterDashboard.putDefaultNumber("Backward Time", RobotConstants.BACKWARD_TIME);
+        SmarterDashboard.putDefaultNumber("Backward Speed", RobotConstants.BACKWARD_SPEED);
         
 		try {
 			receiver = new VisionReceiver(IP, VISION_PORT);
@@ -249,23 +249,23 @@ public class Robot extends IterativeRobot {
 	    Strongback.logger().info("USING AUTONOMOUS TYPE " + commandChoice.toString());
 	    
 	    // AUTONOMOUS SETUP
-        double driveTime = SmarterDashboard.getNumber("First Drive Time", 1.4);
-        double speed = SmarterDashboard.getNumber("First Drive Speed", 0.9);
-        double turnAmount = SmarterDashboard.getNumber("Turn Amount", 42.0) * (commandChoice == CommandEnum.RIGHT ? -1 : 1); // Turns opposite way if on right
-        double turn_speed = SmarterDashboard.getNumber("Turn Speed", 0.65);
-        double vision_time = SmarterDashboard.getNumber("Second Drive Time", 5.0);
-        double vision_speed = SmarterDashboard.getNumber("Second Drive Speed", 0.55);
+        double driveTime = SmarterDashboard.getNumber("First Drive Time", RobotConstants.FIRST_DRIVE_TIME);
+        double speed = SmarterDashboard.getNumber("First Drive Speed", RobotConstants.FIRST_DRIVE_SPEED);
+        double turnAmount = SmarterDashboard.getNumber("Turn Amount", RobotConstants.TURN_AMOUNT) * (commandChoice == CommandEnum.RIGHT ? -1 : 1); // Turns opposite way if on right
+        double turn_speed = SmarterDashboard.getNumber("Turn Speed", RobotConstants.TURN_SPEED);
+        double vision_time = SmarterDashboard.getNumber("Second Drive Time", RobotConstants.SECOND_DRIVE_TIME);
+        double vision_speed = SmarterDashboard.getNumber("Second Drive Speed", RobotConstants.SECOND_DRIVE_SPEED);
         
-        double center_drive_time = SmarterDashboard.getNumber("Center Drive Time", 5.0);
-        double center_drive_speed = SmarterDashboard.getNumber("Center Drive Speed", 0.65);
+        double center_drive_time = SmarterDashboard.getNumber("Center Drive Time", RobotConstants.CENTER_DRIVE_TIME);
+        double center_drive_speed = SmarterDashboard.getNumber("Center Drive Speed", RobotConstants.CENTER_DRIVE_SPEED);
         
-        double backward_drive_time = SmarterDashboard.getNumber("Backward Time", 0.0);
-        double backward_drive_speed = SmarterDashboard.getNumber("Backward Speed", 0.0);
+        double backward_drive_time = SmarterDashboard.getNumber("Backward Time", RobotConstants.BACKWARD_TIME);
+        double backward_drive_speed = SmarterDashboard.getNumber("Backward Speed", RobotConstants.BACKWARD_SPEED);
         
-        double turn_final_speed = SmarterDashboard.getNumber("Turn Final Speed", 0.0);
-        double turn_ease_out_threshold = SmarterDashboard.getNumber("Turn Ease Out Threshold", 5.0);
+        double turn_final_speed = SmarterDashboard.getNumber("Turn Final Speed", RobotConstants.TURN_FINAL_SPEED);
+        double turn_ease_out_threshold = SmarterDashboard.getNumber("Turn Ease Out Threshold", RobotConstants.TURN_EASE_OUT_THRESHOLD);
         
-        double accelerometer_threshold = SmarterDashboard.getNumber("Accelerometer Threshold", 1.0);
+        double accelerometer_threshold = SmarterDashboard.getNumber("Accelerometer Threshold", RobotConstants.ACCELEROMETER_THRESHOLD);
         
         Strongback.logger().info("BEGIN SMARTDASHBOARD DUMP");
         Strongback.logger().info("First Drive Time: " + driveTime);
@@ -366,15 +366,15 @@ public class Robot extends IterativeRobot {
 	 */
     private void refreshDrivetrainValues() {
         Strongback.logger().info("Refreshed PID values");        
-        drivetrain.leftFactor = 1; // SmarterDashboard.getNumber("Left Factor", 1);
-        drivetrain.rightFactor = 1; // SmarterDashboard.getNumber("Right Factor", 1);
-        drivetrain.P = SmarterDashboard.getNumber("Gyro P", 1.5); 
-	    drivetrain.I = SmarterDashboard.getNumber("Gyro I", 0); 
-	    drivetrain.D = SmarterDashboard.getNumber("Gyro D", 0.5);
-	    drivetrainVision.P = SmarterDashboard.getNumber("Vision P", 0.5); 
-	    drivetrainVision.I = SmarterDashboard.getNumber("Vision I", 0); 
-	    drivetrainVision.D = SmarterDashboard.getNumber("Vision D", 0);
-	    drivetrainVision.VISION_NORMAL = 45.0; // SmarterDashboard.getNumber("Vision Norm Factor", 45.0);
+        drivetrain.leftFactor = RobotConstants.LEFT_FACTOR;
+        drivetrain.rightFactor = RobotConstants.RIGHT_FACTOR;
+        drivetrain.P = SmarterDashboard.getNumber("Gyro P", RobotConstants.GYRO_P); 
+	    drivetrain.I = SmarterDashboard.getNumber("Gyro I", RobotConstants.GYRO_I); 
+	    drivetrain.D = SmarterDashboard.getNumber("Gyro D", RobotConstants.GYRO_D);
+	    drivetrainVision.P = SmarterDashboard.getNumber("Vision P", RobotConstants.VISION_P); 
+	    drivetrainVision.I = SmarterDashboard.getNumber("Vision I", RobotConstants.VISION_I); 
+	    drivetrainVision.D = SmarterDashboard.getNumber("Vision D", RobotConstants.VISION_D);
+	    drivetrainVision.VISION_NORMAL = RobotConstants.VISION_NORM_FACTOR; // SmarterDashboard.getNumber("Vision Norm Factor", 45.0);
 	    drivetrain.updateProfile();
 	    drivetrainVision.updateProfile();
     }
