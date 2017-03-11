@@ -267,6 +267,21 @@ public class Robot extends IterativeRobot {
         
         double accelerometer_threshold = SmarterDashboard.getNumber("Accelerometer Threshold", 1.0);
         
+        Strongback.logger().info("BEGIN SMARTDASHBOARD DUMP");
+        Strongback.logger().info("First Drive Time: " + driveTime);
+        Strongback.logger().info("First Drive Speed: " + speed);
+        Strongback.logger().info("Turn Amount: " + turnAmount);
+        Strongback.logger().info("Second Drive Time: " + vision_time);
+        Strongback.logger().info("Second Drive Speed: " + vision_speed);
+        Strongback.logger().info("Center Drive Time: " + center_drive_time);
+        Strongback.logger().info("Center Drive Speed: " + center_drive_speed);
+        Strongback.logger().info("Backward Time: " + backward_drive_time);
+        Strongback.logger().info("Backward Speed: " + backward_drive_speed);
+        Strongback.logger().info("Turn Final Speed: " + turn_final_speed);
+        Strongback.logger().info("Turn Ease Out Threshold: " + turn_ease_out_threshold);
+        Strongback.logger().info("Accelerometer Threshold: " + accelerometer_threshold);
+        Strongback.logger().info("END SMARTDASHBOARD DUMP");
+        
         switch (commandChoice) {
         case LEFT:
         case RIGHT:
