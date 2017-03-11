@@ -328,7 +328,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-        if (debugCount++ % 100 == 0) {
+        if (debugCount++ % 10 == 0) {
             if (receiver == null) {
                 Strongback.logger().warn("VisionReceiver is null on IP " + IP + " and port number " + VISION_PORT);
             } else {
