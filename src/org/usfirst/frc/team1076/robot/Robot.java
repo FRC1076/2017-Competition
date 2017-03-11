@@ -140,15 +140,15 @@ public class Robot extends IterativeRobot {
 		
 		
 		// SMART DASHBOARD
-		SmarterDashboard.putDefaultNumber("Left Factor", 1);
-		SmarterDashboard.putDefaultNumber("Right Factor", 1);
+//		SmarterDashboard.putDefaultNumber("Left Factor", 1);
+//		SmarterDashboard.putDefaultNumber("Right Factor", 1);
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		
 		SmarterDashboard.putDefaultNumber("First Drive Time", 1.4);
 		SmarterDashboard.putDefaultNumber("First Drive Speed", 0.9);
-		SmarterDashboard.putDefaultNumber("Turn Amount", 55.0);
+		SmarterDashboard.putDefaultNumber("Turn Amount", 42.0);
 		SmarterDashboard.putDefaultNumber("Turn Speed", 0.65);
-        SmarterDashboard.putDefaultNumber("Second Drive Time", 2.2);
+        SmarterDashboard.putDefaultNumber("Second Drive Time", 5.0);
         SmarterDashboard.putDefaultNumber("Second Drive Speed", 0.65);		
         SmarterDashboard.putDefaultNumber("Center Drive Time", 5.0);
         SmarterDashboard.putDefaultNumber("Center Drive Speed", 0.65);
@@ -271,12 +271,12 @@ public class Robot extends IterativeRobot {
 	    Strongback.logger().info("USING AUTONOMOUS TYPE " + commandChoice.toString());
 	    
 	    // AUTONOMOUS SETUP
-        double driveTime = SmarterDashboard.getNumber("First Drive Time", 2.0);
-        double speed = SmarterDashboard.getNumber("First Drive Speed", 0.5);
-        double turnAmount = SmarterDashboard.getNumber("Turn Amount", 60.0) * (commandChoice == CommandEnum.RIGHT ? -1 : 1); // Turns opposite way if on right
-        double turn_speed = SmarterDashboard.getNumber("Turn Speed", 0.4);
-        double vision_time = SmarterDashboard.getNumber("Second Drive Time", 2.5);
-        double vision_speed = SmarterDashboard.getNumber("Second Drive Speed", 0.5);
+        double driveTime = SmarterDashboard.getNumber("First Drive Time", 1.4);
+        double speed = SmarterDashboard.getNumber("First Drive Speed", 0.9);
+        double turnAmount = SmarterDashboard.getNumber("Turn Amount", 42.0) * (commandChoice == CommandEnum.RIGHT ? -1 : 1); // Turns opposite way if on right
+        double turn_speed = SmarterDashboard.getNumber("Turn Speed", 0.65);
+        double vision_time = SmarterDashboard.getNumber("Second Drive Time", 5.0);
+        double vision_speed = SmarterDashboard.getNumber("Second Drive Speed", 0.55);
         
         double center_drive_time = SmarterDashboard.getNumber("Center Drive Time", 5.0);
         double center_drive_speed = SmarterDashboard.getNumber("Center Drive Speed", 0.65);
@@ -285,7 +285,7 @@ public class Robot extends IterativeRobot {
         double backward_drive_speed = SmarterDashboard.getNumber("Backward Speed", 0.0);
         
         double turn_final_speed = SmarterDashboard.getNumber("Turn Final Speed", 0.0);
-        double turn_ease_out_threshold = SmarterDashboard.getNumber("Turn Ease Out Threshold", 0.5);
+        double turn_ease_out_threshold = SmarterDashboard.getNumber("Turn Ease Out Threshold", 5.0);
         
         double accelerometer_threshold = SmarterDashboard.getNumber("Accelerometer Threshold", 1.0);
         
@@ -390,12 +390,12 @@ public class Robot extends IterativeRobot {
 	 */
     private void refreshDrivetrainValues() {
         Strongback.logger().info("Refreshed PID values");        
-        drivetrain.leftFactor = SmarterDashboard.getNumber("Left Factor", 1);
-        drivetrain.rightFactor = SmarterDashboard.getNumber("Right Factor", 1);
+        drivetrain.leftFactor = 1; // SmarterDashboard.getNumber("Left Factor", 1);
+        drivetrain.rightFactor = 1; // SmarterDashboard.getNumber("Right Factor", 1);
         drivetrain.P = SmarterDashboard.getNumber("Gyro P", 1.5); 
 	    drivetrain.I = SmarterDashboard.getNumber("Gyro I", 0); 
 	    drivetrain.D = SmarterDashboard.getNumber("Gyro D", 0.5);
-	    drivetrainVision.P = SmarterDashboard.getNumber("Vision P", 3.0); 
+	    drivetrainVision.P = SmarterDashboard.getNumber("Vision P", 0.5); 
 	    drivetrainVision.I = SmarterDashboard.getNumber("Vision I", 0); 
 	    drivetrainVision.D = SmarterDashboard.getNumber("Vision D", 0);
 	    drivetrainVision.VISION_NORMAL = SmarterDashboard.getNumber("Vision Norm Factor", 45.0);
