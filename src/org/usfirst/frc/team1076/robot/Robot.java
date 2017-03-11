@@ -102,9 +102,9 @@ public class Robot extends IterativeRobot {
 	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, driver, operator, winch);
 
 //	SendableChooser<CommandEnum> chooser = new SendableChooser<CommandEnum>();
-	public enum CommandEnum { LEFT, RIGHT, CENTER, TEST, NONE };
+	public enum CommandEnum { LEFT, RIGHT, CENTER, TEST_LEFT, TEST_CENTER, NONE };
 	CommandEnum commandChoice;
-	String autonomousSmartdashboardMessage = "Autonomous Type (accepted values: are left, right, center, test, and disable)";
+	String autonomousSmartdashboardMessage = "Autonomous Type (accepted values: are left, right, center, test center, test left, and disable)";
 	Command autonomousCommand;
 	
 	Switch switchRight = Hardware.Switches.normallyClosed(1);
@@ -249,10 +249,14 @@ public class Robot extends IterativeRobot {
 	    case "center":
 	        commandChoice = CommandEnum.CENTER;
             break;
-	    case "t":
-	    case "test":
-	        commandChoice = CommandEnum.TEST;
+	    case "tc":
+	    case "test center":
+	        commandChoice = CommandEnum.TEST_CENTER;
             break;
+	    case "tl":
+	    case "test left":
+	        commandChoice = CommandEnum.TEST_LEFT;
+	        break;
 	    case "d":
 	    case "disable":
 	        commandChoice = CommandEnum.NONE;
@@ -273,8 +277,12 @@ public class Robot extends IterativeRobot {
         double turn_speed = SmarterDashboard.getNumber("Turn Speed", 0.4);
         double vision_time = SmarterDashboard.getNumber("Second Drive Time", 2.5);
         double vision_speed = SmarterDashboard.getNumber("Second Drive Speed", 0.5);
+        
         double center_drive_time = SmarterDashboard.getNumber("Center Drive Time", 5.0);
         double center_drive_speed = SmarterDashboard.getNumber("Center Drive Speed", 0.65);
+        
+        double backward_drive_time = SmarterDashboard.getNumber("Backward Time", 0.0);
+        double backward_drive_speed = SmarterDashboard.getNumber("Backward Speed", 0.0);
         
         double turn_final_speed = SmarterDashboard.getNumber("Turn Final Speed", 0.0);
         double turn_ease_out_threshold = SmarterDashboard.getNumber("Turn Ease Out Threshold", 0.5);
@@ -305,12 +313,23 @@ public class Robot extends IterativeRobot {
             autonomousCommand = Command.create(() -> {});
             break;
         }
-        case TEST: {
-            //          testAuto = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
+        case TEST_LEFT: {
+            ForwardWithGyro forward = new ForwardWithGyro(drivetrain, speed, driveTime);
             TurnWithGyro turn = new TurnWithGyro(drivetrain, turn_speed, turnAmount);
             turn.finalSpeed = turn_final_speed;
             turn.easeOutThreshold = turn_ease_out_threshold;
-            autonomousCommand = turn;
+            ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
+            AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision);
+            ForwardWithGyro backward = new ForwardWithGyro(drivetrain, backward_drive_speed, backward_drive_time);
+            autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.pause(1.0), CommandGroup.runSimultaneously(watchdog, vision), backward);
+            break;
+        }
+        case TEST_CENTER: {
+            ForwardWithVision vision_center = new ForwardWithVision(drivetrainVision, 10, center_drive_speed, center_drive_time);
+            AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision_center);
+            watchdog.accelerometer_threshold = accelerometer_threshold;
+            ForwardWithGyro backward = new ForwardWithGyro(drivetrain, backward_drive_speed, backward_drive_time);
+            autonomousCommand = CommandGroup.runSequentially(CommandGroup.runSimultaneously(vision_center, watchdog), backward);
             break;
         }
         }
