@@ -4,14 +4,18 @@ import org.strongback.Strongback;
 import org.strongback.command.Command;
 import org.strongback.components.Accelerometer;
 
+/**
+ * This command takes a CancelableCommand and
+ * and accelerometer axis and cancels said command if
+ * the accelerometer exceeds a threshold. This command
+ * should run in parallel with the other command, but does
+ * not need to be started at the same time as the CancelableCommand.
+ * 
+ * This command ends upon cancelation of the other command or
+ * if the other command ever returns false for its isRunning() call
+ */
 public class AccelerometerWatchdog extends Command {
     public double accelerometer_threshold = 1.0;
-    // take a command
-    // while that command runs
-    // we check the accelerometer
-    // if the accelerometer is big
-    // kill the command
-    // also if the subcommand ends, this command ends also
     Accelerometer accelerometer;
     CancelableCommand command;
     

@@ -1,5 +1,10 @@
 package org.usfirst.frc.team1076.robot;
 
+/**
+ * This class holds the defaults for most of
+ * the commands and subsystems
+ *
+ */
 public class RobotConstants {
     public static final double LEFT_FACTOR = 1.0;
     public static final double RIGHT_FACTOR = 1.0;

@@ -36,6 +36,9 @@ public class DrivetrainWithGyro extends Drivetrain {
     public void arcade(double forward, double rotate) {
         double left = forward + rotate;
         double right = forward - rotate;
+        // The Math.abs(lastGyroRate) < 0.5 is used to prevent exiting the 
+        // PID loop through its own corrections. This means that once inside the
+        // way to exit the PID mode is to make shouldForwardAssist false (aka: turning manually) 
         if (shouldForwardAssist(rotate) && Math.abs(lastGyroRate) < 0.5) {
             PID.computeOutput();
             if (forward != 0) {

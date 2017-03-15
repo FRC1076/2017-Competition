@@ -11,6 +11,8 @@ import org.usfirst.frc.team1076.robot.subsystems.Winch;
 /**
  * Controls the robot using a joy stick controller.
  * This command is intended to run continuously for the entire lifetime of the teleop mode.
+ * Note that this command does NOT control pneumatic systems or other button presses.
+ * Instead, that is handled by Strongback's Switch Reactor
  */
 public class TeleopCommand extends Command {
     Drivetrain leftRight;

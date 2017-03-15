@@ -7,7 +7,7 @@ import org.strongback.components.Switch;
  * should be actual switches which turn on or off. They are used to determine
  * which autonomous to use.
  * LEFT is for when the robot is on the left side,
- * RIGHT is for when the robot is on the left side,
+ * RIGHT is for when the robot is on the right side,
  * CENTER is for when the robot is in the middle
  * NONE is for no autonomous (or, possible an experimental/unused auto mode). 
  */

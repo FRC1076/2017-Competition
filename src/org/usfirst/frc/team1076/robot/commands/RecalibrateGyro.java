@@ -7,6 +7,12 @@ import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
+/**
+ * This is a WPILib command, NOT a Strongback command which
+ * allows for the recalibration of the gyro. Upon activation, the command
+ * stops the passed Drivetrain, recalibrates the passed gyro, and reenables
+ * the Drivetrain. This takes approximate 1 to 5 seconds.
+ */
 public class RecalibrateGyro extends Command implements Sendable {
     Gyro gyro;
     Drivetrain drivetrain;

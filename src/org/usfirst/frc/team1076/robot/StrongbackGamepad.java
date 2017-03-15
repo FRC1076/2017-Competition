@@ -1,5 +1,10 @@
 package org.usfirst.frc.team1076.robot;
 
+/**
+ * This class is a wrapper around the built-in gamepad. It exists
+ * only to provide the same functionality as a 1076 Gamepad while also
+ * allowing use of Strongback's Switch Reactor
+ */
 public class StrongbackGamepad extends Gamepad {
     
     org.strongback.components.ui.Gamepad gamepad;
