@@ -19,10 +19,17 @@ public class AccelerometerWatchdog extends Command {
     Accelerometer accelerometer;
     CancelableCommand command;
     
-    public AccelerometerWatchdog(Accelerometer accelerometer, CancelableCommand command) {
+    public AccelerometerWatchdog(Accelerometer accelerometer, CancelableCommand command, double threshold) {
         this.accelerometer = accelerometer;
         this.command = command;
+        this.accelerometer_threshold = threshold;
     }
+    
+    public AccelerometerWatchdog(Accelerometer accelerometer, CancelableCommand command) {
+        this(accelerometer, command, 1.0);
+    }
+    
+    
     
     @Override
     public boolean execute() {
