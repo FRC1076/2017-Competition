@@ -357,6 +357,13 @@ public class Robot extends IterativeRobot {
         Strongback.switchReactor().onTriggered(strongbackOperator.getLeftBumper(), ()->holder.retract());
         Strongback.switchReactor().onTriggered(strongbackOperator.getRightBumper(), ()->holder.extend());
 //        Strongback.submit(new SolenoidSwitcherTwoButton(holder, operator, GamepadButton.LB, GamepadButton.RB));
+        
+        // Gear Lift Macro
+        ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, RobotConstants.MACRO_FORWARD_SPEED, RobotConstants.MACRO_FORWARD_TIME);
+        AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision, RobotConstants.ACCELEROMETER_THRESHOLD);
+        ForwardWithGyro backward = new ForwardWithGyro(drivetrain, RobotConstants.BACKWARD_SPEED, RobotConstants.BACKWARD_TIME);
+        
+        Strongback.switchReactor().onTriggered(strongbackDriver.getA(), ()->new ForwardToGearLift(vision, watchdog, backward));
         Strongback.logger().info("END TELEOP INIT");
 	}
 	
