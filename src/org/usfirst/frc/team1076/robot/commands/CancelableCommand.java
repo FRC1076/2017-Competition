@@ -13,6 +13,7 @@ public abstract class CancelableCommand extends Command {
     
     public CancelableCommand(double time, Requirable... requirables) {
         super(time, requirables);
+        isRunning = true; // Ensure that isRunning is set to true upon creation
     } 
     
     @Override
