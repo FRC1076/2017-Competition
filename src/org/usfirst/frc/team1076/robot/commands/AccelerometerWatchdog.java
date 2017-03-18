@@ -29,8 +29,6 @@ public class AccelerometerWatchdog extends Command {
         this(accelerometer, command, 1.0);
     }
     
-    
-    
     @Override
     public boolean execute() {
         if(command.isRunning() == false) {

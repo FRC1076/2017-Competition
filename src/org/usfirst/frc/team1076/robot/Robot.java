@@ -373,10 +373,12 @@ public class Robot extends IterativeRobot {
         ForwardWithGyro backward = new ForwardWithGyro(drivetrain, gyroCorrector, RobotConstants.BACKWARD_SPEED, RobotConstants.BACKWARD_TIME);
         Strongback.switchReactor().onTriggered(strongbackDriver.getA(), ()->{
             Strongback.logger().info("MACRO START");
-            Strongback.submit(vision);
-            Strongback.logger().info("MACRO END");
-            });
-//        Strongback.switchReactor().onTriggered(strongbackDriver.getA(), ()->Strongback.submit(new ForwardToGearLift(vision, watchdog, backward)));
+            Strongback.submit(
+                    CommandGroup.runSequentially(
+                            new ForwardToGearLift(vision, watchdog, backward),
+                            Command.create(()->{Strongback.logger().info("MACRO END");}),
+                            teleopCommand));});
+	
         Strongback.logger().info("END TELEOP INIT");
 	}
 	
