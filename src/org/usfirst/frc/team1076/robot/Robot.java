@@ -371,13 +371,15 @@ public class Robot extends IterativeRobot {
         ForwardWithVision vision = new ForwardWithVision(drivetrain, visionCorrector, RobotConstants.MACRO_FORWARD_SPEED, RobotConstants.MACRO_FORWARD_TIME);
         AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision, RobotConstants.ACCELEROMETER_THRESHOLD);
         ForwardWithGyro backward = new ForwardWithGyro(drivetrain, gyroCorrector, RobotConstants.BACKWARD_SPEED, RobotConstants.BACKWARD_TIME);
-        Strongback.switchReactor().onTriggered(strongbackDriver.getA(), ()->{
-            Strongback.logger().info("MACRO START");
-            Strongback.submit(
-                    CommandGroup.runSequentially(
-                            new ForwardToGearLift(vision, watchdog, backward),
-                            Command.create(()->{Strongback.logger().info("MACRO END");}),
-                            teleopCommand));});
+//        Strongback.switchReactor().onTriggered(strongbackDriver.getA(), ()->{
+//            Strongback.logger().info("MACRO START");
+//            Strongback.submit(
+//                    CommandGroup.runSequentially(
+//                            new TurnToLift(receiver, drivetrain, gyroCorrector, RobotConstants.MACRO_TURN_SPEED),
+////                            new ForwardToGearLift(vision, watchdog, backward),
+//                            Command.create(()->{Strongback.logger().info("MACRO END");}),
+//                            teleopCommand));
+//            });
 	
         Strongback.logger().info("END TELEOP INIT");
 	}
