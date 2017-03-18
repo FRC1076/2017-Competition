@@ -10,7 +10,7 @@ import org.strongback.Strongback;
  */
 public class VisionData {
     public enum VisionStatus {
-        LEFT, RIGHT, OK, ERROR
+        LEFT, RIGHT, OK, ERROR, NO_TARGET
     }
 
     double heading = 0;
@@ -59,6 +59,10 @@ public class VisionData {
                 break;
             case "ok":
                 status = VisionStatus.OK;
+                errorCount = 0;
+                break;
+            case "no target":
+                status = VisionStatus.NO_TARGET;
                 errorCount = 0;
                 break;
             case "error":
