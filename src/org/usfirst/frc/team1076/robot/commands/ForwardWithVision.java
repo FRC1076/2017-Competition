@@ -10,14 +10,12 @@ public class ForwardWithVision extends CancelableCommand {
     VisionReceiver receiver;
     VisionPIDCorrector corrector;
     double speed;
-    double goalDistance;
     
-    public ForwardWithVision(Drivetrain drivetrain, VisionPIDCorrector corrector, double distance, double speed, double time) {
+    public ForwardWithVision(Drivetrain drivetrain, VisionPIDCorrector corrector, double speed, double time) {
         super(time, drivetrain);
         this.drivetrain = drivetrain;
         this.receiver = corrector.getReceiver();
         this.speed = speed;
-        this.goalDistance = distance;
         this.corrector = corrector;
     }
     

@@ -298,14 +298,14 @@ public class Robot extends IterativeRobot {
             TurnWithGyro turn = new TurnWithGyro(drivetrain, gyroCorrector, turn_speed, turnAmount);
             turn.finalSpeed = turn_final_speed;
             turn.easeOutThreshold = turn_ease_out_threshold;
-            ForwardWithVision vision = new ForwardWithVision(drivetrain, visionCorrector, 10, vision_speed, vision_time);
+            ForwardWithVision vision = new ForwardWithVision(drivetrain, visionCorrector, vision_speed, vision_time);
             AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision);
             ForwardWithGyro backward = new ForwardWithGyro(drivetrain, gyroCorrector, backward_drive_speed, backward_drive_time);
             autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.pause(1.0), CommandGroup.runSimultaneously(watchdog, vision), backward);
             break;
         }
         case CENTER: {
-            ForwardWithVision vision_center = new ForwardWithVision(drivetrain, visionCorrector, 10, center_drive_speed, center_drive_time);
+            ForwardWithVision vision_center = new ForwardWithVision(drivetrain, visionCorrector, center_drive_speed, center_drive_time);
             AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision_center);
             watchdog.accelerometer_threshold = accelerometer_threshold;
             ForwardWithGyro backward = new ForwardWithGyro(drivetrain, gyroCorrector, backward_drive_speed, backward_drive_time);
@@ -368,7 +368,7 @@ public class Robot extends IterativeRobot {
 //        Strongback.submit(new SolenoidSwitcherTwoButton(holder, operator, GamepadButton.LB, GamepadButton.RB));
         
         // Gear Lift Macro
-        ForwardWithVision vision = new ForwardWithVision(drivetrain, visionCorrector, 10, RobotConstants.MACRO_FORWARD_SPEED, RobotConstants.MACRO_FORWARD_TIME);
+        ForwardWithVision vision = new ForwardWithVision(drivetrain, visionCorrector, RobotConstants.MACRO_FORWARD_SPEED, RobotConstants.MACRO_FORWARD_TIME);
         AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision, RobotConstants.ACCELEROMETER_THRESHOLD);
         ForwardWithGyro backward = new ForwardWithGyro(drivetrain, gyroCorrector, RobotConstants.BACKWARD_SPEED, RobotConstants.BACKWARD_TIME);
         Strongback.switchReactor().onTriggered(strongbackDriver.getA(), ()->{
