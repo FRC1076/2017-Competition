@@ -2,7 +2,8 @@ package org.usfirst.frc.team1076.robot.commands;
 
 import org.strongback.Strongback;
 import org.strongback.components.Gyroscope;
-import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
+import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.GyroPIDCorrector;
 
 /**
  * ForwardWithGyro attempts to go straight at the specified speed.
@@ -11,7 +12,8 @@ import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
  */
 public class ForwardWithGyro extends CancelableCommand {
     Gyroscope gyro;
-    DrivetrainWithGyro drivetrain;
+    Drivetrain drivetrain;
+    GyroPIDCorrector corrector;
     double speed;
     
     /**
@@ -21,16 +23,17 @@ public class ForwardWithGyro extends CancelableCommand {
      * @param speed       speed from -1 to 1 (inclusive) to drive at
      * @param targetTime  time, in seconds, to drive forward
      */
-    public ForwardWithGyro(DrivetrainWithGyro drivetrain, double speed, double targetTime) {
+    public ForwardWithGyro(Drivetrain drivetrain, GyroPIDCorrector corrector, double speed, double targetTime) {
         super(targetTime, drivetrain); // This command automatically times out after the specified time. 
         this.drivetrain = drivetrain;
         this.speed = speed;
+        this.corrector = corrector;
     }
     
     @Override
     public void initialize() {
         Strongback.logger().info("BEGIN ForwardWithGyro AUTO");
-        drivetrain.getGyro().zero();
+        corrector.getGyro().zero();
     }
     
     /**
@@ -41,7 +44,7 @@ public class ForwardWithGyro extends CancelableCommand {
      */
     @Override
     public boolean execute() {
-        drivetrain.arcade(speed, 0);
+        drivetrain.arcade(speed, 0, corrector);
         
        return !isRunning;
     }

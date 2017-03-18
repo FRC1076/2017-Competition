@@ -2,21 +2,23 @@ package org.usfirst.frc.team1076.robot.commands;
 
 import org.strongback.Strongback;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
-import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithVision;
+import org.usfirst.frc.team1076.robot.subsystems.VisionPIDCorrector;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
 public class ForwardWithVision extends CancelableCommand {
     Drivetrain drivetrain;
     VisionReceiver receiver;
+    VisionPIDCorrector corrector;
     double speed;
     double goalDistance;
     
-    public ForwardWithVision(DrivetrainWithVision drivetrain, double distance, double speed, double time) {
-        super(time);
+    public ForwardWithVision(Drivetrain drivetrain, VisionPIDCorrector corrector, double distance, double speed, double time) {
+        super(time, drivetrain);
         this.drivetrain = drivetrain;
-        this.receiver = drivetrain.getReceiver();
+        this.receiver = corrector.getReceiver();
         this.speed = speed;
         this.goalDistance = distance;
+        this.corrector = corrector;
     }
     
     @Override
@@ -26,7 +28,7 @@ public class ForwardWithVision extends CancelableCommand {
     
     @Override
     public boolean execute() {
-        drivetrain.arcade(speed, 0);
+        drivetrain.arcade(speed, 0, corrector);
         return !isRunning;
     }
     

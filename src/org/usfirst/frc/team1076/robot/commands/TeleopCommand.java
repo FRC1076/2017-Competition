@@ -5,6 +5,7 @@ import org.strongback.command.Command;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.IGamepad;
+import org.usfirst.frc.team1076.robot.subsystems.ArcadeCorrector;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.Winch;
 
@@ -19,15 +20,24 @@ public class TeleopCommand extends Command {
     IGamepad driver;
     IGamepad operator;
     Winch winch;
-    boolean isReversed = false;
-    boolean lastEdge = false;
+    boolean isReversed;
+    boolean lastEdge;
+    ArcadeCorrector corrector;
     
-    public TeleopCommand(Drivetrain leftRight, IGamepad driver, IGamepad operator, Winch winch) {
+    
+    public TeleopCommand(Drivetrain leftRight, ArcadeCorrector corrector, IGamepad driver, IGamepad operator, Winch winch) {
         super(leftRight, winch); //Require the motors and winch
         this.driver = driver;
         this.leftRight = leftRight;
         this.winch = winch;
         this.operator = operator;
+        this.corrector = corrector;
+    }
+    
+    @Override
+    public void initialize() {
+        isReversed = false;
+        lastEdge = false;
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -46,9 +56,9 @@ public class TeleopCommand extends Command {
             if (forward == 0 && isReversed) {
                 rotate = -rotate;
             }
-            leftRight.arcade(forward, rotate*Math.abs(rotate));
+            leftRight.arcade(forward, rotate*Math.abs(rotate), corrector);
         } else {
-            leftRight.arcade(forward, -(rotate*Math.abs(rotate)));
+            leftRight.arcade(forward, -(rotate*Math.abs(rotate)), corrector);
         }
         final double winchSpeed = operator.getStick(GamepadStick.Left).y;
         // Ideally you shouldn't press both buttons at the same time, however
@@ -74,5 +84,9 @@ public class TeleopCommand extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
         return false;
+    }
+    
+    public void end() {
+        Strongback.logger().warn("TeleopCommand killed!");
     }
 }

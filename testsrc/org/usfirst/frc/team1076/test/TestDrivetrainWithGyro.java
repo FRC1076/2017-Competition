@@ -10,7 +10,8 @@ import org.junit.Test;
 import org.strongback.mock.Mock;
 import org.strongback.mock.MockGyroscope;
 import org.strongback.mock.MockMotor;
-import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
+import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.GyroPIDCorrector;
 
 public class TestDrivetrainWithGyro {
 
@@ -19,36 +20,37 @@ public class TestDrivetrainWithGyro {
     MockMotor left = Mock.stoppedMotor();
     MockMotor right = Mock.stoppedMotor();
     MockGyroscope gyro = Mock.gyroscope();
-    DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
+    Drivetrain drivetrain = new Drivetrain(left, right);
+    GyroPIDCorrector corrector = new GyroPIDCorrector(gyro);
     
     @Before
     public void reset() {
         left.setSpeed(0);
         right.setSpeed(0);
         gyro.zero();
-        drivetrain = new DrivetrainWithGyro(left, right, gyro);
+        drivetrain = new Drivetrain(left, right);
     }
     
     @Test
     public void testShouldForwardAssist() {
         for (double i = -1.0; i < 1.0; i += 0.01) {
             double rotate = i;
-            if (Math.abs(rotate) < Math.abs(DrivetrainWithGyro.FORWARD_ASSIST_MAX_TURN_SPEED)) {
+            if (Math.abs(rotate) < Math.abs(GyroPIDCorrector.FORWARD_ASSIST_MAX_TURN_SPEED)) {
                 assertTrue("Teleop should assist with forward movement when turning with " + rotate,
-                         drivetrain.shouldForwardAssist(rotate));
+                        corrector.shouldForwardAssist(rotate));
             } else {
                 assertFalse("Teleop should not assist with forward movement when turning with " + rotate,
-                        drivetrain.shouldForwardAssist(rotate));
+                        corrector.shouldForwardAssist(rotate));
             }
         }
     }
     
     @Test
     public void testNoForwardAssistGyroZero() {
-        for (double i = DrivetrainWithGyro.FORWARD_ASSIST_MAX_TURN_SPEED; i < 1.0; i += 0.01) {
+        for (double i = GyroPIDCorrector.FORWARD_ASSIST_MAX_TURN_SPEED; i < 1.0; i += 0.01) {
             double forward = 2*Math.random() - 1;
             double rotate = i;
-            drivetrain.arcade(forward, rotate);
+            drivetrain.arcade(forward, rotate, corrector);
             assertEquals("Teleop should not assist forward movement (left motor)",
                     forward + rotate, left.getSpeed(), EPSILON);
             assertEquals("Teleop should not assist forward movement (right motor)",
@@ -58,12 +60,12 @@ public class TestDrivetrainWithGyro {
     
     @Test
     public void testNoForwardAssistGyroNonZero() {
-        for (double i = DrivetrainWithGyro.FORWARD_ASSIST_MAX_TURN_SPEED; i < 1.0; i += 0.01) {
+        for (double i = GyroPIDCorrector.FORWARD_ASSIST_MAX_TURN_SPEED; i < 1.0; i += 0.01) {
             double forward = 2*Math.random() - 1;
             double rotate = i;
             // Get a random angle between 10 and 70 or -70 and -10
             gyro.setAngle(Math.copySign(Math.random()*60+10, Math.random()-0.5));
-            drivetrain.arcade(forward, rotate);
+            drivetrain.arcade(forward, rotate, corrector);
             assertEquals("Teleop should not assist forward movement (left motor)",
                     forward + rotate, left.getSpeed(), EPSILON);
             assertEquals("Teleop should not assist forward movement (right motor)",
@@ -117,12 +119,12 @@ public class TestDrivetrainWithGyro {
     
     public void testForwardAssist(ForwardAssistAssertion assertion, double angle) {
         // Sets the initial "edge" for the RightY axis as positive
-        drivetrain.arcade(1, 0);
-        for (double i = 0; i < DrivetrainWithGyro.FORWARD_ASSIST_MAX_TURN_SPEED; i += 0.01) {
+        drivetrain.arcade(1, 0, corrector);
+        for (double i = 0; i < GyroPIDCorrector.FORWARD_ASSIST_MAX_TURN_SPEED; i += 0.01) {
             gyro.setAngle(angle);
             double forward = randomForwardSpeed();
             double rotate = i;
-            drivetrain.arcade(forward, rotate);
+            drivetrain.arcade(forward, rotate, corrector);
             assertion.doAssertion(forward, rotate);
         }
     }
@@ -164,12 +166,12 @@ public class TestDrivetrainWithGyro {
     // Yes, this is code duplication, but it's probably a livable amount of duplication.
     public void testBackwardAssist(ForwardAssistAssertion assertion, double angle) {
         // Sets the initial "edge" for the RightY axis as negative
-        drivetrain.arcade(-1, 0);
-        for (double i = 0; i < DrivetrainWithGyro.FORWARD_ASSIST_MAX_TURN_SPEED; i += 0.01) {
+        drivetrain.arcade(-1, 0, corrector);
+        for (double i = 0; i < GyroPIDCorrector.FORWARD_ASSIST_MAX_TURN_SPEED; i += 0.01) {
             gyro.setAngle(angle);
             double forward = randomBackwardSpeed();
             double rotate = i;
-            drivetrain.arcade(forward, rotate);
+            drivetrain.arcade(forward, rotate, corrector);
             assertion.doAssertion(forward, rotate);
         }
     }

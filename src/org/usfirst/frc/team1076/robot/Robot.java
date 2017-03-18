@@ -18,10 +18,13 @@ import org.usfirst.frc.team1076.robot.commands.AccelerometerWatchdog;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithVision;
 import org.usfirst.frc.team1076.robot.commands.RecalibrateGyro;
+import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
 import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
-import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
-import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithVision;
+import org.usfirst.frc.team1076.robot.subsystems.ArcadeNoCorrector;
+import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.GyroPIDCorrector;
+import org.usfirst.frc.team1076.robot.subsystems.VisionPIDCorrector;
 import org.usfirst.frc.team1076.robot.subsystems.Winch;
 import org.usfirst.frc.team1076.robot.vision.VisionReceiver;
 
@@ -78,11 +81,14 @@ public class Robot extends IterativeRobot {
 	
 	ThreeAxisAccelerometer accelerometer = Hardware.Accelerometers.builtIn();
 	
-	DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
-	
 	Winch winch = new Winch(winchMotors);
 //	TeleopCommand teleopCommand = new TeleopCommand(drivetrain, driver, operator, winch);
-	TeleopWithGyroCommand teleopCommand = new TeleopWithGyroCommand(drivetrain, driver, operator, winch);
+	
+	Drivetrain drivetrain = new Drivetrain(left, right);
+	GyroPIDCorrector gyroCorrector; 
+	VisionPIDCorrector visionCorrector;
+	
+	TeleopCommand teleopCommand;
 
 //	SendableChooser<CommandEnum> chooser = new SendableChooser<CommandEnum>();
 	public enum CommandEnum { LEFT, RIGHT, CENTER, NONE };
@@ -95,7 +101,7 @@ public class Robot extends IterativeRobot {
 	VisionReceiver receiver;
 	public static final String IP = "0.0.0.0"; // "10.10.76.22";
 	public static final int VISION_PORT = 5880;
-	DrivetrainWithVision drivetrainVision;
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -158,7 +164,9 @@ public class Robot extends IterativeRobot {
 			e.printStackTrace();
 		}
 		
-		drivetrainVision = new DrivetrainWithVision(left, right, receiver);
+		// CORRECTORS
+		gyroCorrector = new GyroPIDCorrector(gyro);
+		visionCorrector = new VisionPIDCorrector(receiver);
 		
 		SmarterDashboard.putDefaultString(autonomousSmartdashboardMessage, "center");
 		 
@@ -286,21 +294,21 @@ public class Robot extends IterativeRobot {
         case LEFT:
         case RIGHT:
         {
-            ForwardWithGyro forward = new ForwardWithGyro(drivetrain, speed, driveTime);
-            TurnWithGyro turn = new TurnWithGyro(drivetrain, turn_speed, turnAmount);
+            ForwardWithGyro forward = new ForwardWithGyro(drivetrain, gyroCorrector, speed, driveTime);
+            TurnWithGyro turn = new TurnWithGyro(drivetrain, gyroCorrector, turn_speed, turnAmount);
             turn.finalSpeed = turn_final_speed;
             turn.easeOutThreshold = turn_ease_out_threshold;
-            ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, vision_speed, vision_time);
+            ForwardWithVision vision = new ForwardWithVision(drivetrain, visionCorrector, 10, vision_speed, vision_time);
             AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision);
-            ForwardWithGyro backward = new ForwardWithGyro(drivetrain, backward_drive_speed, backward_drive_time);
+            ForwardWithGyro backward = new ForwardWithGyro(drivetrain, gyroCorrector, backward_drive_speed, backward_drive_time);
             autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.pause(1.0), CommandGroup.runSimultaneously(watchdog, vision), backward);
             break;
         }
         case CENTER: {
-            ForwardWithVision vision_center = new ForwardWithVision(drivetrainVision, 10, center_drive_speed, center_drive_time);
+            ForwardWithVision vision_center = new ForwardWithVision(drivetrain, visionCorrector, 10, center_drive_speed, center_drive_time);
             AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision_center);
             watchdog.accelerometer_threshold = accelerometer_threshold;
-            ForwardWithGyro backward = new ForwardWithGyro(drivetrain, backward_drive_speed, backward_drive_time);
+            ForwardWithGyro backward = new ForwardWithGyro(drivetrain, gyroCorrector, backward_drive_speed, backward_drive_time);
             autonomousCommand = CommandGroup.runSequentially(CommandGroup.runSimultaneously(vision_center, watchdog), backward);
             break;
         }
@@ -338,11 +346,12 @@ public class Robot extends IterativeRobot {
 	    Strongback.logger().info("BEGIN TELEOP INIT");
 	    refreshDrivetrainValues(); 
 	    
+	    teleopCommand = new TeleopWithGyroCommand(drivetrain, gyroCorrector, driver, operator, winch);
+	    
 		Strongback.submit(teleopCommand);
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
 		
-		drivetrain.updateProfile();
         driver.setDeadzone(0.2);
         operator.setDeadzone(0.2);
         // LB = brake on, no RB = brake off
@@ -359,11 +368,15 @@ public class Robot extends IterativeRobot {
 //        Strongback.submit(new SolenoidSwitcherTwoButton(holder, operator, GamepadButton.LB, GamepadButton.RB));
         
         // Gear Lift Macro
-        ForwardWithVision vision = new ForwardWithVision(drivetrainVision, 10, RobotConstants.MACRO_FORWARD_SPEED, RobotConstants.MACRO_FORWARD_TIME);
+        ForwardWithVision vision = new ForwardWithVision(drivetrain, visionCorrector, 10, RobotConstants.MACRO_FORWARD_SPEED, RobotConstants.MACRO_FORWARD_TIME);
         AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision, RobotConstants.ACCELEROMETER_THRESHOLD);
-        ForwardWithGyro backward = new ForwardWithGyro(drivetrain, RobotConstants.BACKWARD_SPEED, RobotConstants.BACKWARD_TIME);
-        
-        Strongback.switchReactor().onTriggered(strongbackDriver.getA(), ()->new ForwardToGearLift(vision, watchdog, backward));
+        ForwardWithGyro backward = new ForwardWithGyro(drivetrain, gyroCorrector, RobotConstants.BACKWARD_SPEED, RobotConstants.BACKWARD_TIME);
+        Strongback.switchReactor().onTriggered(strongbackDriver.getA(), ()->{
+            Strongback.logger().info("MACRO START");
+            Strongback.submit(vision);
+            Strongback.logger().info("MACRO END");
+            });
+//        Strongback.switchReactor().onTriggered(strongbackDriver.getA(), ()->Strongback.submit(new ForwardToGearLift(vision, watchdog, backward)));
         Strongback.logger().info("END TELEOP INIT");
 	}
 	
@@ -375,15 +388,15 @@ public class Robot extends IterativeRobot {
         Strongback.logger().info("Refreshed PID values");        
         drivetrain.leftFactor = RobotConstants.LEFT_FACTOR;
         drivetrain.rightFactor = RobotConstants.RIGHT_FACTOR;
-        drivetrain.P = SmarterDashboard.getNumber("Gyro P", RobotConstants.GYRO_P); 
-	    drivetrain.I = SmarterDashboard.getNumber("Gyro I", RobotConstants.GYRO_I); 
-	    drivetrain.D = SmarterDashboard.getNumber("Gyro D", RobotConstants.GYRO_D);
-	    drivetrainVision.P = SmarterDashboard.getNumber("Vision P", RobotConstants.VISION_P); 
-	    drivetrainVision.I = SmarterDashboard.getNumber("Vision I", RobotConstants.VISION_I); 
-	    drivetrainVision.D = SmarterDashboard.getNumber("Vision D", RobotConstants.VISION_D);
-	    drivetrainVision.VISION_NORMAL = RobotConstants.VISION_NORM_FACTOR; // SmarterDashboard.getNumber("Vision Norm Factor", 45.0);
-	    drivetrain.updateProfile();
-	    drivetrainVision.updateProfile();
+        gyroCorrector.P = SmarterDashboard.getNumber("Gyro P", RobotConstants.GYRO_P); 
+        gyroCorrector.I = SmarterDashboard.getNumber("Gyro I", RobotConstants.GYRO_I); 
+        gyroCorrector.D = SmarterDashboard.getNumber("Gyro D", RobotConstants.GYRO_D);
+	    visionCorrector.P = SmarterDashboard.getNumber("Vision P", RobotConstants.VISION_P); 
+	    visionCorrector.I = SmarterDashboard.getNumber("Vision I", RobotConstants.VISION_I); 
+	    visionCorrector.D = SmarterDashboard.getNumber("Vision D", RobotConstants.VISION_D);
+	    visionCorrector.VISION_NORMAL = RobotConstants.VISION_NORM_FACTOR; // SmarterDashboard.getNumber("Vision Norm Factor", 45.0);
+	    gyroCorrector.updateProfile();
+	    visionCorrector.updateProfile();
     }
 
 	/**
@@ -396,7 +409,7 @@ public class Robot extends IterativeRobot {
 		        Strongback.logger().warn("Accelerometer is null!");
 		    }
 		    System.out.println("Gyro:"  + gyro.getAngle());
-		    System.out.println("PID correction " + drivetrain.computedValue);
+		    System.out.println("PID correction " + gyroCorrector.computedValue);
 		}
 //		drivetrain.debugPID();
 	}

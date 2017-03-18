@@ -9,7 +9,8 @@ import org.strongback.mock.MockGyroscope;
 import org.strongback.mock.MockMotor;
 import org.usfirst.frc.team1076.robot.MockGamepad;
 import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
-import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
+import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.GyroPIDCorrector;
 import org.usfirst.frc.team1076.robot.subsystems.Winch;
 
 public class TestTeleopWithGyroCommand {
@@ -22,8 +23,9 @@ public class TestTeleopWithGyroCommand {
     MockGamepad driver = new MockGamepad();
     MockGamepad operator = new MockGamepad();
     MockGyroscope gyro = Mock.gyroscope();
-    DrivetrainWithGyro drivetrain = new DrivetrainWithGyro(left, right, gyro);
-    TeleopWithGyroCommand teleop = new TeleopWithGyroCommand(drivetrain, driver, operator, winch);
+    Drivetrain drivetrain = new Drivetrain(left, right);
+    GyroPIDCorrector corrector = new GyroPIDCorrector(gyro);
+    TeleopWithGyroCommand teleop = new TeleopWithGyroCommand(drivetrain, corrector, driver, operator, winch);
     
     @Before
     public void reset() {
@@ -31,7 +33,7 @@ public class TestTeleopWithGyroCommand {
         right.setSpeed(0);
         driver.reset();
         gyro.zero();
-        drivetrain = new DrivetrainWithGyro(left, right, gyro);
+        drivetrain = new Drivetrain(left, right);
     }
     
     @Test 

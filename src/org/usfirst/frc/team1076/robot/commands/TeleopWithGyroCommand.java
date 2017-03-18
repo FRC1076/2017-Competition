@@ -2,7 +2,8 @@ package org.usfirst.frc.team1076.robot.commands;
 
 import org.strongback.components.Gyroscope;
 import org.usfirst.frc.team1076.robot.IGamepad;
-import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
+import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.GyroPIDCorrector;
 import org.usfirst.frc.team1076.robot.subsystems.Winch;
 
 /**
@@ -12,9 +13,9 @@ import org.usfirst.frc.team1076.robot.subsystems.Winch;
 public class TeleopWithGyroCommand extends TeleopCommand {
     Gyroscope gyro;
     
-    public TeleopWithGyroCommand(DrivetrainWithGyro drivetrain, IGamepad driver, IGamepad operator, Winch winch) {
-        super(drivetrain, driver, operator, winch);
-        this.gyro = drivetrain.getGyro();
+    public TeleopWithGyroCommand(Drivetrain drivetrain, GyroPIDCorrector corrector, IGamepad driver, IGamepad operator, Winch winch) {
+        super(drivetrain, corrector, driver, operator, winch);
+        this.gyro = corrector.getGyro();
     }
 
     @Override

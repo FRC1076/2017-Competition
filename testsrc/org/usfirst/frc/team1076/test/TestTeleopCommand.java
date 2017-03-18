@@ -9,6 +9,7 @@ import org.strongback.mock.Mock;
 import org.strongback.mock.MockMotor;
 import org.usfirst.frc.team1076.robot.MockGamepad;
 import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
+import org.usfirst.frc.team1076.robot.subsystems.ArcadeNoCorrector;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.Winch;
 
@@ -22,7 +23,8 @@ public class TestTeleopCommand {
 	MockGamepad driver = new MockGamepad();
 	MockGamepad operator = new MockGamepad();
 	Drivetrain drivetrain = new Drivetrain(left, right);
-	TeleopCommand teleop = new TeleopCommand(drivetrain, driver, operator, winch);
+	ArcadeNoCorrector corrector = new ArcadeNoCorrector();
+	TeleopCommand teleop = new TeleopCommand(drivetrain, corrector, driver, operator, winch);
 	
 	@Before
 	public void reset() {

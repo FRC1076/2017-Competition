@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.strongback.mock.Mock;
 import org.strongback.mock.MockMotor;
+import org.usfirst.frc.team1076.robot.subsystems.ArcadeNoCorrector;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 
 public class TestDrivetrain {
@@ -15,7 +16,7 @@ public class TestDrivetrain {
 	MockMotor left = Mock.stoppedMotor(); 
 	MockMotor right = Mock.stoppedMotor(); 
 	Drivetrain drivetrain = new Drivetrain(left, right); 
-	
+	ArcadeNoCorrector corrector = new ArcadeNoCorrector();
 	@Before
 	public void reset() {
 		left.setSpeed(0); 
@@ -77,13 +78,13 @@ public class TestDrivetrain {
 
     @Test
     public void testForwardArcade() {
-        drivetrain.arcade(1, 0);
+        drivetrain.arcade(1, 0, corrector);
         assertEquals("Left motor should be equal to forward value", 
                 1.0, left.getSpeed(), EPSILON);
         assertEquals("Right motor should be equal to forward value", 
                 1.0, right.getSpeed(), EPSILON);
         
-        drivetrain.arcade(-1.0, 0);
+        drivetrain.arcade(-1.0, 0, corrector);
         assertEquals("Left motor should be equal to forward value", 
                 -1.0, left.getSpeed(), EPSILON);
         assertEquals("Right motor should be equal to forward value", 
@@ -92,13 +93,13 @@ public class TestDrivetrain {
     
     @Test
     public void testRotateArcade() {
-        drivetrain.arcade(0, 1);
+        drivetrain.arcade(0, 1, corrector);
         assertEquals("Left motor run forwards to turn robot left", 
                 1.0, left.getSpeed(), EPSILON);
         assertEquals("Right motor run backwards to turn robot right", 
                 -1.0, right.getSpeed(), EPSILON);
         
-        drivetrain.arcade(0, -1);
+        drivetrain.arcade(0, -1, corrector);
         assertEquals("Left motor run backwards to turn robot right", 
                 -1.0, left.getSpeed(), EPSILON);
         assertEquals("Right motor run forwards to turn robot right", 

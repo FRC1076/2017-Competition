@@ -3,7 +3,8 @@ package org.usfirst.frc.team1076.robot.commands;
 import org.strongback.Strongback;
 import org.strongback.command.Command;
 import org.strongback.components.Gyroscope;
-import org.usfirst.frc.team1076.robot.subsystems.DrivetrainWithGyro;
+import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
+import org.usfirst.frc.team1076.robot.subsystems.GyroPIDCorrector;
 
 /**
  * TurnWithGyro takes a Strongback Gyroscope, a Drivetrain,
@@ -16,7 +17,8 @@ public class TurnWithGyro extends Command {
     public double finalSpeed = 0.0;
     double targetAngle;
     Gyroscope gyro;
-    DrivetrainWithGyro drivetrain;
+    Drivetrain drivetrain;
+    GyroPIDCorrector corrector;
     double initialSpeed;
     
     /**
@@ -26,10 +28,11 @@ public class TurnWithGyro extends Command {
      * @param speed       speed from -1 to 1 (inclusive) to drive at
      * @param targetAngle angle, in degrees, to turn. Note that positive is right, while negative is left
      */
-    public TurnWithGyro(DrivetrainWithGyro drivetrain, double initialSpeed, double targetAngle) {
+    public TurnWithGyro(Drivetrain drivetrain, GyroPIDCorrector corrector, double initialSpeed, double targetAngle) {
         super(drivetrain);
         this.drivetrain = drivetrain;
-        this.gyro = drivetrain.getGyro();
+        this.corrector = corrector;
+        this.gyro = corrector.getGyro();
         this.initialSpeed = initialSpeed;
         this.targetAngle = targetAngle;
     }
