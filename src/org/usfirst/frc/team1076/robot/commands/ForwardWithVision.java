@@ -23,6 +23,7 @@ public class ForwardWithVision extends CancelableCommand {
     
     @Override
     public void initialize() {
+        super.initialize();
         Strongback.logger().info("BEGIN ForwardWithVision AUTO");
     }
     

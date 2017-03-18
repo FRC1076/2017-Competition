@@ -32,6 +32,7 @@ public class ForwardWithGyro extends CancelableCommand {
     
     @Override
     public void initialize() {
+        super.initialize();
         Strongback.logger().info("BEGIN ForwardWithGyro AUTO");
         corrector.getGyro().zero();
     }

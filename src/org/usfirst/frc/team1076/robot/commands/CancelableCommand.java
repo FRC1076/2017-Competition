@@ -9,11 +9,17 @@ import org.strongback.command.Requirable;
  * may still apply to the command.
  */
 public abstract class CancelableCommand extends Command {
-    boolean isRunning = true;
+    boolean isRunning;
     
     public CancelableCommand(double time, Requirable... requirables) {
         super(time, requirables);
     } 
+    
+    @Override
+    public void initialize() {
+        isRunning = true;
+    }
+    
     
     /**
      * If the command is still running, return true. Note that this
