@@ -35,7 +35,7 @@ public class RobotConstants {
     public static final double TURN_EASE_OUT_THRESHOLD = 5.0;
     public static final double ACCELEROMETER_THRESHOLD = 1.0;
     
-    public static final double MACRO_FORWARD_TIME = 5.0;
+    public static final double MACRO_FORWARD_TIME = 1.0;
     public static final double MACRO_FORWARD_SPEED = 1.0;
     
 }
