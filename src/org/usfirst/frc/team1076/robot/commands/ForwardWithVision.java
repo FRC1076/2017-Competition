@@ -34,6 +34,7 @@ public class ForwardWithVision extends CancelableCommand {
     @Override
     public void end() {
         Strongback.logger().info("END ForwardWithVision AUTO");
+        isRunning = false;
         drivetrain.stop();
     }
 
