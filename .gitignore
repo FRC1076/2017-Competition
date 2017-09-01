@@ -17,3 +17,9 @@ hs_err_pid*
 sysProps.xml
 
 /build/
+
+## Python
+
+*.py[cod]
+__pycache__/
+.cache/
