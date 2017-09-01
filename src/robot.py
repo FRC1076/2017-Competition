@@ -14,6 +14,9 @@ class MemeBot(wpilib.IterativeRobot):
         self.driver = wpilib.XboxController(0)
         self.operator = wpilib.XboxController(1)
 
+        self.winch1 = wpilib.TalonSRX(5)
+        self.winch2 = wpilib.TalonSRX(6)
+
     def autonomousInit(self):
         pass
 
@@ -34,6 +37,13 @@ class MemeBot(wpilib.IterativeRobot):
 
         self.right1.set(right)
         self.right2.set(right)
+
+        winch_speed = self.operator.getY(LEFT_HAND)
+            self.winch1.set(winch_speed)
+            self.winch2.set(winch_speed)
+        if winch_speed < 0:
+            winch_speed = 0
+
 
 
 if __name__ == '__main__':
