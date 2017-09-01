@@ -24,7 +24,16 @@ class MemeBot(wpilib.IterativeRobot):
         pass
 
     def teleopPerodic(self):
-        pass
+        forward = self.driver.getY(RIGHT_HAND)
+        rotate = self.driver.getX(LEFT_HAND)
+
+        left = forward + rotate
+        right = forward - rotate
+        self.left1.set(left)
+        self.left2.set(left)
+
+        self.right1.set(right)
+        self.right2.set(right)
 
 
 if __name__ == '__main__':
