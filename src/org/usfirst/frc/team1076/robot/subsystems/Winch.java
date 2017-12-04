@@ -35,9 +35,9 @@ public class Winch implements Requirable {
      * @param speed
      */
     public void extend(double speed) {
-        if (speed >= 0) {
+//        if (speed >= 0) {
             winch.setSpeed(speed);
-        }
+//        }
     }
     
     /**
