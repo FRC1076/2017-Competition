@@ -15,6 +15,7 @@ import org.strongback.components.TalonSRX;
 import org.strongback.components.ThreeAxisAccelerometer;
 import org.strongback.hardware.Hardware;
 import org.usfirst.frc.team1076.robot.commands.AccelerometerWatchdog;
+import org.usfirst.frc.team1076.robot.commands.ArcadeCommand;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithGyro;
 import org.usfirst.frc.team1076.robot.commands.ForwardWithVision;
 import org.usfirst.frc.team1076.robot.commands.RecalibrateGyro;
@@ -141,14 +142,10 @@ public class Robot extends IterativeRobot {
 //		SmarterDashboard.putDefaultNumber("Right Factor", 1);
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		
-		SmarterDashboard.putDefaultNumber("First Drive Time", RobotConstants.FIRST_DRIVE_TIME);
-		SmarterDashboard.putDefaultNumber("First Drive Speed", RobotConstants.FIRST_DRIVE_SPEED);
-		SmarterDashboard.putDefaultNumber("Turn Amount", RobotConstants.TURN_AMOUNT);
+		SmarterDashboard.putDefaultNumber("Turn Time", RobotConstants.TURN_TIME);
 		SmarterDashboard.putDefaultNumber("Turn Speed", RobotConstants.TURN_SPEED);
-        SmarterDashboard.putDefaultNumber("Second Drive Time", RobotConstants.SECOND_DRIVE_TIME);
-        SmarterDashboard.putDefaultNumber("Second Drive Speed", RobotConstants.SECOND_DRIVE_SPEED);
-        SmarterDashboard.putDefaultNumber("Center Drive Time", RobotConstants.CENTER_DRIVE_TIME);
-        SmarterDashboard.putDefaultNumber("Center Drive Speed", RobotConstants.CENTER_DRIVE_SPEED);
+        SmarterDashboard.putDefaultNumber("Forward Drive Time", RobotConstants.FORWARD_DRIVE_TIME);
+        SmarterDashboard.putDefaultNumber("Forward Drive Speed", RobotConstants.FORWARD_DRIVE_SPEED);
 		SmarterDashboard.putDefaultNumber("Gyro P", RobotConstants.GYRO_P);
 		SmarterDashboard.putDefaultNumber("Gyro I", RobotConstants.GYRO_I);
 		SmarterDashboard.putDefaultNumber("Gyro D", RobotConstants.GYRO_D);
@@ -157,15 +154,6 @@ public class Robot extends IterativeRobot {
         SmarterDashboard.putDefaultNumber("Vision I", RobotConstants.VISION_I);
         SmarterDashboard.putDefaultNumber("Vision D", RobotConstants.VISION_D);
 //        SmarterDashboard.putDefaultNumber("Vision Norm FputDefaultNumber("Vision Norm Factor);
-
-        SmarterDashboard.putDefaultNumber("Turn Final Speed", RobotConstants.TURN_FINAL_SPEED);
-        SmarterDashboard.putDefaultNumber("Turn Ease Out Threshold", RobotConstants.TURN_EASE_OUT_THRESHOLD);
-		
-        SmarterDashboard.putDefaultNumber("Accelerometer Threshold", RobotConstants.ACCELEROMETER_THRESHOLD);
-
-        SmarterDashboard.putDefaultNumber("Backward Time", RobotConstants.BACKWARD_TIME);
-        SmarterDashboard.putDefaultNumber("Backward Speed", RobotConstants.BACKWARD_SPEED);
-        
 		try {
 			receiver = new VisionReceiver(IP, VISION_PORT);
 		} catch (SocketException e) {
@@ -265,59 +253,32 @@ public class Robot extends IterativeRobot {
 	    Strongback.logger().info("USING AUTONOMOUS TYPE " + commandChoice.toString());
 	    
 	    // AUTONOMOUS SETUP
-        double driveTime = SmarterDashboard.getNumber("First Drive Time", RobotConstants.FIRST_DRIVE_TIME);
-        double speed = SmarterDashboard.getNumber("First Drive Speed", RobotConstants.FIRST_DRIVE_SPEED);
-        double turnAmount = SmarterDashboard.getNumber("Turn Amount", RobotConstants.TURN_AMOUNT) * (commandChoice == CommandEnum.RIGHT ? -1 : 1); // Turns opposite way if on right
-        double turn_speed = SmarterDashboard.getNumber("Turn Speed", RobotConstants.TURN_SPEED);
-        double vision_time = SmarterDashboard.getNumber("Second Drive Time", RobotConstants.SECOND_DRIVE_TIME);
-        double vision_speed = SmarterDashboard.getNumber("Second Drive Speed", RobotConstants.SECOND_DRIVE_SPEED);
+        double turn_time = SmarterDashboard.getNumber("Turn Time", RobotConstants.TURN_TIME);
+        double turn_speed = SmarterDashboard.getNumber("Turn Speed", RobotConstants.TURN_SPEED)  * (commandChoice == CommandEnum.RIGHT ? -1 : 1); // Turns opposite way if on right
         
-        double center_drive_time = SmarterDashboard.getNumber("Center Drive Time", RobotConstants.CENTER_DRIVE_TIME);
-        double center_drive_speed = SmarterDashboard.getNumber("Center Drive Speed", RobotConstants.CENTER_DRIVE_SPEED);
-        
-        double backward_drive_time = SmarterDashboard.getNumber("Backward Time", RobotConstants.BACKWARD_TIME);
-        double backward_drive_speed = SmarterDashboard.getNumber("Backward Speed", RobotConstants.BACKWARD_SPEED);
-        
-        double turn_final_speed = SmarterDashboard.getNumber("Turn Final Speed", RobotConstants.TURN_FINAL_SPEED);
-        double turn_ease_out_threshold = SmarterDashboard.getNumber("Turn Ease Out Threshold", RobotConstants.TURN_EASE_OUT_THRESHOLD);
-        
-        double accelerometer_threshold = SmarterDashboard.getNumber("Accelerometer Threshold", RobotConstants.ACCELEROMETER_THRESHOLD);
+        double forward_drive_time = SmarterDashboard.getNumber("Forward Drive Time", RobotConstants.FORWARD_DRIVE_TIME);
+        double forward_drive_speed = SmarterDashboard.getNumber("Forward Drive Speed", RobotConstants.FORWARD_DRIVE_SPEED);
         
         Strongback.logger().info("BEGIN SMARTDASHBOARD DUMP");
-        Strongback.logger().info("First Drive Time: " + driveTime);
-        Strongback.logger().info("First Drive Speed: " + speed);
-        Strongback.logger().info("Turn Amount: " + turnAmount);
-        Strongback.logger().info("Second Drive Time: " + vision_time);
-        Strongback.logger().info("Second Drive Speed: " + vision_speed);
-        Strongback.logger().info("Center Drive Time: " + center_drive_time);
-        Strongback.logger().info("Center Drive Speed: " + center_drive_speed);
-        Strongback.logger().info("Backward Time: " + backward_drive_time);
-        Strongback.logger().info("Backward Speed: " + backward_drive_speed);
-        Strongback.logger().info("Turn Final Speed: " + turn_final_speed);
-        Strongback.logger().info("Turn Ease Out Threshold: " + turn_ease_out_threshold);
-        Strongback.logger().info("Accelerometer Threshold: " + accelerometer_threshold);
+        Strongback.logger().info("Turn Time: " + turn_time);
+        Strongback.logger().info("Turn Speed: " + turn_speed);
+        Strongback.logger().info("Forward Drive Time: " + forward_drive_time);
+        Strongback.logger().info("Forward Drive Speed: " + forward_drive_speed);
         Strongback.logger().info("END SMARTDASHBOARD DUMP");
         
         switch (commandChoice) {
         case LEFT:
         case RIGHT:
         {
-            ForwardWithGyro forward = new ForwardWithGyro(drivetrain, gyroCorrector, speed, driveTime);
-            TurnWithGyro turn = new TurnWithGyro(drivetrain, gyroCorrector, turn_speed, turnAmount);
-            turn.finalSpeed = turn_final_speed;
-            turn.easeOutThreshold = turn_ease_out_threshold;
-            ForwardWithVision vision = new ForwardWithVision(drivetrain, visionCorrector, vision_speed, vision_time);
-            AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision);
-            ForwardWithGyro backward = new ForwardWithGyro(drivetrain, gyroCorrector, backward_drive_speed, backward_drive_time);
-            autonomousCommand = CommandGroup.runSequentially(forward, turn, Command.pause(1.0), CommandGroup.runSimultaneously(watchdog, vision), backward);
+            ArcadeCommand turn = new ArcadeCommand(drivetrain, turn_speed, 0, turn_time);
+            ArcadeCommand forward = new ArcadeCommand(drivetrain, forward_drive_speed, 0, forward_drive_time);
+            autonomousCommand = CommandGroup.runSequentially(forward);
+            autonomousCommand = CommandGroup.runSequentially(forward, turn);
             break;
         }
         case CENTER: {
-            ForwardWithVision vision_center = new ForwardWithVision(drivetrain, visionCorrector, center_drive_speed, center_drive_time);
-            AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision_center);
-            watchdog.accelerometer_threshold = accelerometer_threshold;
-            ForwardWithGyro backward = new ForwardWithGyro(drivetrain, gyroCorrector, backward_drive_speed, backward_drive_time);
-            autonomousCommand = CommandGroup.runSequentially(CommandGroup.runSimultaneously(vision_center, watchdog), backward);
+            ArcadeCommand forward = new ArcadeCommand(drivetrain, forward_drive_speed, 0, forward_drive_time);
+            autonomousCommand = CommandGroup.runSequentially(forward);
             break;
         }
         case NONE: {
@@ -374,11 +335,6 @@ public class Robot extends IterativeRobot {
         Strongback.switchReactor().onTriggered(strongbackOperator.getLeftBumper(), ()->holder.retract());
         Strongback.switchReactor().onTriggered(strongbackOperator.getRightBumper(), ()->holder.extend());
 //        Strongback.submit(new SolenoidSwitcherTwoButton(holder, operator, GamepadButton.LB, GamepadButton.RB));
-        
-        // Gear Lift Macro
-        ForwardWithVision vision = new ForwardWithVision(drivetrain, visionCorrector, RobotConstants.MACRO_FORWARD_SPEED, RobotConstants.MACRO_FORWARD_TIME);
-        AccelerometerWatchdog watchdog = new AccelerometerWatchdog(accelerometer.getXDirection(), vision, RobotConstants.ACCELEROMETER_THRESHOLD);
-        ForwardWithGyro backward = new ForwardWithGyro(drivetrain, gyroCorrector, RobotConstants.BACKWARD_SPEED, RobotConstants.BACKWARD_TIME);
 //        Strongback.switchReactor().onTriggered(strongbackDriver.getA(), ()->{
 //            Strongback.logger().info("MACRO START");
 //            Strongback.submit(
@@ -397,18 +353,6 @@ public class Robot extends IterativeRobot {
 	 * drivetrain.
 	 */
     private void refreshDrivetrainValues() {
-        Strongback.logger().info("Refreshed PID values");        
-        drivetrain.leftFactor = RobotConstants.LEFT_FACTOR;
-        drivetrain.rightFactor = RobotConstants.RIGHT_FACTOR;
-        gyroCorrector.P = SmarterDashboard.getNumber("Gyro P", RobotConstants.GYRO_P); 
-        gyroCorrector.I = SmarterDashboard.getNumber("Gyro I", RobotConstants.GYRO_I); 
-        gyroCorrector.D = SmarterDashboard.getNumber("Gyro D", RobotConstants.GYRO_D);
-	    visionCorrector.P = SmarterDashboard.getNumber("Vision P", RobotConstants.VISION_P); 
-	    visionCorrector.I = SmarterDashboard.getNumber("Vision I", RobotConstants.VISION_I); 
-	    visionCorrector.D = SmarterDashboard.getNumber("Vision D", RobotConstants.VISION_D);
-	    visionCorrector.VISION_NORMAL = RobotConstants.VISION_NORM_FACTOR; // SmarterDashboard.getNumber("Vision Norm Factor", 45.0);
-	    gyroCorrector.updateProfile();
-	    visionCorrector.updateProfile();
     }
 
 	/**
