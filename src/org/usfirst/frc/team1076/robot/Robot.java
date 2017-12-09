@@ -22,6 +22,7 @@ import org.usfirst.frc.team1076.robot.commands.TeleopCommand;
 import org.usfirst.frc.team1076.robot.commands.TeleopWithGyroCommand;
 import org.usfirst.frc.team1076.robot.commands.TurnWithGyro;
 import org.usfirst.frc.team1076.robot.subsystems.ArcadeNoCorrector;
+import org.usfirst.frc.team1076.robot.subsystems.BallSpitter;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.GyroPIDCorrector;
 import org.usfirst.frc.team1076.robot.subsystems.VisionPIDCorrector;
@@ -42,6 +43,8 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
  * directory.
  */
 public class Robot extends IterativeRobot {
+    public static final boolean IS_PRACTICE = false;
+    
     org.strongback.components.ui.Gamepad strongbackDriver = Hardware.HumanInterfaceDevices.xbox360(0);
     org.strongback.components.ui.Gamepad strongbackOperator = Hardware.HumanInterfaceDevices.xbox360(1);
 	IGamepad driver = new StrongbackGamepad(strongbackDriver);
@@ -60,6 +63,10 @@ public class Robot extends IterativeRobot {
 	TalonSRX winch1 = Hardware.Motors.talonSRX(5).enableBrakeMode(true);
 	TalonSRX winch2 = Hardware.Motors.talonSRX(6).enableBrakeMode(true);
 	Motor winchMotors = Motor.compose(winch1, winch2);
+	
+	// FOR PRACTICE MODE ONLY
+	Motor ballSpitterMotor = Hardware.Motors.talonSRX(7).enableBrakeMode(true);
+	
 //	Motor winchMotors = Mock.stoppedMotor();
 	PneumaticsModule pneumatics = Hardware.pneumaticsModule(0);
 //	PneumaticsModule pneumatics = Mock.pnuematicsModule();
@@ -82,6 +89,7 @@ public class Robot extends IterativeRobot {
 	ThreeAxisAccelerometer accelerometer = Hardware.Accelerometers.builtIn();
 	
 	Winch winch = new Winch(winchMotors);
+	BallSpitter ballSpitter = new BallSpitter(ballSpitterMotor, IS_PRACTICE);
 //	TeleopCommand teleopCommand = new TeleopCommand(drivetrain, driver, operator, winch);
 	
 	Drivetrain drivetrain = new Drivetrain(left, right);
@@ -346,7 +354,7 @@ public class Robot extends IterativeRobot {
 	    Strongback.logger().info("BEGIN TELEOP INIT");
 	    refreshDrivetrainValues(); 
 	    
-	    teleopCommand = new TeleopWithGyroCommand(drivetrain, gyroCorrector, driver, operator, winch);
+	    teleopCommand = new TeleopWithGyroCommand(drivetrain, gyroCorrector, driver, operator, winch, ballSpitter);
 	    
 		Strongback.submit(teleopCommand);
 		if (autonomousCommand != null)

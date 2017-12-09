@@ -2,10 +2,12 @@ package org.usfirst.frc.team1076.robot.commands;
 
 import org.strongback.Strongback;
 import org.strongback.command.Command;
+import org.strongback.components.Motor;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadButton;
 import org.usfirst.frc.team1076.robot.Gamepad.GamepadStick;
 import org.usfirst.frc.team1076.robot.IGamepad;
 import org.usfirst.frc.team1076.robot.subsystems.ArcadeCorrector;
+import org.usfirst.frc.team1076.robot.subsystems.BallSpitter;
 import org.usfirst.frc.team1076.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team1076.robot.subsystems.Winch;
 
@@ -20,18 +22,20 @@ public class TeleopCommand extends Command {
     IGamepad driver;
     IGamepad operator;
     Winch winch;
+    BallSpitter ballSpitter;
     boolean isReversed;
     boolean lastEdge;
     ArcadeCorrector corrector;
     
     
-    public TeleopCommand(Drivetrain leftRight, ArcadeCorrector corrector, IGamepad driver, IGamepad operator, Winch winch) {
+    public TeleopCommand(Drivetrain leftRight, ArcadeCorrector corrector, IGamepad driver, IGamepad operator, Winch winch, BallSpitter ballSpitter) {
         super(leftRight, winch); //Require the motors and winch
         this.driver = driver;
         this.leftRight = leftRight;
         this.winch = winch;
         this.operator = operator;
         this.corrector = corrector;
+        this.ballSpitter = ballSpitter;
     }
     
     @Override
@@ -65,7 +69,10 @@ public class TeleopCommand extends Command {
         // taking the difference of the two is a simple way of allowing both actions
         // without special logic
         winch.extend(winchSpeed);
-
+        
+        final double spitterSpeed = operator.getStick(GamepadStick.Right).y;
+        ballSpitter.setSpeed(spitterSpeed);
+        
         // Rising Edge of X button
         if (driver.getButton(GamepadButton.X) && !lastEdge) {
             if (isReversed) {
