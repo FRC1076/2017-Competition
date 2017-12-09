@@ -266,19 +266,25 @@ public class Robot extends IterativeRobot {
         Strongback.logger().info("Forward Drive Speed: " + forward_drive_speed);
         Strongback.logger().info("END SMARTDASHBOARD DUMP");
         
+        Command dropBall = null;
+        if (IS_PRACTICE) {
+            dropBall = Command.create(() -> {holder.extend();});
+        } else {
+            dropBall = Command.create(5.0, () -> {ballSpitter.setSpeed(1.0);});
+        }
+        
         switch (commandChoice) {
         case LEFT:
         case RIGHT:
         {
             ArcadeCommand turn = new ArcadeCommand(drivetrain, turn_speed, 0, turn_time);
             ArcadeCommand forward = new ArcadeCommand(drivetrain, forward_drive_speed, 0, forward_drive_time);
-            autonomousCommand = CommandGroup.runSequentially(forward);
-            autonomousCommand = CommandGroup.runSequentially(forward, turn);
+            autonomousCommand = CommandGroup.runSequentially(dropBall, forward, turn);
             break;
         }
         case CENTER: {
             ArcadeCommand forward = new ArcadeCommand(drivetrain, forward_drive_speed, 0, forward_drive_time);
-            autonomousCommand = CommandGroup.runSequentially(forward);
+            autonomousCommand = CommandGroup.runSequentially(dropBall, forward);
             break;
         }
         case NONE: {
