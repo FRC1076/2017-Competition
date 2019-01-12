@@ -26,7 +26,6 @@ class Wings:
     def raiser_all(self):
         for solenoid in self.solenoid_pairs:
             self.solenoid_pairs[solenoid].extend()
-        return
 
     def lower(self, solenoid_pair):
         self.solenoid_pairs[solenoid_pair].retract()
