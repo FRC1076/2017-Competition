@@ -6,12 +6,14 @@ RIGHT_HAND = 1
 
 #wing IDs
 
-LEFT_RETRACT_ID = 1
-LEFT_EXTEND_ID = 2
-RIGHT_RETRACT_ID = 3
-RIGHT_EXTEND_ID = 4
-CENTER_RETRACT_ID = 5
-CENTER_EXTEND_ID = 6
+LEFT_RETRACT_ID = 0
+LEFT_EXTEND_ID = 1
+LEFT2_RETRACT_ID = 2
+LEFT2_EXTEND_ID = 3
+RIGHT_RETRACT_ID = 4
+RIGHT_EXTEND_ID = 5
+RIGHT2_RETRACT_ID = 6
+RIGHT2_EXTEND_ID = 7
 
 
 class MemeBot(wpilib.IterativeRobot):
@@ -29,17 +31,19 @@ class MemeBot(wpilib.IterativeRobot):
         self.winch2 = ctre.WPI_TalonSRX(6)
 
         self.wings = Wings(
-            left_retract=wpilib.Solenoid(LEFT_RETRACT_ID),
-            right_retract=wpilib.Solenoid(RIGHT_RETRACT_ID),
-            left_extend=wpilib.Solenoid(LEFT_EXTEND_ID),
-            right_extend=wpilib.Solenoid(RIGHT_EXTEND_ID),
-            center_extend=wpilib.Solenoid(CENTER_EXTEND_ID),
-            center_retract=wpilib.Solenoid(CENTER_RETRACT_ID),
+            left_retract = wpilib.Solenoid(LEFT_RETRACT_ID),
+            left_extend = wpilib.Solenoid(LEFT_EXTEND_ID),
+            left2_retract = wpilib.Solenoid(LEFT2_RETRACT_ID),
+            left2_extend = wpilib.Solenoid(LEFT2_EXTEND_ID),
+            right_retract = wpilib.Solenoid(RIGHT_RETRACT_ID),
+            right_extend = wpilib.Solenoid(RIGHT_EXTEND_ID),
+            right2_retract = wpilib.Solenoid(RIGHT2_RETRACT_ID),
+            right2_extend = wpilib.Solenoid(RIGHT2_EXTEND_ID)
         )
 
     def robotPeriodic(self):
         pass
-        
+
     def teleopInit(self):
         print("teleop start!")
 
@@ -72,20 +76,18 @@ class MemeBot(wpilib.IterativeRobot):
         # if activate_right_released:
         #     self.wings.lower_right()
         #     self.right_activated = True
-        
+
 
         up = self.operator.getYButton()
         down = self.operator.getAButton()
         print("teleop period")
         if up:
-            self.wings.raise_left()
-            self.wings.raise_right()
-            self.wings.raise_center()
+            # self.wings.raise_left()
+            # self.wings.raise_right()
+            # self.wings.raise_center()
+            self.wings.raiser_all()
             print("up!")
-        if down: 
-            self.wings.lower_left()
-            self.wings.lower_right()
-            self.wings.lower_center()
+        if down:
             print("down!")
 
     def autonomousInit(self):

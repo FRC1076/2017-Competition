@@ -12,32 +12,28 @@ class Wings:
     lowered and raised.
     """
 
-    def __init__(self, left_retract, right_retract,
-                left_extend, right_extend,
-                center_extend, center_retract,
-            ):
-        self.left_out = SolenoidPair(left_retract, left_extend)
-        self.right_out = SolenoidPair(right_retract, right_extend)
-        self.center = SolenoidPair(center_retract, center_extend)
-    
-    def raise_left(self):
-        self.left_out.extend()
+    def __init__(self, left_retract, left_extend, left2_retract, left2_extend, right_retract, right_extend, right2_retract, right2_extend):
+        self.solenoid_pairs = {
+            "left" : SolenoidPair(left_retract, left_extend),
+            "right" : SolenoidPair(right_retract, right_extend),
+            "left2" : SolenoidPair(left2_retract, left2_extend),
+            "right2" : SolenoidPair(right2_retract, right2_extend)
+        }
 
-    def lower_left(self):
-        self.left_out.retract()
+    def raiser(self, solenoid_pair):
+        self.solenoid_pairs[solenoid_pair].extend()
 
-    def raise_right(self):
-        self.right_out.extend()
-   
-    def lower_right(self):
-        self.right_out.retract()
+    def raiser_all(self):
+        for solenoid in self.solenoid_pairs:
+            self.solenoid_pairs[solenoid].extend()
+        return
 
-    def raise_center(self):
-        self.center.extend()
+    def lower(self, solenoid_pair):
+        self.solenoid_pairs[solenoid_pair].retract()
 
-    def lower_center(self):
-        self.center.retract()
-
+    def lower_all(self):
+        for solenoid in self.solenoid_pairs:
+            self.solenoid_pairs[solenoid].retract()
 
 class SolenoidPair:
     def __init__(self, retract, extend):
